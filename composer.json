@@ -1,5 +1,5 @@
 {
-    "name": "cpliakas/git-php",
+    "name": "cpliakas/git-wrapper",
     "type": "library",
     "description": "A command line wrapper aroung Git.",
     "keywords": ["git"],
