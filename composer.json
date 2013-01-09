@@ -1,0 +1,24 @@
+{
+    "name": "cpliakas/git-php",
+    "type": "library",
+    "description": "A command line wrapper aroung Git.",
+    "keywords": ["acquia"],
+    "homepage": "https://github.com/cpliakas/git-wrapper",
+    "license": "GPL-3.0",
+    "authors": [
+        {
+            "name": "Chris Pliakas",
+            "email": "opensource@chrispliakas.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "symfony/process": "2.1.*",
+        "symfony/event-dispatcher": "2.1.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "GitWrapper": "src/"
+        }
+    }
+}
