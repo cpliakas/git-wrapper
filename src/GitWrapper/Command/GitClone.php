@@ -11,7 +11,7 @@
 namespace GitWrapper\Command;
 
 /**
- * Clones a git repository.
+ * Clone a repository into a new directory.
  */
 class GitClone extends GitCommandAbstract
 {
