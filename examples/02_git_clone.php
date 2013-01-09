@@ -4,7 +4,7 @@ use GitWrapper\GitWrapper;
 use GitWrapper\Command\GitClone;
 
 require_once __DIR__ . '/../vendor/autoload.php';
-$git = new GitWrapper('/usr/local/git/bin/git');
+$git = new GitWrapper();
 
-$clone = new GitClone();
+$clone = new GitClone('https://github.com/cpliakas/git-wrapper.git');
 $git->run($clone);
