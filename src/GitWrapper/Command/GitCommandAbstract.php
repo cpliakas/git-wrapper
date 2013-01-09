@@ -119,6 +119,19 @@ abstract class GitCommandAbstract
     abstract public function getCommand();
 
     /**
+     * Returns the event name used by the dispatcher.
+     *
+     * @return string
+     */
+    public function getEventName()
+    {
+        $event_name = 'git.';
+        $command = $this->getCommand();
+        $event_name .= ($command) ? $command : 'command';
+        return $event_name;
+    }
+
+    /**
      * Renders the command that will be executed.
      *
      * @return string
