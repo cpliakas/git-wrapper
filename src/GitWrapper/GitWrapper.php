@@ -15,6 +15,7 @@ use GitWrapper\Command\GitCommandAbstract;
 use GitWrapper\Event\GitEvent;
 use GitWrapper\Exception\GitException;
 use Symfony\Component\Process\Process;
+use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
