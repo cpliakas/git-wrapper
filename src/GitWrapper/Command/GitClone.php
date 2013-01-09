@@ -28,7 +28,7 @@ class GitClone extends GitCommandAbstract
     {
         // Use the name of the repo as the directory if not passed.
         if (null === $directory) {
-            $path = parse_url('git://github.com/cpliakas/solarium-luke.git', PHP_URL_PATH);
+            $path = parse_url($repository, PHP_URL_PATH);
             if (false === $path) {
                 throw new \RuntimeException('Repository URL not valid.');
             }
