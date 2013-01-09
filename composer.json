@@ -2,7 +2,7 @@
     "name": "cpliakas/git-php",
     "type": "library",
     "description": "A command line wrapper aroung Git.",
-    "keywords": ["acquia"],
+    "keywords": ["git"],
     "homepage": "https://github.com/cpliakas/git-wrapper",
     "license": "GPL-3.0",
     "authors": [
