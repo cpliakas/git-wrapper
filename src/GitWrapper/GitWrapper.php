@@ -10,16 +10,23 @@
 
 namespace GitWrapper;
 
-use Symfony\Component\Process\Process;
 use GitWrapper\Command\Git;
 use GitWrapper\Command\GitCommandAbstract;
+use GitWrapper\Event\GitEvent;
 use GitWrapper\Exception\GitException;
+use Symfony\Component\Process\Process;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  * Base class for executing Git commands.
  */
 class GitWrapper
 {
+    /**
+     * @var EventDispatcher
+     */
+    protected $_dispatcher;
+
     /**
      * @var string
      */
@@ -32,9 +39,28 @@ class GitWrapper
      */
     public function __construct($git_binary = null)
     {
+        $this->_dispatcher = new EventDispatcher();
         if (null !== $git_binary) {
             $this->setGitBinary($git_binary);
         }
+    }
+
+    /**
+     * @return EventDispatcher
+     */
+    public function getDispatcher()
+    {
+        return $this->_dispatcher;
+    }
+
+    /**
+     * @param EventDispatcher $dispatcher
+     * @return GitWrapper
+     */
+    public function setDispatcher(EventDispatcher $dispatcher)
+    {
+        $this->_dispatcher = $dispatcher;
+        return $this;
     }
 
     /**
@@ -151,12 +177,19 @@ class GitWrapper
         }
 
         try {
-            $commandline = rtrim(escapeshellcmd($git_binary) . ' ' . $command->getCommandLine());
-            $process = new Process($commandline);
+
+            $command_line = rtrim(escapeshellcmd($git_binary) . ' ' . $command->getCommandLine());
+            $process = new Process($command_line);
+
+            $event_name = $command->getEventName();
+            $event = new GitEvent($this, $process);
+            $this->_dispatcher->dispatch($event_name, $event);
+
             $process->run();
             if (!$process->isSuccessful()) {
                 throw new \RuntimeException($process->getErrorOutput());
             }
+
         } catch (\RuntimeException $e) {
             throw new GitException($e->getMessage());
         }
