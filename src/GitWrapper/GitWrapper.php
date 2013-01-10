@@ -164,7 +164,7 @@ class GitWrapper
      */
     public function infoPath()
     {
-        return $this->runGit('nfo-path');
+        return $this->runGit('info-path');
     }
 
     /**
