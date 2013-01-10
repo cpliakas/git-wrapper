@@ -22,7 +22,7 @@ class GitClone extends GitCommandAbstract
      * a directory in the current directory named afer the repository.
      *
      * @param string $repository The URL of the repository
-     * @param string|null $directory
+     * @param string|null $directory The target directory of the repository.
      */
     public function __construct($repository, $directory = null)
     {

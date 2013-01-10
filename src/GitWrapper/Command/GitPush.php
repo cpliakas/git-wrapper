@@ -18,14 +18,14 @@ class GitPush extends GitCommandAbstract
     /**
      * Constructs a GitPush object.
      *
-     * @param string $working_copy The path to the working copy.
-     * @param string $repository
+     * @param string $directory The path to the working copy.
+     * @param string|null $repository
      *   The "remote" repository that is destination of a push operation.
-     * @param string $refspec
+     * @param string|null $refspec
      */
-    public function __construct($working_copy, $repository = null, $refspec = null)
+    public function __construct($directory, $repository = null, $refspec = null)
     {
-        $this->_workingCopy = $working_copy;
+        $this->_directory = $directory;
 
         if ($repository !== null) {
             $this->addArgument($repository);

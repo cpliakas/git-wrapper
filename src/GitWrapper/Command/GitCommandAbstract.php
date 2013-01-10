@@ -16,7 +16,7 @@
 namespace GitWrapper\Command;
 
 /**
- *
+ * Base class extended by all Git command classes.
  */
 abstract class GitCommandAbstract
 {
@@ -44,7 +44,7 @@ abstract class GitCommandAbstract
      *
      * @var string
      */
-    protected $_workingCopy;
+    protected $_directory;
 
     /**
      * Builds the options text.
@@ -55,7 +55,7 @@ abstract class GitCommandAbstract
         foreach ($this->_options as $option => $value) {
             $prefix = (strlen($option) != 1) ? '--' : '-';
             $rendered = $prefix . $option;
-            if ($value !== null) {
+            if ($value !== true) {
                 $rendered .= ('--' == $prefix) ? '=' : ' ';
                 $rendered .= escapeshellarg($value);
             }
@@ -71,13 +71,26 @@ abstract class GitCommandAbstract
      * sanitized via the escapeshellarg() function.
      *
      * @param string $option The option name, e.g. "branch", "q".
-     * @param string|null $value The option's value.
-     *
+     * @param string|true $value The option's value.
      * @reutrn GitCommandAbstract
      */
-    public function setOption($option, $value = null)
+    public function setOption($option, $value)
     {
         $this->_options[$option] = $value;
+        return $this;
+    }
+
+    /**
+     * Sets multiple options.
+     *
+     * @param array $options An associative array of options.
+     * @reutrn GitCommandAbstract
+     */
+    public function setOptions(array $options)
+    {
+        foreach ($options as $option => $value) {
+            $this->setOption($option, $value);
+        }
         return $this;
     }
 
@@ -85,14 +98,13 @@ abstract class GitCommandAbstract
      * Sets a flag.
      *
      * @param string $flag The flag / option name, e.g. "q".
-     *
      * @reutrn GitCommandAbstract
      *
      * @see GitCommandAbstract::setOption()
      */
     public function setFlag($option)
     {
-        return $this->setOption($option);
+        return $this->setOption($option, true);
     }
 
     /**
@@ -118,7 +130,6 @@ abstract class GitCommandAbstract
      * Adds an argument to the command.
      *
      * @param string $arg The argument, e.g. the repo URL, directory, etc.
-     *
      * @reutrn GitCommandAbstract
      */
     public function addArgument($arg)
@@ -144,9 +155,9 @@ abstract class GitCommandAbstract
      */
     public function preCommandRun()
     {
-        if ($this->_workingCopy !== null) {
+        if ($this->_directory !== null) {
             $this->_currentDir = getcwd();
-            if (!@chdir($this->_workingCopy)) {
+            if (!@chdir($this->_directory)) {
                 throw new \RuntimeException('Error changing directories into the working copy.');
             }
         }
@@ -187,7 +198,7 @@ abstract class GitCommandAbstract
      */
     public function postCommandRun()
     {
-        if ($this->_workingCopy !== null) {
+        if ($this->_directory !== null) {
             @chdir($this->_currentDir);
         }
     }
