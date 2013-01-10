@@ -31,6 +31,22 @@ abstract class GitCommandAbstract
     protected $_args = array();
 
     /**
+     * A cached copy of the current working directory, for internal use only.
+     *
+     * @var string
+     */
+    protected $_currentDir;
+
+    /**
+     * The directory containing the working copy. If this variable is set, then
+     * the process will change into this directory while the Git command is
+     * being run.
+     *
+     * @var string
+     */
+    protected $_workingCopy;
+
+    /**
      * Builds the options text.
      */
     public function buildOptions()
@@ -119,6 +135,20 @@ abstract class GitCommandAbstract
     abstract public function getCommand();
 
     /**
+     * Hook invoked prior to the Process object being instantiated.
+     *
+     * If the working copy is set, change into that directory for the time that
+     * the Git command is run.
+     */
+    public function preCommandRun()
+    {
+        if ($this->_workingCopy !== null) {
+            $this->_currentDir = getcwd();
+            @chdir($this->_workingCopy);
+        }
+    }
+
+    /**
      * Returns the event name used by the dispatcher.
      *
      * @return string
@@ -144,5 +174,17 @@ abstract class GitCommandAbstract
           join(' ', array_map('escapeshellarg', $this->_args)),
         );
         return join(' ', array_filter($command));
+    }
+
+    /**
+     * Hook invoked prior to the Process object being instantiated.
+     *
+     * Changes back to the current working directory.
+     */
+    public function postCommandRun()
+    {
+        if ($this->_workingCopy !== null) {
+            @chdir($this->_currentDir);
+        }
     }
 }

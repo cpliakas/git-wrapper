@@ -20,9 +20,30 @@ final class GitEvents
     const GIT_COMMAND = 'git.command';
 
     /**
-     * Event thrown prior to executing a git clone clone command.
+     * Event thrown prior to executing a git branch command.
+     *
+     * @var string
+     */
+    const GIT_BRANCH = 'git.branch';
+
+    /**
+     * Event thrown prior to executing a git clone command.
      *
      * @var string
      */
     const GIT_CLONE = 'git.clone';
+
+    /**
+     * Event thrown prior to executing a git commit command.
+     *
+     * @var string
+     */
+    const GIT_COMMIT = 'git.commit';
+
+    /**
+     * Event thrown prior to executing a git init command.
+     *
+     * @var string
+     */
+    const GIT_INIT = 'git.init';
 }
