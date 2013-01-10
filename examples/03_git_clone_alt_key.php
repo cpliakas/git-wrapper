@@ -1,7 +1,6 @@
 <?php
 
 use GitWrapper\GitWrapper;
-use GitWrapper\Command\GitClone;
 use GitWrapper\EventListener\GitSSHListener;
 
 require_once __DIR__ . '/../vendor/autoload.php';
