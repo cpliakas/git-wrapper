@@ -18,14 +18,14 @@ class GitCommit extends GitCommandAbstract
     /**
      * Constructs a GitCommit object.
      *
-     * @param string $working_copy The path to the working copy.
+     * @param string $directory The path to the working copy.
      * @param string|null $log_message
      * @param string|null $files
      *   The files to stage, defaults to null which omits and sets the "a" flag.
      */
-    public function __construct($working_copy, $log_message = null, $files = null)
+    public function __construct($directory, $log_message = null, $files = null)
     {
-        $this->_workingCopy = $working_copy;
+        $this->_directory = $directory;
 
         if ($log_message !== null) {
             $this->setOption('m', $log_message);

@@ -94,6 +94,17 @@ class GitWrapper
     }
 
     /**
+     * Returns a working copy object.
+     *
+     * @param string $working_copy
+     * @return GitWorkingCopy
+     */
+    public function workingCopy($working_copy)
+    {
+        return new GitWorkingCopy($this, $working_copy);
+    }
+
+    /**
      * Runs the git binary using a single flag.
      *
      * @param string $flag
