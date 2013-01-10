@@ -36,14 +36,25 @@ class GitWrapper
     /**
      * Constructs a Git object.
      *
-     * @param string $git_binary
+     * @param string|null $git_binary
+     *   The path to the Git binary. Defaults to null, which uses Symfony's
+     *   ExecutableFinder class to get it.
+     *
+     * @throws GitException
      */
     public function __construct($git_binary = null)
     {
         $this->_dispatcher = new EventDispatcher();
-        if (null !== $git_binary) {
-            $this->setGitBinary($git_binary);
+
+        if (null === $git_binary) {
+            $finder = new ExecutableFinder();
+            $git_binary = $finder->find('git');
+            if (!$git_binary) {
+                throw new GitException('Unable to find the Git executable.');
+            }
         }
+
+        $this->setGitBinary($git_binary);
     }
 
     /**
@@ -70,7 +81,7 @@ class GitWrapper
      */
     public function setGitBinary($git_binary)
     {
-        $this->_gitBinary = $git_binary;
+        $this->_gitBinary = escapeshellcmd($git_binary);
         return $this;
     }
 
@@ -159,28 +170,17 @@ class GitWrapper
     /**
      * Runs a Git command.
      *
-     * In order to modify the Git process prior
-     *
      * @param GitCommandAbstract $command
-     *
      * @return string
+     *
+     * @throws GitException
      */
     public function run(GitCommandAbstract $command)
     {
-        $git_binary = $this->_gitBinary;
-        if (null === $this->_gitBinary) {
-            $finder = new ExecutableFinder();
-            if ($git_binary = $finder->find('git')) {
-                $this->_gitBinary= $git_binary;
-            } else {
-                throw new \RuntimeException('Unable to find the Git executable.');
-            }
-        }
-
         try {
             $command->preCommandRun();
 
-            $command_line = rtrim(escapeshellcmd($git_binary) . ' ' . $command->getCommandLine());
+            $command_line = rtrim($this->_gitBinary . ' ' . $command->getCommandLine());
             $process = new Process($command_line);
 
             $event_name = $command->getEventName();
