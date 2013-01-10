@@ -16,7 +16,7 @@ namespace GitWrapper\Command;
 class GitBranch extends GitCommandAbstract
 {
     /**
-     * This class wraps Git clone commands.
+     * This class wraps Git branch commands.
      *
      * {@inheritdoc}
      */
