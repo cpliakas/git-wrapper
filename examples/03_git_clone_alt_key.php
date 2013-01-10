@@ -10,5 +10,5 @@ $git = new GitWrapper();
 $listener = new GitSSHListener('/path/to/private/key');
 $git->getDispatcher()->addListener(GitEvents::GIT_CLONE, array($listener, 'onGitCommand'));
 
-$clone = new GitClone('git@github.com:cpliakas/git-wrapper.git');
-$git->run($clone);
+$working_copy = $git->workingCopy('./git-wrapper');
+$working_copy->clone('git@github.com:cpliakas/git-wrapper.git');

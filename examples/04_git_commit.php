@@ -6,5 +6,7 @@ use GitWrapper\Command\GitCommit;
 require_once __DIR__ . '/../vendor/autoload.php';
 $git = new GitWrapper();
 
-$commit = new GitCommit('./git-wrapper', 'Fixed #123: Added feature X.');
-$git->run($commit);
+$git
+    ->workingCopy('./git-wrapper')
+    ->commit('Fixed #123: Added feature X.');
+
