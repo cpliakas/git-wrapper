@@ -13,11 +13,11 @@ namespace GitWrapper\Event;
 final class GitEvents
 {
     /**
-     * Event thrown prior to executing a git command.
+     * Event thrown prior to executing a git add command.
      *
      * @var string
      */
-    const GIT_COMMAND = 'git.command';
+    const GIT_ADD = 'git.add';
 
     /**
      * Event thrown prior to executing a git branch command.
@@ -32,6 +32,13 @@ final class GitEvents
      * @var string
      */
     const GIT_CLONE = 'git.clone';
+
+    /**
+     * Event thrown prior to executing a git command.
+     *
+     * @var string
+     */
+    const GIT_COMMAND = 'git.command';
 
     /**
      * Event thrown prior to executing a git commit command.
