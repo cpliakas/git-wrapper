@@ -46,4 +46,11 @@ final class GitEvents
      * @var string
      */
     const GIT_INIT = 'git.init';
+
+    /**
+     * Event thrown prior to executing a git push command.
+     *
+     * @var string
+     */
+    const GIT_PUSH = 'git.push';
 }
