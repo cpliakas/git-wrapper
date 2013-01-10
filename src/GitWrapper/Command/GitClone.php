@@ -21,17 +21,25 @@ class GitClone extends GitCommandAbstract
      * If a directory is not passed, the repository will be checked out to
      * a directory in the current directory named afer the repository.
      *
-     * @param string $repo_url
-     * @param string|null $target_dir
+     * @param string $repository The URL of the repository
+     * @param string|null $directory
      */
     public function __construct($repository, $directory = null)
     {
         // Use the name of the repo as the directory if not passed.
         if (null === $directory) {
-            $path = parse_url($repository, PHP_URL_PATH);
-            if (false === $path) {
-                throw new \RuntimeException('Repository URL not valid.');
+            $scheme = parse_url($repository, PHP_URL_SCHEME);
+
+            if (null === $repository) {
+                $path = parse_url($url, PHP_URL_PATH);
+                if (false === $path) {
+                    throw new \RuntimeException('Repository URL not valid.');
+                }
+            } else {
+                $strpos = strpos($repository, ':');
+                $path = substr($repository, $strpos + 1);
             }
+
             $directory = basename($path, '.git');
         }
 

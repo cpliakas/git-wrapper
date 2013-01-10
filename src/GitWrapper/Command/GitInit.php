@@ -28,11 +28,11 @@ class GitInit extends GitCommandAbstract
     }
 
     /**
-     * This class wraps Git clone commands.
+     * This class wraps Git init commands.
      *
      * {@inheritdoc}
      */
     public function getCommand() {
-        return 'branch';
+        return 'init';
     }
 }

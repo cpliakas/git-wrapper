@@ -186,15 +186,18 @@ class GitWrapper
             $event = new GitEvent($this, $process);
             $this->_dispatcher->dispatch($event_name, $event);
 
+            $command->preCommandRun();
             $process->run();
             if (!$process->isSuccessful()) {
                 throw new \RuntimeException($process->getErrorOutput());
             }
 
         } catch (\RuntimeException $e) {
+            $command->postCommandRun();
             throw new GitException($e->getMessage());
         }
 
+        $command->postCommandRun();
         return $process->getOutput();
     }
 }
