@@ -144,7 +144,7 @@ abstract class GitCommandAbstract
     {
         if ($this->_workingCopy !== null) {
             $this->_currentDir = getcwd();
-            @chdir($this->_workingCopy);
+            chdir($this->_workingCopy);
         }
     }
 
@@ -184,7 +184,7 @@ abstract class GitCommandAbstract
     public function postCommandRun()
     {
         if ($this->_workingCopy !== null) {
-            @chdir($this->_currentDir);
+            chdir($this->_currentDir);
         }
     }
 }
