@@ -139,12 +139,16 @@ abstract class GitCommandAbstract
      *
      * If the working copy is set, change into that directory for the time that
      * the Git command is run.
+     *
+     * @throws \RuntimeException
      */
     public function preCommandRun()
     {
         if ($this->_workingCopy !== null) {
             $this->_currentDir = getcwd();
-            chdir($this->_workingCopy);
+            if (!@chdir($this->_workingCopy)) {
+                throw new \RuntimeException('Error changing directories into the working copy.');
+            }
         }
     }
 
@@ -184,7 +188,7 @@ abstract class GitCommandAbstract
     public function postCommandRun()
     {
         if ($this->_workingCopy !== null) {
-            chdir($this->_currentDir);
+            @chdir($this->_currentDir);
         }
     }
 }
