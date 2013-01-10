@@ -60,4 +60,11 @@ final class GitEvents
      * @var string
      */
     const GIT_PUSH = 'git.push';
+
+    /**
+     * Event thrown prior to executing a git rm command.
+     *
+     * @var string
+     */
+    const GIT_RM = 'git.rm';
 }

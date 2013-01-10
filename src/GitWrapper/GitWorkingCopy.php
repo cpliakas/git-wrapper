@@ -16,6 +16,7 @@ use GitWrapper\Command\GitCommandAbstract;
 use GitWrapper\Command\GitCommit;
 use GitWrapper\Command\GitInit;
 use GitWrapper\Command\GitPush;
+use GitWrapper\Command\GitRm;
 
 /**
  * Makes it easier to work with working copies.
@@ -162,6 +163,19 @@ class GitWorkingCopy
     {
         $push = new GitPush($this->_directory, $repository, $refspec);
         return $this->run($push, $options);
+    }
+
+    /**
+     * @param string $filepattern
+     * @param array $options
+     * @return GitWorkingCopy
+     *
+     * @see GitAdd
+     */
+    public function rm($filepattern, array $options = array())
+    {
+        $rm = new GitRm($this->_directory, $filepattern);
+        return $this->run($rm, $options);
     }
 
     /**
