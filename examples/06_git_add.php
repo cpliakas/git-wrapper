@@ -1,7 +1,6 @@
 <?php
 
 use GitWrapper\GitWrapper;
-use GitWrapper\Command\GitAdd;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 $git = new GitWrapper();
