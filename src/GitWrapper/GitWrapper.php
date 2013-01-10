@@ -178,6 +178,7 @@ class GitWrapper
         }
 
         try {
+            $command->preCommandRun();
 
             $command_line = rtrim(escapeshellcmd($git_binary) . ' ' . $command->getCommandLine());
             $process = new Process($command_line);
@@ -186,7 +187,6 @@ class GitWrapper
             $event = new GitEvent($this, $process);
             $this->_dispatcher->dispatch($event_name, $event);
 
-            $command->preCommandRun();
             $process->run();
             if (!$process->isSuccessful()) {
                 throw new \RuntimeException($process->getErrorOutput());
