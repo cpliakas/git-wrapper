@@ -41,7 +41,8 @@ class GitPush extends GitCommandAbstract
      *
      * {@inheritdoc}
      */
-    public function getCommand() {
+    public function getCommand()
+    {
         return 'push';
     }
 }

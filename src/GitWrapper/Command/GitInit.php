@@ -32,7 +32,8 @@ class GitInit extends GitCommandAbstract
      *
      * {@inheritdoc}
      */
-    public function getCommand() {
+    public function getCommand()
+    {
         return 'init';
     }
 }
