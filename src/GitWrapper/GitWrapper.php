@@ -13,6 +13,8 @@ namespace GitWrapper;
 use GitWrapper\Command\Git;
 use GitWrapper\Command\GitCommandAbstract;
 use GitWrapper\Event\GitEvent;
+use GitWrapper\Event\GitEvents;
+use GitWrapper\EventListener\GitSSHListener;
 use GitWrapper\Exception\GitException;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ExecutableFinder;
@@ -94,14 +96,34 @@ class GitWrapper
     }
 
     /**
+     * Set an alternate private key used to connect to the repository.
+     *
+     * @param string $private_key path to the private key.
+     * @param int $port The SSH port
+     * @return GitWrapper
+     */
+    public function setPrivateKey($private_key, $port = '22')
+    {
+        $listener = array(new GitSSHListener($private_key, $port), 'onGitCommand');
+        $events = array(
+            GitEvents::GIT_CLONE,
+            GitEvents::GIT_PUSH,
+        );
+        foreach ($events as $event) {
+            $this->_dispatcher->addListener($event, $listener);
+        }
+        return $this;
+    }
+
+    /**
      * Returns a working copy object.
      *
-     * @param string $working_copy
+     * @param string $directory
      * @return GitWorkingCopy
      */
-    public function workingCopy($working_copy)
+    public function workingCopy($directory)
     {
-        return new GitWorkingCopy($this, $working_copy);
+        return new GitWorkingCopy($this, $directory);
     }
 
     /**
