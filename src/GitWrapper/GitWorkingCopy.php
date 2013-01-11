@@ -206,6 +206,19 @@ class GitWorkingCopy
     }
 
     /**
+     * @param string|null $pathspec
+     * @param array $options
+     * @return GitWorkingCopy
+     *
+     * @see GitStatus
+     */
+    public function status($pathspec = null, array $options = array())
+    {
+        $status = new GitStatus($this->_directory, $pathspec);
+        return $this->run($status, $options);
+    }
+
+    /**
      * Hackish, allows us to use "clone" as a method name.
      */
     public function __call($method, $args)
