@@ -17,11 +17,6 @@ to think about it.
 Usage
 =====
 
-Example
--------
-
-The following code snippet is an overview of a common set of git operations.
-
     <?php
 
     use GitWrapper\GitWrapper;
@@ -41,6 +36,7 @@ The following code snippet is an overview of a common set of git operations.
 
     // Add a file and commit it.
     touch('./path/to/working/copy/text.txt');
+
     if ($git->hasChanges()) {
 
         $git
