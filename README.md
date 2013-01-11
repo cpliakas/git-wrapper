@@ -58,7 +58,7 @@ Specify the working copy's directory by passing it as the first argument to the
 `GitWrapper::workingCopy()` method. It is recommended that the return object is
 stored in a variable named `$git` for code readability.
 
-    $git = $wrapper->('./path/to/working/copy');
+    $git = $wrapper->workingCopy('./path/to/working/copy');
 
 Cloning A Repository
 --------------------
