@@ -21,7 +21,7 @@ class GitConfig extends GitCommandAbstract
      * @param string|null $option
      * @param string|null $value
      */
-    public function __construct($option = null, $value)
+    public function __construct($option = null, $value = null)
     {
         if ($option !== null && $value !== null) {
             $this->addArgument($option);
