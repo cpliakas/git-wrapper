@@ -89,6 +89,18 @@ class GitWorkingCopy
     }
 
     /**
+     * Returns true if there are changes to commit.
+     *
+     * @return bool
+     */
+    public function hasChanges()
+    {
+        $output = $this->_wrapper->git('status -s', $this->_directory);
+        return !empty($output);
+    }
+
+
+    /**
      * @param GitCommandAbstract $command
      * @param array $options
      */
