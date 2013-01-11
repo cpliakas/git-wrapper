@@ -79,7 +79,7 @@ chained together in logical groupings.
 
     // Add the file, commit the change, and push the commit.
     $git
-        ->add('test.txt')
+        ->add('test\.txt')
         ->commit('Added the test.txt file as per the examples.')
         ->push();
 

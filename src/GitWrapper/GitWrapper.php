@@ -13,8 +13,6 @@ namespace GitWrapper;
 use GitWrapper\Command\Git;
 use GitWrapper\Command\GitCommandAbstract;
 use GitWrapper\Event\GitEvent;
-use GitWrapper\Event\GitEvents;
-use GitWrapper\EventListener\GitSSHListener;
 use GitWrapper\Exception\GitException;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ExecutableFinder;
@@ -34,6 +32,11 @@ class GitWrapper
      * @var string
      */
     protected $_gitBinary;
+
+    /**
+     * @var array
+     */
+    protected $_env = array();
 
     /**
      * Constructs a Git object.
@@ -96,22 +99,61 @@ class GitWrapper
     }
 
     /**
+     * Sets an environment variable.
+     *
+     * @param string $var
+     * @param mixed $value
+     * @return GitWrapper
+     */
+    public function setEnvVar($var, $value)
+    {
+        $this->_env[$var] = $value;
+        return $this;
+    }
+
+    /**
+     * Unsets an environment variable.
+     *
+     * @param string $var
+     * @return GitWrapper
+     */
+    public function unsetEnvVar($var)
+    {
+        unset($this->_env[$var]);
+        return $this;
+    }
+
+    /**
+     * Sets an environment variable.
+     *
+     * @param string $var
+     * @param mixed $default
+     * @return mixed
+     */
+    public function getEnvVar($var, $default = null)
+    {
+        return isset($this->_env[$var]) ? $this->_env[$var] : $default;
+    }
+
+
+    /**
      * Set an alternate private key used to connect to the repository.
      *
      * @param string $private_key path to the private key.
      * @param int $port The SSH port
      * @return GitWrapper
      */
-    public function setPrivateKey($private_key, $port = '22')
+    public function setPrivateKey($private_key, $port = '22', $wrapper = null)
     {
-        $listener = array(new GitSSHListener($private_key, $port), 'onGitCommand');
-        $events = array(
-            GitEvents::GIT_CLONE,
-            GitEvents::GIT_PUSH,
-        );
-        foreach ($events as $event) {
-            $this->_dispatcher->addListener($event, $listener);
+        if (null === $wrapper) {
+            $wrapper = realpath(__DIR__ . '/../../bin/git-ssh-wrapper.sh');
         }
+
+        $this
+            ->setEnvVar('GIT_SSH', $wrapper)
+            ->setEnvVar('GIT_SSH_KEY', $private_key)
+            ->setEnvVar('GIT_SSH_PORT', $port);
+
         return $this;
     }
 
@@ -242,10 +284,12 @@ class GitWrapper
     public function run(GitCommandAbstract $command)
     {
         try {
-            $command->preCommandRun();
-
             $command_line = rtrim($this->_gitBinary . ' ' . $command->getCommandLine());
-            $process = new Process($command_line);
+            if (null !== $cwd = $command->getDirectory()) {
+              $cwd = realpath($cwd);
+            }
+            $env = ($this->_env) ? $this->_env : null;
+            $process = new Process($command_line, $cwd, $env);
 
             $event_name = $command->getEventName();
             $event = new GitEvent($this, $process);
@@ -257,11 +301,9 @@ class GitWrapper
             }
 
         } catch (\RuntimeException $e) {
-            $command->postCommandRun();
             throw new GitException($e->getMessage());
         }
 
-        $command->postCommandRun();
         return $process->getOutput();
     }
 }
