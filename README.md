@@ -14,23 +14,6 @@ containing the working copy. Although this a fairly simple challenge to
 overcome, the library handles this transparently to the developer doesn't have
 to think about it.
 
-Installation
-============
-
-To install the required libraries, execute the following commands in the
-directory where this library is extracted.
-
-    curl -s https://getcomposer.org/installer | php
-    php composer.phar install
-
-If curl is not available, replace the first command with the one below:
-
-    php -r "eval('?>'.file_get_contents('https://getcomposer.org/installer'));"
-
-Please refer to the [Composer](http://getcomposer.org/) tool's
-[installation documentation](http://getcomposer.org/doc/00-intro.md#installation-nix)
-for more information.
-
 Usage
 =====
 
@@ -112,6 +95,23 @@ simply what would be passed via the command line minus the Git binary. For
 example, executing `git config -l` would be done as in the example below:
 
     $wrapper->git('config -l');
+
+Installation
+============
+
+To install the required libraries, execute the following commands in the
+directory where this library is extracted.
+
+    curl -s https://getcomposer.org/installer | php
+    php composer.phar install
+
+If curl is not available, replace the first command with the one below:
+
+    php -r "eval('?>'.file_get_contents('https://getcomposer.org/installer'));"
+
+Please refer to the [Composer](http://getcomposer.org/) tool's
+[installation documentation](http://getcomposer.org/doc/00-intro.md#installation-nix)
+for more information.
 
 Gotchas
 =======
