@@ -108,4 +108,4 @@ Arbitrary Git commands can be executed directly via the wrapper. Commands are
 simply what would be passed via the command line minus the Git binary. For
 example, executing `git config -l` would be done as in the example below:
 
-    $wrapper->command('config -l');
+    $wrapper->git('config -l');
