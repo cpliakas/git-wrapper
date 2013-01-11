@@ -48,6 +48,13 @@ final class GitEvents
     const GIT_COMMIT = 'git.commit';
 
     /**
+     * Event thrown prior to executing a git config command.
+     *
+     * @var string
+     */
+    const GIT_CONFIG = 'git.config';
+
+    /**
      * Event thrown prior to executing a git init command.
      *
      * @var string
