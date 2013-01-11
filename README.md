@@ -9,7 +9,10 @@ builds upon the Symfony framework's Process component to execute the Git command
 in a way that works across platforms and uses the best-in-breed techniques
 available to PHP. This library also provides an SSH wrapper script and API
 method for developers to easily specify a private key other than one of the
-defaults.
+defaults. Finally, various command are expected to be executed in the directory
+containing the working copy. Although this a fairly simple challenge to
+overcome, the library handles this transparently to the developer doesn't have
+to think about it.
 
 Installation
 ============
@@ -79,7 +82,7 @@ chained together in logical groupings.
 
     // Add the file, commit the change, and push the commit.
     $git
-        ->add('test\.txt')
+        ->add('test.txt')
         ->commit('Added the test.txt file as per the examples.')
         ->push();
 
