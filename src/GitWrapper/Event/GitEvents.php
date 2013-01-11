@@ -74,4 +74,11 @@ final class GitEvents
      * @var string
      */
     const GIT_RM = 'git.rm';
+
+    /**
+     * Event thrown prior to executing a git status command.
+     *
+     * @var string
+     */
+    const GIT_RM = 'git.status';
 }
