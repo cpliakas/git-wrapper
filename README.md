@@ -112,3 +112,56 @@ simply what would be passed via the command line minus the Git binary. For
 example, executing `git config -l` would be done as in the example below:
 
     $wrapper->git('config -l');
+
+Gotchas
+=======
+
+There are a few "gotchas" that are out of scope for this library to solve but
+might prevent a successful implementation of running Git via PHP. The following
+is an incomplete list of challenges that are often encountered when executing
+Git from PHP.
+
+Missing HOME Environment Variable
+---------------------------------
+
+Sometimes the `HOME` environment variable is not set in the Git process that is
+spawned by PHP. This will cause many git operations to fail. It is advisable to
+set the `HOME` environment variable to a path outside of the document root that
+the web server has write access to.
+
+    $wrapper->setEnvVar('HOME', '/path/to/a/private/writable/dir');
+
+It is important that the storage is persistent as the ~/.gitconfig file will be
+written to this location. See the following "gotcha" for why this is important.
+
+Missing Identity And Configurations
+-----------------------------------
+
+Many repositories require that a name and email address are specified. This data
+is set by running `git config [name] [value]` on the command line, and the
+configurations are usually stored in the `~/.gitconfig file`. When executing Git
+via PHP, however, the process might have a different home directory than the
+user who normally runs git via the command line. Therefore no identity is sent
+to the repository, and it will likely throw an error.
+
+    // Set configuration options globally.
+    $wrapper->git('config --global user.name "User name"');
+    $wrapper->git('config --global user.email user@example.com');
+
+    // Set configuration options per repository.
+    $git
+        ->config('user.name', 'User name')
+        ->config('user.email', 'user@example.com');
+
+Commits To Repositories With No Changes
+---------------------------------------
+
+Running `git commit` on a repository with no changes returns no output but exits
+with a status of 1. Therefore the library will throw a `GitException` since it
+correctly detected an error. It is advisable to check whether a working copy has
+any changes prior to running the commit operation in order to prevent unwanted
+exceptions.
+
+    if ($git->hasChanges()) {
+        $git->commit('Committed the changes.');
+    }
