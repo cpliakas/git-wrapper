@@ -34,17 +34,14 @@ Usage
     // Clone a repo into `./path/to/working/copy`.
     $git->clone('git://github.com/cpliakas/git-wrapper.git');
 
-    // Add a file and commit it.
+    // Create a file in the working copy.
     touch('./path/to/working/copy/text.txt');
 
-    if ($git->hasChanges()) {
-
-        $git
-            ->add('test.txt')
-            ->commit('Added the test.txt file as per the examples.')
-            ->push();
-    }
-
+    // Add it, commit it, and push the change.
+    $git
+        ->add('test.txt')
+        ->commit('Added the test.txt file as per the examples.')
+        ->push();
 
 Initializing The Library
 ------------------------
@@ -192,3 +189,11 @@ exceptions.
     if ($git->hasChanges()) {
         $git->commit('Committed the changes.');
     }
+
+Permissions Of The GIT_SSH Wrapper Script
+----------------------------------------
+
+On checkout, the bin/git-ssh-wrapper.sh script should be executable. If it is
+not, git commands with fail if a non-default private key is specified.
+
+    $> chmod 0755 ./bin/git-ssh-wrapper.sh
