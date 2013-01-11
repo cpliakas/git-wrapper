@@ -17,8 +17,38 @@ to think about it.
 Usage
 =====
 
-The following code snippets explain how to use this library. For working
-examples, please view the code in the bundled `examples/` directory.
+Example
+-------
+
+The following code snippet is an overview of a common set of git operations.
+
+    <?php
+
+    use GitWrapper\GitWrapper;
+
+    // Initialize the library.
+    require_once 'vendor/autoload.php';
+    $wrapper = new GitWrapper();
+
+    // Optionally specify a private key other than one of the defaults.
+    $wrapper->setPrivateKey('/path/to/private/key');
+
+    // Specify the working copy.
+    $git = $wrapper->workingCopy('./path/to/working/copy');
+
+    // Clone a repo into the working copy.
+    $git->clone('git://github.com/cpliakas/git-wrapper.git');
+
+    // Add a file and commit it.
+    touch('./path/to/working/copy/text.txt');
+    if ($git->hasChanges()) {
+
+        $git
+            ->add('test.txt')
+            ->commit('Added the test.txt file as per the examples.')
+            ->push();
+    }
+
 
 Initializing The Library
 ------------------------
