@@ -216,7 +216,7 @@ class GitWrapper
      *
      * @throws GitException
      */
-    public function command($command, $cwd = null, $env = null)
+    public function git($command, $cwd = null, $env = null)
     {
         try {
             $commandline = $this->_gitBinary . ' ' . $command;
