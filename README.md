@@ -31,7 +31,7 @@ Usage
     // Specify the working copy.
     $git = $wrapper->workingCopy('./path/to/working/copy');
 
-    // Clone a repo into the working copy.
+    // Clone a repo into `./path/to/working/copy`.
     $git->clone('git://github.com/cpliakas/git-wrapper.git');
 
     // Add a file and commit it.
