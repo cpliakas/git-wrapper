@@ -9,9 +9,7 @@ builds upon the Symfony framework's Process component to execute the Git command
 in a way that works across platforms and uses the best-in-breed techniques
 available to PHP. This library also provides an SSH wrapper script and API
 method for developers to easily specify a private key other than one of the
-defaults. Finally, the script transparently changes in and out of the directory
-containing the working copy when executing certain Git commands so the developer
-has one less thing to think about.
+defaults.
 
 Installation
 ============
@@ -102,3 +100,12 @@ method.
 For a deeper technical description on how the wrapper script works, please refer
 the [this response](http://stackoverflow.com/a/3500308/870667) on StackOverflow
 explaining the technique.
+
+Executing Arbitrary Commands
+----------------------------
+
+Arbitrary Git commands can be executed directly via the wrapper. Commands are
+simply what would be passed via the command line minus the Git binary. For
+example, executing `git config -l` would be done as in the example below:
+
+    $wrapper->command('config -l');
