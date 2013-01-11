@@ -3,9 +3,7 @@
 use GitWrapper\GitWrapper;
 
 require_once __DIR__ . '/../vendor/autoload.php';
-$git = new GitWrapper();
+$wrapper = new GitWrapper();
 
-$git
-    ->workingCopy('./git-wrapper')
-    ->commit('Fixed #123: Added feature X.');
-
+$git = $wrapper->workingCopy('./git-wrapper');
+$git->commit('Fixed #123: Added feature X.');

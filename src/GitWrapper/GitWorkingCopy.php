@@ -12,6 +12,7 @@ namespace GitWrapper;
 
 use GitWrapper\Command\GitAdd;
 use GitWrapper\Command\GitClone;
+use GitWrapper\Command\GitConfig;
 use GitWrapper\Command\GitCommandAbstract;
 use GitWrapper\Command\GitCommit;
 use GitWrapper\Command\GitInit;
@@ -136,6 +137,20 @@ class GitWorkingCopy
     {
         $commit = new GitCommit($this->_directory, $log_message, $files);
         return $this->run($commit, $options);
+    }
+
+    /**
+     * @param string $option
+     * @param string $value
+     * @param array $options
+     * @return GitWorkingCopy
+     *
+     * @see GitConfig
+     */
+    public function config($option = null, $value = null, array $options = array())
+    {
+        $config = new GitConfig($option, $value);
+        return $this->run($config, $options);
     }
 
     /**
