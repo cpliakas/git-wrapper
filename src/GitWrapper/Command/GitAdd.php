@@ -24,7 +24,7 @@ class GitAdd extends GitCommandAbstract
     public function __construct($directory, $filepattern)
     {
         $this->_directory = $directory;
-        $this->addArgument($filepattern);
+        $this->addArgument(str_replace('.', '\\.', $filepattern));
     }
 
     /**
