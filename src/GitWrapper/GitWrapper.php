@@ -201,6 +201,37 @@ class GitWrapper
     }
 
     /**
+     * Runs an arbitrary git command.
+     *
+     * The command is simply a raw command line entry for everything after the
+     * Git binary. For example, a `git config -l` command would be passed as
+     * `congig -l` via this method.
+     *
+     * Note that no events are thrown by this method.
+     *
+     * @param string $command
+     * @param string|null $cwd
+     * @param array|null $env
+     * @return string
+     *
+     * @throws GitException
+     */
+    public function command($command, $cwd = null, $env = null)
+    {
+        try {
+            $commandline = $this->_gitBinary . ' ' . $command;
+            $process = new Process($commandline, $cwd, $env);
+            $process->run();
+            if (!$process->isSuccessful()) {
+                throw new \RuntimeException($process->getErrorOutput());
+            }
+        } catch (\RuntimeException $e) {
+            throw new GitException($e->getMessage());
+        }
+        return $process->getOutput();
+    }
+
+    /**
      * Runs a Git command.
      *
      * @param GitCommandAbstract $command
