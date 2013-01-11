@@ -127,7 +127,8 @@ Missing HOME Environment Variable
 Sometimes the `HOME` environment variable is not set in the Git process that is
 spawned by PHP. This will cause many git operations to fail. It is advisable to
 set the `HOME` environment variable to a path outside of the document root that
-the web server has write access to.
+the web server has write access to. Note that this environment variable is only
+set for the process running Git and NOT the PHP process that is spawns it.
 
     $wrapper->setEnvVar('HOME', '/path/to/a/private/writable/dir');
 
