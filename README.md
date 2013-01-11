@@ -82,7 +82,7 @@ chained together in logical groupings.
     // Add the file, commit the change, and push the commit.
     $git
         ->add('test.txt')
-        ->commit('Added the test.txt file as per the examples)
+        ->commit('Added the test.txt file as per the examples.')
         ->push();
 
 As is the Git command line tool, the repository and refspec can be passed as the
