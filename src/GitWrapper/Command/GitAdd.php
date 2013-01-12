@@ -28,7 +28,7 @@ class GitAdd extends GitCommandAbstract
         // Only escape paths with files that have extensions.
         // If the path does not have an extension, no extension
         // element will be returned
-        if (!isset($path_info['extension'])) {
+        if (isset($path_info['extension'])) {
           $path_info['basename'] = str_replace('.', '\\.', $path_info['basename']);
         }
         $this->addArgument($path_info['dirname'] . '/' . $path_info['basename']);
