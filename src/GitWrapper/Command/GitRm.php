@@ -24,7 +24,7 @@ class GitRm extends GitCommandAbstract
     public function __construct($directory, $filepattern)
     {
         $this->_directory = $directory;
-        $this->addArgument(str_replace('.', '\\.', $filepattern));
+        $this->addArgument($this->escapeFilepattern($filepattern));
     }
 
     /**
