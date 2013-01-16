@@ -352,6 +352,8 @@ class GitWrapper
      */
     public function run(GitCommandAbstract $command, $cwd = null)
     {
+        $event = null;
+
         try {
 
             // Build the command line options, flags, and arguments.
@@ -372,9 +374,8 @@ class GitWrapper
             $env = ($this->_env) ? $this->_env : null;
 
             $process = new Process($command_line, $cwd, $env, null, $this->_timeout, $this->_procOptions);
-
-            // Dispatch the GitEvents::GIT_COMMAND event.
             $event = new GitEvent($this, $process, $command);
+
             $this->_dispatcher->dispatch(GitEvents::GIT_COMMAND, $event);
 
             $process->run();
@@ -382,7 +383,12 @@ class GitWrapper
                 throw new \RuntimeException($process->getErrorOutput());
             }
 
+            $this->_dispatcher->dispatch(GitEvents::GIT_SUCCESS, $event);
+
         } catch (\RuntimeException $e) {
+            if ($event !== null) {
+                $this->_dispatcher->dispatch(GitEvents::GIT_ERROR, $event);
+            }
             throw new GitException($e->getMessage());
         }
 

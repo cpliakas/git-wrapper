@@ -22,4 +22,18 @@ final class GitEvents
      * @var string
      */
     const GIT_COMMAND = 'git.command';
+
+    /**
+     * Event thrown after executing a succesful git command.
+     *
+     * @var string
+     */
+    const GIT_SUCCESS = 'git.command.success';
+
+    /**
+     * Event thrown after executing a unsuccesful git command.
+     *
+     * @var string
+     */
+    const GIT_ERROR = 'git.command.success';
 }

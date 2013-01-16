@@ -359,4 +359,16 @@ class GitWorkingCopy
             throw new \BadMethodCallException($message);
         }
     }
+
+    /**
+     * Gets the output captured by the last run Git commnd(s).
+     *
+     * @return string
+     *
+     * @see GitWorkingCopy::getOutput()
+     */
+    public function __toString()
+    {
+        return $this->getOutput();
+    }
 }
