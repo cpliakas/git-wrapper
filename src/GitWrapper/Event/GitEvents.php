@@ -35,5 +35,5 @@ final class GitEvents
      *
      * @var string
      */
-    const GIT_ERROR = 'git.command.success';
+    const GIT_ERROR = 'git.command.error';
 }
