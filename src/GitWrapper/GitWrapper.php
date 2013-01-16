@@ -54,6 +54,20 @@ class GitWrapper
     protected $_env = array();
 
     /**
+     * The timeout of the Git command in seconds, defaults to 60.
+     *
+     * @var int
+     */
+    protected $_timeout = 60;
+
+    /**
+     * An array of options passed to the proc_open() function.
+     *
+     * @var array
+     */
+    protected $_procOptions = array();
+
+    /**
      * Constructs a GitWrapper object.
      *
      * @param string|null $git_binary
@@ -177,6 +191,55 @@ class GitWrapper
     }
 
     /**
+     * Sets the timeout of the Git command.
+     *
+     * @param int $timeout
+     *   The timeout in seconds.
+     *
+     * @return GitWrapper
+     */
+    public function setTimeout($timeout)
+    {
+        $this->_timeout = (int) $timeout;
+        return $this;
+    }
+
+    /**
+     * Gets the timeout of the Git command.
+     *
+     * @return int
+     *   The timeout in seconds.
+     */
+    public function getTimeout()
+    {
+        return $this->_timeout;
+    }
+
+    /**
+     * Sets the options passed to proc_open() when executing the Git command.
+     *
+     * @param array $timeout
+     *   The options passed to proc_open().
+     *
+     * @return GitWrapper
+     */
+    public function setProcOptions(array $options)
+    {
+        $this->_procOptions = $options;
+        return $this;
+    }
+
+    /**
+     * Gets the options passed to proc_open() when executing the Git command.
+     *
+     * @return array
+     */
+    public function getProcOptions()
+    {
+        return $this->_procOptions;
+    }
+
+    /**
      * Set an alternate private key used to connect to the repository.
      *
      * This method sets the GIT_SSH environment variable to use the wrapper
@@ -228,23 +291,7 @@ class GitWrapper
     }
 
     /**
-     * Runs a Git command using a single flag.
-     *
-     * @param string $flag
-     *   The flag to pass as an option. Do not precede with "--".
-     *
-     * @return string
-     *   The STDOUT returned by the Git command.
-     */
-    public function runGit($flag)
-    {
-        $git = new Git();
-        $git->setFlag('version');
-        return $this->run($git);
-    }
-
-    /**
-     * Returns the version if the installed Git client.
+     * Returns the version of the installed Git client.
      *
      * @return string
      *
@@ -252,55 +299,7 @@ class GitWrapper
      */
     public function version()
     {
-        return $this->runGit('version');
-    }
-
-    /**
-     * Returns the exec path.
-     *
-     * @return string
-     *
-     * @throws GitWrapper::Exception::GitException
-     */
-    public function execPath()
-    {
-        return $this->runGit('exec-path');
-    }
-
-    /**
-     * Returns the html path.
-     *
-     * @return string
-     *
-     * @throws GitWrapper::Exception::GitException
-     */
-    public function htmlPath()
-    {
-        return $this->runGit('html-path');
-    }
-
-    /**
-     * Returns the man path.
-     *
-     * @return string
-     *
-     * @throws GitWrapper::Exception::GitException
-     */
-    public function manPath()
-    {
-        return $this->runGit('man-path');
-    }
-
-    /**
-     * Returns the info path.
-     *
-     * @return string
-     *
-     * @throws GitWrapper::Exception::GitException
-     */
-    public function infoPath()
-    {
-        return $this->runGit('info-path');
+        return $this->git('--version');
     }
 
     /**
@@ -312,37 +311,25 @@ class GitWrapper
      *
      * Note that no events are thrown by this method.
      *
-     * @param string $command
-     *   The raw command containing the Git optios and arguments. The Git
-     *   binary should be omitted.
+     * @param string $command_line
+     *   The raw command containing the Git options and arguments. The Git
+     *   binary should not be in the command, for example `git config -l` would
+     *   translate to "config -l".
      * @param string|null $cwd
-     *   The current working directory the Git process will run under, defaults
-     *   to null which inherits the working directory of the PHP process.
-     * @param array|null $env
-     *   An associative array of environment variables set for the Git process.
-     *   Defaults to null which inherits the evironment variables from the PHP
-     *   process.
+     *   The working directory of the Git process. Defaults to null which uses
+     *   the current working directory of the PHP process.
      *
      * @return string
      *   The STDOUT returned by the Git command.
      *
      * @throws GitWrapper::Exception::GitException
      *
-     * @see Process
+     * @see GitWrapper::run()
      */
-    public function git($command, $cwd = null, $env = null)
+    public function git($command_line)
     {
-        try {
-            $commandline = $this->_gitBinary . ' ' . $command;
-            $process = new Process($commandline, $cwd, $env);
-            $process->run();
-            if (!$process->isSuccessful()) {
-                throw new \RuntimeException($process->getErrorOutput());
-            }
-        } catch (\RuntimeException $e) {
-            throw new GitException($e->getMessage());
-        }
-        return $process->getOutput();
+        $command = new Git($command_line);
+        return $this->run($command);
     }
 
     /**
@@ -350,6 +337,10 @@ class GitWrapper
      *
      * @param GitCommandAbstract $command
      *   The Git command being executed.
+     * @param string|null $cwd
+     *   Explicitly specify the working directory of the Git process. Defaults
+     *   to null which automatically sets the working directory based on the
+     *   command being executed relative to the working copy.
      *
      * @return string
      *   The STDOUT returned by the Git command.
@@ -358,16 +349,28 @@ class GitWrapper
      *
      * @see Process
      */
-    public function run(GitCommandAbstract $command)
+    public function run(GitCommandAbstract $command, $cwd = null)
     {
         try {
-            // Build the command, set the environment variables and working dir.
+
+            // Build the command line options, flags, and arguments.
             $command_line = rtrim($this->_gitBinary . ' ' . $command->getCommandLine());
-            if (null !== $cwd = $command->getDirectory()) {
-              $cwd = realpath($cwd);
+
+            // Resolve the working directory of the Git process. Use the
+            // directory in the command object if it exists.
+            if (null === $cwd) {
+                if (null !== $directory = $command->getDirectory()) {
+                    if (!$cwd = realpath($directory)) {
+                        throw new GitException('Path to working directory could not be resolved: ' . $directory);
+                    }
+                }
             }
+
+            // Finalize the environment variables, and empty array is converted
+            // to null which enherits the environment of the PHP process.
             $env = ($this->_env) ? $this->_env : null;
-            $process = new Process($command_line, $cwd, $env);
+
+            $process = new Process($command_line, $cwd, $env, null, $this->_timeout, $this->_procOptions);
 
             // Dispatch the GitEvents::GIT_COMMAND event.
             $event = new GitEvent($this, $process, $command);
