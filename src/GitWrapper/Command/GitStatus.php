@@ -1,25 +1,30 @@
 <?php
 
 /**
- * A PHP Git wrapper.
+ * A PHP wrapper around the Git command line utility.
  *
  * @license GNU General Public License, version 3
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
+ * @see https://github.com/cpliakas/git-wrapper
  * @copyright Copyright (c) 2013 Acquia, Inc.
  */
 
 namespace GitWrapper\Command;
 
 /**
- * Show the working tree status.
+ * Class that models `git status` commands.
+ *
+ * Shows the working tree status.
  */
 class GitStatus extends GitCommandAbstract
 {
     /**
      * Constructs a GitStatus object.
      *
-     * @param string $directory The path to the working copy.
+     * @param string $directory
+     *   Path to the directory containing the working copy.
      * @param string|null pathspec
+     *   Optionally pass a pathspec.
      */
     public function __construct($directory, $pathspec = null)
     {
