@@ -1,16 +1,12 @@
 <?php
 
 /**
- * A PHP Git wrapper.
+ * A PHP wrapper around the Git command line utility.
  *
- * LICENSE
- *
- * This source file is subject to the GNU General Public License that is bundled
- * with this package in the "LICENSE" file. It is also available for download at
- * http://www.gnu.org/licenses/gpl-3.0.txt.
- *
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt
- * @copyright  Copyright (c) 2013 Acquia, Inc.
+ * @license GNU General Public License, version 3
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt
+ * @see https://github.com/cpliakas/git-wrapper
+ * @copyright Copyright (c) 2013 Acquia, Inc.
  */
 
 namespace GitWrapper\Command;

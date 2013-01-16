@@ -1,17 +1,20 @@
 <?php
 
 /**
- * A PHP Git wrapper.
+ * A PHP wrapper around the Git command line utility.
  *
  * @license GNU General Public License, version 3
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
+ * @see https://github.com/cpliakas/git-wrapper
  * @copyright Copyright (c) 2013 Acquia, Inc.
  */
 
 namespace GitWrapper\Command;
 
 /**
- * Add file contents to the index.
+ * Class that models `git add` commands.
+ *
+ * Adds file contents to the index.
  */
 class GitAdd extends GitCommandAbstract
 {

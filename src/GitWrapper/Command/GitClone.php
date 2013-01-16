@@ -1,17 +1,22 @@
 <?php
 
 /**
- * A PHP Git wrapper.
+ * A PHP wrapper around the Git command line utility.
  *
  * @license GNU General Public License, version 3
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
+ * @see https://github.com/cpliakas/git-wrapper
  * @copyright Copyright (c) 2013 Acquia, Inc.
  */
 
 namespace GitWrapper\Command;
 
+use GitWrapper\Exception\GitException;
+
 /**
- * Clone a repository into a new directory.
+ * Class that models `git clone` commands.
+ *
+ * Clones a repository into a new directory.
  */
 class GitClone extends GitCommandAbstract
 {
@@ -26,7 +31,7 @@ class GitClone extends GitCommandAbstract
      * @param string|null $directory
      *   Path to the directory the repository will be cloned into.
      *
-     * @throws \RuntimeException
+     * @throws GitException
      */
     public function __construct($repository, $directory = null)
     {
@@ -37,7 +42,7 @@ class GitClone extends GitCommandAbstract
             if (null === $repository) {
                 $path = parse_url($url, PHP_URL_PATH);
                 if (false === $path) {
-                    throw new \RuntimeException('Repository URL not valid.');
+                    throw new GitException('Repository URL not valid.');
                 }
             } else {
                 $strpos = strpos($repository, ':');

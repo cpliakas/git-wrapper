@@ -3,7 +3,9 @@
 /**
  * A PHP wrapper around the Git command line utility.
  *
+ * @license GNU General Public License, version 3
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
+ * @see https://github.com/cpliakas/git-wrapper
  * @copyright Copyright (c) 2013 Acquia, Inc.
  */
 
@@ -108,6 +110,8 @@ class GitWorkingCopy
      * Returns true if there are changes to commit.
      *
      * @return bool
+     *
+     * @throws GitWrapper::Exception::GitException
      */
     public function hasChanges()
     {
@@ -124,6 +128,8 @@ class GitWorkingCopy
      *   An associative array of command line options and flags.
      *
      * @return GitWorkingCopy
+     *
+     * @throws GitWrapper::Exception::GitException
      *
      * @see GitWrapper::run()
      */
@@ -158,6 +164,8 @@ class GitWorkingCopy
      *
      * @return GitWorkingCopy
      *
+     * @throws GitWrapper::Exception::GitException
+     *
      * @see GitWrapper::GitCommand::GitAdd
      */
     public function add($filepattern, array $options = array())
@@ -181,6 +189,8 @@ class GitWorkingCopy
      *
      * @return GitWorkingCopy
      *
+     * @throws GitWrapper::Exception::GitException
+     *
      * @see GitWrapper::GitCommand::GitClone
      */
     public function cloneRepository($repository, array $options = array())
@@ -195,14 +205,16 @@ class GitWorkingCopy
      * Records changes to the repository.
      *
      * @param string|null $log_message
-     *   An options log message passed as the "-m" option.
+     *   An optional log message passed as the "-m" option.
      * @param string|null $files
      *   The contents of these files will be committed without recording the
-     *   changes already staged. Defaults to null which passed the "-a" flag.
+     *   changes already staged. Defaults to null which passes the "-a" flag.
      * @param array $options
      *   Associative array of command line options and flags.
      *
      * @return GitWorkingCopy
+     *
+     * @throws GitWrapper::Exception::GitException
      *
      * @see GitWrapper::GitCommand::GitCommit
      */
@@ -226,6 +238,8 @@ class GitWorkingCopy
      *
      * @return GitWorkingCopy
      *
+     * @throws GitWrapper::Exception::GitException
+     *
      * @see GitWrapper::GitCommand::GitConfig
      */
     public function config($option = null, $value = null, array $options = array())
@@ -243,6 +257,8 @@ class GitWorkingCopy
      *   Associative array of command line options and flags.
      *
      * @return GitWorkingCopy
+     *
+     * @throws GitWrapper::Exception::GitException
      *
      * @see GitWrapper::GitCommand::GitInit
      */
@@ -265,6 +281,8 @@ class GitWorkingCopy
      *   Associative array of command line options and flags.
      *
      * @return GitWorkingCopy
+     *
+     * @throws GitWrapper::Exception::GitException
      *
      * @see GitWrapper::GitCommand::GitPush
      */
@@ -289,6 +307,8 @@ class GitWorkingCopy
      *
      * @return GitWorkingCopy
      *
+     * @throws GitWrapper::Exception::GitException
+     *
      * @see GitWrapper::GitCommand::GitAdd
      */
     public function rm($filepattern, array $options = array())
@@ -303,11 +323,13 @@ class GitWorkingCopy
      * Shows the working tree status.
      *
      * @param string|null $pathspec
-     *
+     *   Optionally pass a pathspec.
      * @param array $options
      *   Associative array of command line options and flags.
      *
      * @return GitWorkingCopy
+     *
+     * @throws GitWrapper::Exception::GitException
      *
      * @see GitWrapper::GitCommand::GitStatus
      */
@@ -323,6 +345,9 @@ class GitWorkingCopy
 
     /**
      * Hackish, allows us to use "clone" as a method name.
+     *
+     * $throws \BadMethodCallException
+     * @throws GitWrapper::Exception::GitException
      */
     public function __call($method, $args)
     {
