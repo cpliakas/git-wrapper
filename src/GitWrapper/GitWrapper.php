@@ -192,19 +192,26 @@ class GitWrapper
      *   script included with this library.
      *
      * @return GitWrapper
+     *
+     * @throws GitWrapper::Exception::GitException
+     *   Thrown when any of the paths cannot be resolved.
      */
     public function setPrivateKey($private_key, $port = 22, $wrapper = null)
     {
         if (null === $wrapper) {
-            $wrapper = realpath(__DIR__ . '/../../bin/git-ssh-wrapper.sh');
+            $wrapper = __DIR__ . '/../../bin/git-ssh-wrapper.sh';
+        }
+        if (!$wrapper_path = realpath($wrapper)) {
+            throw new GitException('Path to GIT_SSH wrapper script could not be resolved: ' . $wrapper);
+        }
+        if (!$private_key_path = realpath($private_key)) {
+            throw new GitException('Path private key could not be resolved: ' . $private_key);
         }
 
-        $this
-            ->setEnvVar('GIT_SSH', $wrapper)
-            ->setEnvVar('GIT_SSH_KEY', realpath($private_key))
-            ->setEnvVar('GIT_SSH_PORT', $port);
-
-        return $this;
+        return $this
+            ->setEnvVar('GIT_SSH', $wrapper_path)
+            ->setEnvVar('GIT_SSH_KEY', $private_key_path)
+            ->setEnvVar('GIT_SSH_PORT', (int) $port);
     }
 
     /**
