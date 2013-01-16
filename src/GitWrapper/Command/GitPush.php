@@ -37,9 +37,9 @@ class GitPush extends GitCommandAbstract
     }
 
     /**
-     * This class wraps Git push commands.
+     * Implements GitCommandAbstract::getCommand().
      *
-     * {@inheritdoc}
+     * This class wraps `git push` commands.
      */
     public function getCommand()
     {

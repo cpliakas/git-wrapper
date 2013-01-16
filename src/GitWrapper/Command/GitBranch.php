@@ -16,9 +16,9 @@ namespace GitWrapper\Command;
 class GitBranch extends GitCommandAbstract
 {
     /**
-     * This class wraps Git branch commands.
+     * Implements GitCommandAbstract::getCommand().
      *
-     * {@inheritdoc}
+     * This class wraps `git branch` commands.
      */
     public function getCommand()
     {

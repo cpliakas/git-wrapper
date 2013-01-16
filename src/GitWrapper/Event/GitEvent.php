@@ -10,6 +10,7 @@
 
 namespace GitWrapper\Event;
 
+use GitWrapper\Command\GitCommandAbstract;
 use GitWrapper\GitWrapper;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Process\Process;
@@ -30,15 +31,22 @@ class GitEvent extends Event
     protected $_process;
 
     /**
+     * @var GitCommandAbstract
+     */
+    protected $_command;
+
+    /**
      * Constructs a GitEvent object.
      *
      * @param GitWrapper $wrapper
      * @param Process $process
+     * @param GitCommandAbstract $command
      */
-    public function __construct(GitWrapper $wrapper, Process $process)
+    public function __construct(GitWrapper $wrapper, Process $process, GitCommandAbstract $command)
     {
         $this->_wrapper = $wrapper;
         $this->_process = $process;
+        $this->_command = $command;
     }
 
     /**
@@ -55,5 +63,13 @@ class GitEvent extends Event
     public function getProcess()
     {
         return $this->_process;
+    }
+
+    /**
+     * @return GitCommandAbstract
+     */
+    public function getCommand()
+    {
+        return $this->_command;
     }
 }

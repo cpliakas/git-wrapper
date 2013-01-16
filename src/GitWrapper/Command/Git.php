@@ -11,14 +11,12 @@
 namespace GitWrapper\Command;
 
 /**
- * Clones a git repository.
+ * Arbitrary git commands.
  */
 class Git extends GitCommandAbstract
 {
     /**
-     * This class wraps the base git binary.
-     *
-     * {@inheritdoc}
+     * Implements GitCommandAbstract::getCommand().
      */
     public function getCommand()
     {

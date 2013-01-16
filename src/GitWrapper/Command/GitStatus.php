@@ -30,12 +30,12 @@ class GitStatus extends GitCommandAbstract
     }
 
     /**
-     * This class wraps Git status commands.
+     * Implements GitCommandAbstract::getCommand().
      *
-     * {@inheritdoc}
+     * This class wraps `git status` commands.
      */
     public function getCommand()
     {
-        return 'add';
+        return 'status';
     }
 }
