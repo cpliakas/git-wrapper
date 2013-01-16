@@ -28,9 +28,9 @@ class GitRm extends GitCommandAbstract
     }
 
     /**
-     * This class wraps Git rm commands.
+     * Implements GitCommandAbstract::getCommand().
      *
-     * {@inheritdoc}
+     * This class wraps `git rm` commands.
      */
     public function getCommand()
     {

@@ -18,8 +18,13 @@ class GitAdd extends GitCommandAbstract
     /**
      * Constructs a GitAdd object.
      *
-     * @param string $directory The path to the working copy.
+     * @param string $directory
+     *   Path to the directory containing the working copy.
      * @param string $filepattern
+     *   Files to add content from. Fileglobs (e.g.  *.c) can be given to add
+     *   all matching files. Also a leading directory name (e.g.  dir to add
+     *   dir/file1 and dir/file2) can be given to add all files in the
+     *   directory, recursively.
      */
     public function __construct($directory, $filepattern)
     {
@@ -28,9 +33,9 @@ class GitAdd extends GitCommandAbstract
     }
 
     /**
-     * This class wraps Git add commands.
+     * Implements GitCommandAbstract::getCommand().
      *
-     * {@inheritdoc}
+     * This class wraps `git add` commands.
      */
     public function getCommand()
     {

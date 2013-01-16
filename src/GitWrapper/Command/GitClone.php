@@ -21,8 +21,12 @@ class GitClone extends GitCommandAbstract
      * If a directory is not passed, the repository will be checked out to
      * a directory in the current directory named afer the repository.
      *
-     * @param string $repository The URL of the repository
-     * @param string|null $directory The target directory of the repository.
+     * @param string $repository
+     *   The URL of the Git repository.
+     * @param string|null $directory
+     *   Path to the directory the repository will be cloned into.
+     *
+     * @throws \RuntimeException
      */
     public function __construct($repository, $directory = null)
     {
@@ -49,9 +53,9 @@ class GitClone extends GitCommandAbstract
     }
 
     /**
-     * This class wraps Git clone commands.
+     * Implements GitCommandAbstract::getCommand().
      *
-     * {@inheritdoc}
+     * This class wraps `git clone` commands.
      */
     public function getCommand()
     {

@@ -1,10 +1,13 @@
 <?php
 
 /**
- * A PHP Git wrapper.
+ * A PHP wrapper around the Git command line utility.
  *
+ * @mainpage
+ * 
  * @license GNU General Public License, version 3
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
+ * @link https://github.com/cpliakas/git-wrapper
  * @copyright Copyright (c) 2013 Acquia, Inc.
  */
 
@@ -13,39 +16,53 @@ namespace GitWrapper;
 use GitWrapper\Command\Git;
 use GitWrapper\Command\GitCommandAbstract;
 use GitWrapper\Event\GitEvent;
+use GitWrapper\Event\GitEvents;
 use GitWrapper\Exception\GitException;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
- * Base class for executing Git commands.
+ * A wrapper class around the Git binary.
+ *
+ * A GitWrapper object contains the necessary context to run Git commands such
+ * as the path to the Git binary and environment variables. It also provides
+ * helper methods to run Git commands as set up the connection to the GIT_SSH
+ * wrapper script.
  */
 class GitWrapper
 {
     /**
+     * Symfony event dispatcher object used by this library to dispatch events.
+     *
      * @var EventDispatcher
      */
     protected $_dispatcher;
 
     /**
+     * Path to the Git binary.
+     *
      * @var string
      */
     protected $_gitBinary;
 
     /**
+     * Environment variables defined in the scope of the Git command.
+     *
      * @var array
      */
     protected $_env = array();
 
     /**
-     * Constructs a Git object.
+     * Constructs a GitWrapper object.
      *
      * @param string|null $git_binary
      *   The path to the Git binary. Defaults to null, which uses Symfony's
-     *   ExecutableFinder class to get it.
+     *   ExecutableFinder to resolve it automatically.
      *
-     * @throws GitException
+     * @throws GitWrapper::Exception::GitException
+     *   Throws an exception if the path to the Git binary couldn't be resolved
+     *   by the ExecutableFinder class.
      */
     public function __construct($git_binary = null)
     {
@@ -63,6 +80,8 @@ class GitWrapper
     }
 
     /**
+     * Gets the dispatcher used by this library to dispatch events.
+     *
      * @return EventDispatcher
      */
     public function getDispatcher()
@@ -71,7 +90,11 @@ class GitWrapper
     }
 
     /**
+     * Sets the dispatcher used by this library to dispatch events.
+     *
      * @param EventDispatcher $dispatcher
+     *   The Symfony event dispatcher object.
+     *
      * @return GitWrapper
      */
     public function setDispatcher(EventDispatcher $dispatcher)
@@ -81,7 +104,11 @@ class GitWrapper
     }
 
     /**
+     * Sets the path to the Git binary.
+     *
      * @param string $git_binary
+     *   Path to the Git binary.
+     *
      * @return GitWrapper
      */
     public function setGitBinary($git_binary)
@@ -91,7 +118,9 @@ class GitWrapper
     }
 
     /**
-     * @return string|null
+     * Returns the path to the Git binary.
+     *
+     * @return string
      */
     public function getGitBinary()
     {
@@ -99,10 +128,14 @@ class GitWrapper
     }
 
     /**
-     * Sets an environment variable.
+     * Sets an environment variable that is defined only in the scope of the Git
+     * command.
      *
      * @param string $var
-     * @param mixed $value
+     *   The name of the environment variable, e.g. "HOME", "GIT_SSH".
+     * @param mixed $default
+     *   The value of the environment variable is not set, defaults to null.
+     *
      * @return GitWrapper
      */
     public function setEnvVar($var, $value)
@@ -112,9 +145,12 @@ class GitWrapper
     }
 
     /**
-     * Unsets an environment variable.
+     * Unsets an environment variable that is defined only in the scope of the
+     * Git command.
      *
      * @param string $var
+     *   The name of the environment variable, e.g. "HOME", "GIT_SSH".
+     *
      * @return GitWrapper
      */
     public function unsetEnvVar($var)
@@ -124,10 +160,15 @@ class GitWrapper
     }
 
     /**
-     * Sets an environment variable.
+     * Returns an environment variable that is defined only in the scope of the
+     * Git command.
      *
      * @param string $var
+     *   The name of the environment variable, e.g. "HOME", "GIT_SSH".
      * @param mixed $default
+     *   The value returned if the environment variable is not set, defaults to
+     *   null.
+     *
      * @return mixed
      */
     public function getEnvVar($var, $default = null)
@@ -135,15 +176,24 @@ class GitWrapper
         return isset($this->_env[$var]) ? $this->_env[$var] : $default;
     }
 
-
     /**
      * Set an alternate private key used to connect to the repository.
      *
-     * @param string $private_key path to the private key.
-     * @param int $port The SSH port
+     * This method sets the GIT_SSH environment variable to use the wrapper
+     * script included with this library. It also sets the custom GIT_SSH_KEY
+     * and GIT_SSH_PORT environment variables that are used by the script.
+     *
+     * @param string $private_key
+     *   Path to the private key.
+     * @param int $port
+     *   Port that the SSH server being connected to listens on, defaults to 22.
+     * @param string|null $wrapper
+     *   Path the the GIT_SSH wrapper script, defaults to null which uses the
+     *   script included with this library.
+     *
      * @return GitWrapper
      */
-    public function setPrivateKey($private_key, $port = '22', $wrapper = null)
+    public function setPrivateKey($private_key, $port = 22, $wrapper = null)
     {
         if (null === $wrapper) {
             $wrapper = realpath(__DIR__ . '/../../bin/git-ssh-wrapper.sh');
@@ -151,16 +201,18 @@ class GitWrapper
 
         $this
             ->setEnvVar('GIT_SSH', $wrapper)
-            ->setEnvVar('GIT_SSH_KEY', $private_key)
+            ->setEnvVar('GIT_SSH_KEY', realpath($private_key))
             ->setEnvVar('GIT_SSH_PORT', $port);
 
         return $this;
     }
 
     /**
-     * Returns a working copy object.
+     * Returns an object that interacts with a working copy.
      *
      * @param string $directory
+     *   Path to the directory containing the working copy.
+     *
      * @return GitWorkingCopy
      */
     public function workingCopy($directory)
@@ -169,11 +221,13 @@ class GitWrapper
     }
 
     /**
-     * Runs the git binary using a single flag.
+     * Runs a Git command using a single flag.
      *
      * @param string $flag
+     *   The flag to pass as an option. Do not precede with "--".
      *
      * @return string
+     *   The STDOUT returned by the Git command.
      */
     public function runGit($flag)
     {
@@ -187,7 +241,7 @@ class GitWrapper
      *
      * @return string
      *
-     * @throws GitException
+     * @throws GitWrapper::Exception::GitException
      */
     public function version()
     {
@@ -199,7 +253,7 @@ class GitWrapper
      *
      * @return string
      *
-     * @throws GitException
+     * @throws GitWrapper::Exception::GitException
      */
     public function execPath()
     {
@@ -211,7 +265,7 @@ class GitWrapper
      *
      * @return string
      *
-     * @throws GitException
+     * @throws GitWrapper::Exception::GitException
      */
     public function htmlPath()
     {
@@ -223,7 +277,7 @@ class GitWrapper
      *
      * @return string
      *
-     * @throws GitException
+     * @throws GitWrapper::Exception::GitException
      */
     public function manPath()
     {
@@ -235,7 +289,7 @@ class GitWrapper
      *
      * @return string
      *
-     * @throws GitException
+     * @throws GitWrapper::Exception::GitException
      */
     public function infoPath()
     {
@@ -243,7 +297,7 @@ class GitWrapper
     }
 
     /**
-     * Runs an arbitrary git command.
+     * Runs an arbitrary Git command.
      *
      * The command is simply a raw command line entry for everything after the
      * Git binary. For example, a `git config -l` command would be passed as
@@ -252,11 +306,22 @@ class GitWrapper
      * Note that no events are thrown by this method.
      *
      * @param string $command
+     *   The raw command containing the Git optios and arguments. The Git
+     *   binary should be omitted.
      * @param string|null $cwd
+     *   The current working directory the Git process will run under, defaults
+     *   to null which inherits the working directory of the PHP process.
      * @param array|null $env
-     * @return string
+     *   An associative array of environment variables set for the Git process.
+     *   Defaults to null which inherits the evironment variables from the PHP
+     *   process.
      *
-     * @throws GitException
+     * @return string
+     *   The STDOUT returned by the Git command.
+     *
+     * @throws GitWrapper::Exception::GitException
+     *
+     * @see Process
      */
     public function git($command, $cwd = null, $env = null)
     {
@@ -277,13 +342,19 @@ class GitWrapper
      * Runs a Git command.
      *
      * @param GitCommandAbstract $command
-     * @return string
+     *   The Git command being executed.
      *
-     * @throws GitException
+     * @return string
+     *   The STDOUT returned by the Git command.
+     *
+     * @throws GitWrapper::Exception::GitException
+     *
+     * @see Process
      */
     public function run(GitCommandAbstract $command)
     {
         try {
+            // Build the command, set the environment variables and working dir.
             $command_line = rtrim($this->_gitBinary . ' ' . $command->getCommandLine());
             if (null !== $cwd = $command->getDirectory()) {
               $cwd = realpath($cwd);
@@ -291,9 +362,9 @@ class GitWrapper
             $env = ($this->_env) ? $this->_env : null;
             $process = new Process($command_line, $cwd, $env);
 
-            $event_name = $command->getEventName();
-            $event = new GitEvent($this, $process);
-            $this->_dispatcher->dispatch($event_name, $event);
+            // Dispatch the GitEvents::GIT_COMMAND event.
+            $event = new GitEvent($this, $process, $command);
+            $this->_dispatcher->dispatch(GitEvents::GIT_COMMAND, $event);
 
             $process->run();
             if (!$process->isSuccessful()) {
