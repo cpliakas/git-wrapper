@@ -340,6 +340,30 @@ class GitWorkingCopy
     }
 
     /**
+     * Executes a `git tag` command.
+     *
+     * Creates, lists, deletes or verifies a tag.
+     *
+     * @param string|null $tagname
+     *   The name of the tag.
+     * @param string|null $commit
+     *   The commit hash.
+     * @param array $options
+     *   Associative array of command line options and flags.
+     *
+     * @return GitWorkingCopy
+     *
+     * @throws GitWrapper::Exception::GitException
+     *
+     * @see GitWrapper::GitCommand::GitTag
+     */
+    public function tag($tagname = null, $commit = null, array $options = array())
+    {
+        $tag = new GitTag($this->_directory, $tagname, $commit);
+        return $this->run($tag, $options);
+    }
+
+    /**
      * @} End of "defgroup command".
      */
 
