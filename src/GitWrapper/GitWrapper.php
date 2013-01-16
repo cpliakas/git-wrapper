@@ -21,6 +21,7 @@ use GitWrapper\Exception\GitException;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * A wrapper class around the Git binary.
@@ -35,7 +36,7 @@ class GitWrapper
     /**
      * Symfony event dispatcher object used by this library to dispatch events.
      *
-     * @var EventDispatcher
+     * @var EventDispatcherInterface
      */
     protected $_dispatcher;
 
@@ -96,7 +97,7 @@ class GitWrapper
     /**
      * Gets the dispatcher used by this library to dispatch events.
      *
-     * @return EventDispatcher
+     * @return EventDispatcherInterface
      */
     public function getDispatcher()
     {
@@ -106,12 +107,12 @@ class GitWrapper
     /**
      * Sets the dispatcher used by this library to dispatch events.
      *
-     * @param EventDispatcher $dispatcher
+     * @param EventDispatcherInterface $dispatcher
      *   The Symfony event dispatcher object.
      *
      * @return GitWrapper
      */
-    public function setDispatcher(EventDispatcher $dispatcher)
+    public function setDispatcher(EventDispatcherInterface $dispatcher)
     {
         $this->_dispatcher = $dispatcher;
         return $this;

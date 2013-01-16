@@ -22,18 +22,18 @@ class Git extends GitCommandAbstract
      *
      * @var string
      */
-    protected $_command;
+    protected $_commandLine;
 
     /**
      * Constructs a Git object.
      *
-     * @param string $command
+     * @param string $command_line
      *   The raw command containing the Git options and arguments excluding the
      *   Git binary. Defaults to an empty string.
      */
-    public function __construct($command = '')
+    public function __construct($command_line = '')
     {
-        $this->_command = $command;
+        $this->_commandLine = $command_line;
     }
 
     /**
@@ -44,6 +44,6 @@ class Git extends GitCommandAbstract
      */
     public function getCommand()
     {
-        return $this->_command;
+        return $this->_commandLine;
     }
 }
