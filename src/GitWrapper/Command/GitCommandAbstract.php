@@ -204,9 +204,9 @@ abstract class GitCommandAbstract
     public function getCommandLine()
     {
         $command = array(
-          $this->getCommand(),
-          $this->buildOptions(),
-          join(' ', array_map('escapeshellarg', $this->_args)),
+            $this->getCommand(),
+            $this->buildOptions(),
+            join(' ', array_map('escapeshellarg', $this->_args)),
         );
         return join(' ', array_filter($command));
     }
