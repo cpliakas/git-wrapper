@@ -28,9 +28,9 @@ class GitInit extends GitCommandAbstract
     }
 
     /**
-     * This class wraps Git init commands.
+     * Implements GitCommandAbstract::getCommand().
      *
-     * {@inheritdoc}
+     * This class wraps `git init` commands.
      */
     public function getCommand()
     {

@@ -30,9 +30,9 @@ class GitConfig extends GitCommandAbstract
     }
 
     /**
-     * This class wraps Git config commands.
+     * Implements GitCommandAbstract::getCommand().
      *
-     * {@inheritdoc}
+     * This class wraps `git config` commands.
      */
     public function getCommand()
     {

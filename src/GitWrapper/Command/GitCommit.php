@@ -39,9 +39,9 @@ class GitCommit extends GitCommandAbstract
     }
 
     /**
-     * This class wraps Git commit commands.
+     * Implements GitCommandAbstract::getCommand().
      *
-     * {@inheritdoc}
+     * This class wraps `git commit` commands.
      */
     public function getCommand()
     {
