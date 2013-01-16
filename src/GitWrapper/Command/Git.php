@@ -17,10 +17,33 @@ namespace GitWrapper\Command;
 class Git extends GitCommandAbstract
 {
     /**
+     * The raw command containing the Git options and arguments excluding the
+     * Git binary.
+     *
+     * @var string
+     */
+    protected $_command;
+
+    /**
+     * Constructs a Git object.
+     *
+     * @param string $command
+     *   The raw command containing the Git options and arguments excluding the
+     *   Git binary. Defaults to an empty string.
+     */
+    public function __construct($command = '')
+    {
+        $this->_command = $command;
+    }
+
+    /**
      * Implements GitCommandAbstract::getCommand().
+     *
+     * In this instance, the whole command line is returned and not jsut the
+     * first argument.
      */
     public function getCommand()
     {
-        return '';
+        return $this->_command;
     }
 }
