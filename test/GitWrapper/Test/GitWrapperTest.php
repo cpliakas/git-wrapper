@@ -32,7 +32,7 @@ class GitWrapperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($timeout, $wrapper->getTimeout());
     }
 
-    public function testGitVersion()
+    public function testGitCommand()
     {
         $wrapper = new GitWrapper();
         $version = $wrapper->git('--version');
