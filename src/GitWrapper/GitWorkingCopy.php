@@ -19,6 +19,8 @@ use GitWrapper\Command\GitCommit;
 use GitWrapper\Command\GitInit;
 use GitWrapper\Command\GitPush;
 use GitWrapper\Command\GitRm;
+use GitWrapper\Command\GitStatus;
+use GitWrapper\Command\GitTag;
 
 /**
  * Interacts with a working copy.
