@@ -2,42 +2,11 @@
 
 namespace GitWrapper\Test;
 
-use GitWrapper\GitWrapper;
+use GitWrapper\Command\Git;
 use GitWrapper\Test\Event\TestDispatcher;
 
-class GitWrapperTest extends \PHPUnit_Framework_TestCase
+class GitWrapperTest extends GitWrapperTestCase
 {
-    /**
-     * @var GitWrapper
-     */
-    protected $_wrapper;
-
-    public function setUp() {
-      parent::setUp();
-      $this->_wrapper = new GitWrapper();
-    }
-
-    /**
-     * Generates a random string.
-     *
-     * @param type $length
-     *   The string length, defaults to 8 characters.
-     *
-     * @return string
-     *
-     * @see http://api.drupal.org/api/drupal/modules%21simpletest%21drupal_web_test_case.php/function/DrupalTestCase%3A%3ArandomName/7
-     */
-    public function randomString($length = 8)
-    {
-        $values = array_merge(range(65, 90), range(97, 122), range(48, 57));
-        $max = count($values) - 1;
-        $str = chr(mt_rand(97, 122));
-        for ($i = 1; $i < $length; $i++) {
-            $str .= chr($values[mt_rand(0, $max)]);
-        }
-        return $str;
-    }
-
     public function testSetGitBinary()
     {
         $binary = '/path/to/binary';
@@ -89,8 +58,7 @@ class GitWrapperTest extends \PHPUnit_Framework_TestCase
     public function testGitVersion()
     {
         $version = $this->_wrapper->version();
-        $match = preg_match('/^git version [.0-9]+$/', $version);
-        $this->assertNotEmpty($match);
+        $this->assertGitVersion($version);
     }
 
     public function testSetPrivateKey()
@@ -122,5 +90,46 @@ class GitWrapperTest extends \PHPUnit_Framework_TestCase
 
         $this->_wrapper->setPrivateKey($key, 22, $wrapper_expected);
         $this->assertEquals($wrapper_expected, $this->_wrapper->getEnvVar('GIT_SSH'));
+    }
+
+    public function testGitCommand()
+    {
+        $version = $this->_wrapper->git('--version');
+        $this->assertGitVersion($version);
+    }
+
+    /**
+     * @expectedException \GitWrapper\Exception\GitException
+     */
+    public function testGitCommandError()
+    {
+        $this->runBadCommand();
+    }
+
+    public function testGitRun()
+    {
+        $command = new Git();
+        $command->setFlag('version');
+        $version = $this->_wrapper->run($command);
+        $this->assertGitVersion($version);
+    }
+
+    public function testListener()
+    {
+        $listener = $this->addListener();
+        $this->_wrapper->version();
+        $this->assertTrue($listener->methodCalled('onCommand'));
+        $this->assertTrue($listener->methodCalled('onSuccess'));
+        $this->assertFalse($listener->methodCalled('onError'));
+    }
+
+    public function testListenerError()
+    {
+        $listener = $this->addListener();
+        $this->runBadCommand(true);
+
+        $this->assertTrue($listener->methodCalled('onCommand'));
+        $this->assertFalse($listener->methodCalled('onSuccess'));
+        $this->assertTrue($listener->methodCalled('onError'));
     }
 }
