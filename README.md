@@ -1,7 +1,7 @@
 Overview
 ========
 
-This library is a PHP wrapper around the Git command line tool.
+This library is a PHP wrapper around the Git command line tool. [![Build Status](https://travis-ci.org/cpliakas/git-wrapper.png)](https://travis-ci.org/cpliakas/git-wrapper.png)
 
 Its purpose is to provide a readable API that abstracts some of the challenges
 of executing Git commands from within a PHP process. Specifically, this library
@@ -13,8 +13,6 @@ defaults. Finally, various command are expected to be executed in the directory
 containing the working copy. Although this a fairly simple challenge to
 overcome, the library handles this transparently to the developer doesn't have
 to think about it.
-
-[![Build Status](https://travis-ci.org/cpliakas/git-wrapper.png)](https://travis-ci.org/cpliakas/git-wrapper.png)
 
 Usage
 =====
