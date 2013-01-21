@@ -65,31 +65,45 @@ class GitWrapperTest extends GitWrapperTestCase
     {
         $key = './test/id_rsa';
         $key_expected = realpath($key);
-        $wrapper = realpath(__DIR__ . '/../../../bin/git-ssh-wrapper.sh');
+        $ssh_wrapper_expected = realpath(__DIR__ . '/../../../bin/git-ssh-wrapper.sh');
 
         $this->_wrapper->setPrivateKey($key);
         $this->assertEquals($key_expected, $this->_wrapper->getEnvVar('GIT_SSH_KEY'));
         $this->assertEquals(22, $this->_wrapper->getEnvVar('GIT_SSH_PORT'));
-        $this->assertEquals($wrapper, $this->_wrapper->getEnvVar('GIT_SSH'));
+        $this->assertEquals($ssh_wrapper_expected, $this->_wrapper->getEnvVar('GIT_SSH'));
     }
 
     public function testSetPrivateKeyPort()
     {
-        $key = './test/id_rsa';
         $port = mt_rand(1024, 10000);
-
-        $this->_wrapper->setPrivateKey($key, $port);
+        $this->_wrapper->setPrivateKey('./test/id_rsa', $port);
         $this->assertEquals($port, $this->_wrapper->getEnvVar('GIT_SSH_PORT'));
     }
 
     public function testSetPrivateKeyWrapper()
     {
-        $key = './test/id_rsa';
-        $wrapper = './test/dummy-wrapper.sh';
-        $wrapper_expected = realpath($wrapper);
+        $ssh_wrapper = './test/dummy-wrapper.sh';
+        $ssh_wrapper_expected = realpath($ssh_wrapper);
+        $this->_wrapper->setPrivateKey('./test/id_rsa', 22, $ssh_wrapper);
+        $this->assertEquals($ssh_wrapper_expected, $this->_wrapper->getEnvVar('GIT_SSH'));
+    }
 
-        $this->_wrapper->setPrivateKey($key, 22, $wrapper_expected);
-        $this->assertEquals($wrapper_expected, $this->_wrapper->getEnvVar('GIT_SSH'));
+    /**
+     * @expectedException \GitWrapper\Exception\GitException
+     */
+    public function testSetPrivateKeyError()
+    {
+        $bad_key = './test/id_rsa_bad';
+        $this->_wrapper->setPrivateKey($bad_key);
+    }
+
+    /**
+     * @expectedException \GitWrapper\Exception\GitException
+     */
+    public function testSetPrivateKeyWrapperError()
+    {
+        $bad_wrapper = './test/dummy-wrapper-bad.sh';
+        $this->_wrapper->setPrivateKey('./test/id_rsa', 22, $bad_wrapper);
     }
 
     public function testGitCommand()
@@ -118,6 +132,7 @@ class GitWrapperTest extends GitWrapperTestCase
     {
         $listener = $this->addListener();
         $this->_wrapper->version();
+
         $this->assertTrue($listener->methodCalled('onCommand'));
         $this->assertTrue($listener->methodCalled('onSuccess'));
         $this->assertFalse($listener->methodCalled('onError'));
@@ -131,5 +146,11 @@ class GitWrapperTest extends GitWrapperTestCase
         $this->assertTrue($listener->methodCalled('onCommand'));
         $this->assertFalse($listener->methodCalled('onSuccess'));
         $this->assertTrue($listener->methodCalled('onError'));
+    }
+
+    public function testWrapperExecutable()
+    {
+        $ssh_wrapper = realpath(__DIR__ . '/../../../bin/git-ssh-wrapper.sh');
+        $this->assertTrue(is_executable($ssh_wrapper));
     }
 }
