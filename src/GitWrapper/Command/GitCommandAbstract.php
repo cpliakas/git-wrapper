@@ -40,6 +40,20 @@ abstract class GitCommandAbstract
     protected $_args = array();
 
     /**
+     * Sets the path to the directory containing the working copy.
+     *
+     * @param string $directory
+     *   The path to the directory containing the working copy.
+     *
+     * @return GitCommandAbstract
+     */
+    public function setDirectory($directory)
+    {
+        $this->_directory = $directory;
+        return $this;
+    }
+
+    /**
      * Gets the path to the directory containing the working copy.
      *
      * @return string|null
