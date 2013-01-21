@@ -14,6 +14,8 @@ containing the working copy. Although this a fairly simple challenge to
 overcome, the library handles this transparently to the developer doesn't have
 to think about it.
 
+[![Build Status](https://travis-ci.org/cpliakas/git-wrapper.png)](https://travis-ci.org/cpliakas/git-wrapper.png)
+
 Usage
 =====
 
