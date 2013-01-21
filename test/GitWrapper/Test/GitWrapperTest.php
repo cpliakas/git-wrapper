@@ -4,6 +4,7 @@ namespace GitWrapper\Test;
 
 use GitWrapper\Command\Git;
 use GitWrapper\Test\Event\TestDispatcher;
+use GitWrapper\GitWorkingCopy;
 
 class GitWrapperTest extends GitWrapperTestCase
 {
@@ -124,8 +125,20 @@ class GitWrapperTest extends GitWrapperTestCase
     {
         $command = new Git();
         $command->setFlag('version');
+        $command->setDirectory('./test'); // Directory just has to exist.
         $version = $this->_wrapper->run($command);
         $this->assertGitVersion($version);
+    }
+
+    /**
+     * @expectedException \GitWrapper\Exception\GitException
+     */
+    public function testGitRunDirectoryError()
+    {
+        $command = new Git();
+        $command->setFlag('version');
+        $command->setDirectory('./bad-directory');
+        $this->_wrapper->run($command);
     }
 
     public function testListener()
