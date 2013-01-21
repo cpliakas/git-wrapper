@@ -376,7 +376,7 @@ class GitWrapper
             $process = new Process($command_line, $cwd, $env, null, $this->_timeout, $this->_procOptions);
             $event = new GitEvent($this, $process, $command);
 
-            // Throw the "git.component" event.
+            // Throw the "git.command" event.
             $this->_dispatcher->dispatch(GitEvents::GIT_COMMAND, $event);
 
             $process->run();
@@ -384,12 +384,12 @@ class GitWrapper
                 throw new \RuntimeException($process->getErrorOutput());
             }
 
-            // Throw the "git.component.success" event.
+            // Throw the "git.command.success" event.
             $this->_dispatcher->dispatch(GitEvents::GIT_SUCCESS, $event);
 
         } catch (\RuntimeException $e) {
             if ($event !== null) {
-                // Throw the "git.component.error" event.
+                // Throw the "git.command.error" event.
                 $this->_dispatcher->dispatch(GitEvents::GIT_ERROR, $event);
             }
             throw new GitException($e->getMessage());
