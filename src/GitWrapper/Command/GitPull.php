@@ -12,19 +12,19 @@
 namespace GitWrapper\Command;
 
 /**
- * Class that models `git push` commands.
+ * Class that models `git pull` commands.
  *
  * Updates remote refs along with associated objects.
  */
-class GitPush extends GitCommandAbstract
+class GitPull extends GitCommandAbstract
 {
     /**
-     * Constructs a GitPush object.
+     * Constructs a GitPull object.
      *
      * @param string $directory
      *   Path to the directory containing the working copy.
      * @param string|null $repository
-     *   The "remote" repository that is destination of a push operation.
+     *   The repository being pulled from.
      * @param string|null $refspec
      *   Optionally pass a refspec to a remote repository.
      */
@@ -44,10 +44,10 @@ class GitPush extends GitCommandAbstract
     /**
      * Implements GitCommandAbstract::getCommand().
      *
-     * This class wraps `git push` commands.
+     * This class wraps `git pull` commands.
      */
     public function getCommand()
     {
-        return 'push';
+        return 'pull';
     }
 }
