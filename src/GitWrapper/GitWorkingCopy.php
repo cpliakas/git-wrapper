@@ -17,6 +17,7 @@ use GitWrapper\Command\GitConfig;
 use GitWrapper\Command\GitCommandAbstract;
 use GitWrapper\Command\GitCommit;
 use GitWrapper\Command\GitInit;
+use GitWrapper\Command\GitPull;
 use GitWrapper\Command\GitPush;
 use GitWrapper\Command\GitRm;
 use GitWrapper\Command\GitStatus;
@@ -268,6 +269,30 @@ class GitWorkingCopy
     {
         $init = new GitInit($this->_directory);
         return $this->run($init, $options);
+    }
+
+    /**
+     * Executes a `git pull` command.
+     *
+     * Fetches from and merges with another repository or a local branch.
+     *
+     * @param string|null $repository
+     *   The repository being pulled from.
+     * @param string|null $refspec
+     *   Optionally pass a refspec to a remote repository.
+     * @param array $options
+     *   Associative array of command line options and flags.
+     *
+     * @return GitWorkingCopy
+     *
+     * @throws GitWrapper::Exception::GitException
+     *
+     * @see GitWrapper::GitCommand::GitPull
+     */
+    public function pull($repository = null, $refspec = null, array $options = array())
+    {
+        $pull = new GitPull($this->_directory, $repository, $refspec);
+        return $this->run($pull, $options);
     }
 
     /**
