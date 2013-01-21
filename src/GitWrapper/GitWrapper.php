@@ -84,11 +84,13 @@ class GitWrapper
         $this->_dispatcher = new EventDispatcher();
 
         if (null === $git_binary) {
+            // @codeCoverageIgnoreStart
             $finder = new ExecutableFinder();
             $git_binary = $finder->find('git');
             if (!$git_binary) {
                 throw new GitException('Unable to find the Git executable.');
             }
+            // @codeCoverageIgnoreEnd
         }
 
         $this->setGitBinary($git_binary);
