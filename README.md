@@ -12,7 +12,7 @@ method for developers to easily specify a private key other than one of the
 defaults by using the technique in [this thread on StackOverflow](http://stackoverflow.com/a/3500308/870667).
 Finally, various commands are expected to be executed in the directory
 containing the working copy. Although this a fairly simple challenge to
-overcome, the library handles this transparently to the developer doesn't have
+overcome, the library handles this transparently so the developer doesn't have
 to think about it.
 
 Usage
@@ -22,7 +22,8 @@ Usage
 
     use GitWrapper\GitWrapper;
 
-    // Initialize the library.
+    // Initialize the library. If the path to the Git binary is not passed as
+    // the first argument when instantiating GitWrapper, it is auto-discovered.
     require_once 'vendor/autoload.php';
     $wrapper = new GitWrapper();
 
@@ -80,7 +81,7 @@ Missing HOME Environment Variable
 ---------------------------------
 
 Sometimes the `HOME` environment variable is not set in the Git process that is
-spawned by PHP. This will cause many git operations to fail. It is advisable to
+spawned by PHP. This will cause many Git operations to fail. It is advisable to
 set the `HOME` environment variable to a path outside of the document root that
 the web server has write access to. Note that this environment variable is only
 set for the process running Git and NOT the PHP process that is spawns it.

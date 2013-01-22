@@ -13,4 +13,8 @@
       </whitelist>
     </filter>
 
+    <logging>
+      <log type="coverage-html" target="test/report" charset="UTF-8"/>
+    </logging>
+
 </phpunit>

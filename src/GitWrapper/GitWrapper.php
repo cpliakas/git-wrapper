@@ -310,7 +310,7 @@ class GitWrapper
      *
      * The command is simply a raw command line entry for everything after the
      * Git binary. For example, a `git config -l` command would be passed as
-     * `congig -l` via this method.
+     * `config -l` via the first argument of this method.
      *
      * Note that no events are thrown by this method.
      *
@@ -329,7 +329,7 @@ class GitWrapper
      *
      * @see GitWrapper::run()
      */
-    public function git($command_line, $cwd = NULL)
+    public function git($command_line, $cwd = null)
     {
         $command = new Git($command_line, $cwd);
         return $this->run($command);
@@ -371,7 +371,7 @@ class GitWrapper
                 }
             }
 
-            // Finalize the environment variables, and empty array is converted
+            // Finalize the environment variables, an empty array is converted
             // to null which enherits the environment of the PHP process.
             $env = ($this->_env) ? $this->_env : null;
 
