@@ -329,9 +329,9 @@ class GitWrapper
      *
      * @see GitWrapper::run()
      */
-    public function git($command_line)
+    public function git($command_line, $cwd = NULL)
     {
-        $command = new Git($command_line);
+        $command = new Git($command_line, $cwd);
         return $this->run($command);
     }
 
