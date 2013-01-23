@@ -378,16 +378,22 @@ class GitWrapper
             $process = new Process($command_line, $cwd, $env, null, $this->_timeout, $this->_procOptions);
             $event = new GitEvent($this, $process, $command);
 
-            // Throw the "git.command" event.
+            // Throw the "git.command" event prior to executing.
             $this->_dispatcher->dispatch(GitEvents::GIT_COMMAND, $event);
 
-            $process->run();
-            if (!$process->isSuccessful()) {
-                throw new \RuntimeException($process->getErrorOutput());
+            // Execute command if it is not flagged to be bypassed and throw the
+            // "git.command.success" event, otherwise do not execute the comamnd
+            // and throw the "git.command.bypass" event.
+            if ($command->notBypassed()) {
+                $process->run();
+                if ($process->isSuccessful()) {
+                    $this->_dispatcher->dispatch(GitEvents::GIT_SUCCESS, $event);
+                } else {
+                    throw new \RuntimeException($process->getErrorOutput());
+                }
+            } else {
+                $this->_dispatcher->dispatch(GitEvents::GIT_BYPASS, $event);
             }
-
-            // Throw the "git.command.success" event.
-            $this->_dispatcher->dispatch(GitEvents::GIT_SUCCESS, $event);
 
         } catch (\RuntimeException $e) {
             if ($event !== null) {

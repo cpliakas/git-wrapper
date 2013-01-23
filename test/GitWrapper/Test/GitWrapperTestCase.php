@@ -5,6 +5,7 @@ namespace GitWrapper\Test;
 use GitWrapper\Event\GitEvents;
 use GitWrapper\Exception\GitException;
 use GitWrapper\GitWrapper;
+use GitWrapper\Test\Event\TestBypassListener;
 use GitWrapper\Test\Event\TestListener;
 
 class GitWrapperTestCase extends \PHPUnit_Framework_TestCase
@@ -56,7 +57,21 @@ class GitWrapperTestCase extends \PHPUnit_Framework_TestCase
         $dispatcher->addListener(GitEvents::GIT_COMMAND, array($listener, 'onCommand'));
         $dispatcher->addListener(GitEvents::GIT_SUCCESS, array($listener, 'onSuccess'));
         $dispatcher->addListener(GitEvents::GIT_ERROR, array($listener, 'onError'));
+        $dispatcher->addListener(GitEvents::GIT_BYPASS, array($listener, 'onBypass'));
 
+        return $listener;
+    }
+
+    /**
+     * Adds the bypass listener so that Git commands are not run.
+     *
+     * @return TestBypassListener
+     */
+    public function addBypassListener()
+    {
+        $listener = new TestBypassListener();
+        $dispatcher = $this->_wrapper->getDispatcher();
+        $dispatcher->addListener(GitEvents::GIT_COMMAND, array($listener, 'onCommand'), -5);
         return $listener;
     }
 
