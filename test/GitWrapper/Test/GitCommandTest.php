@@ -131,6 +131,22 @@ class GitCommandTest extends GitWrapperTestCase
     /**
      * @depends testGitCommit
      */
+    public function testGitPush()
+    {
+        // Let's not actually push anything.
+        $this->addBypassListener();
+        $listener = $this->addListener();
+
+        $git = $this->getWorkingCopy();
+        $git->push();
+
+        $command = $listener->getEvent()->getCommand();
+        $this->assertEquals('push', $command->getCommandLine());
+    }
+
+    /**
+     * @depends testGitCommit
+     */
     public function testGitCommitArgs()
     {
         $commit = new GitCommit(self::WORKING_DIR, 'log message', 'files');
