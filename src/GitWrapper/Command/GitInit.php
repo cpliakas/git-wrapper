@@ -27,7 +27,7 @@ class GitInit extends GitCommandAbstract
      */
     public function __construct($directory = null)
     {
-        if (null === $directory) {
+        if ($directory !== null) {
             $this->addArgument($directory);
         }
     }

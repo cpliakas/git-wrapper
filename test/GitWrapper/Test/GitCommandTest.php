@@ -63,6 +63,15 @@ class GitCommandTest extends GitWrapperTestCase
         $this->assertEquals($expected, $git->escapeFilepattern($filepattern));
     }
 
+    public function testGitInit()
+    {
+        $directory = self::WORKING_DIR . '-init';
+        $git = $this->_wrapper->workingCopy($directory);
+        $git->init();
+        $this->assertFileExists($directory . '/.git');
+        self::rmdir($directory);
+    }
+
     public function testGitClone()
     {
         $git = $this->getWorkingCopy();
@@ -131,7 +140,7 @@ class GitCommandTest extends GitWrapperTestCase
 
     public static function tearDownAfterClass()
     {
-        GitCommandTest::rmdir(self::WORKING_DIR);
+        self::rmdir(self::WORKING_DIR);
     }
 
     public static function rmdir($dir)
@@ -152,7 +161,7 @@ class GitCommandTest extends GitWrapperTestCase
         }
 
         foreach ($subdirs as $subdir) {
-            GitCommandTest::rmdir($subdir);
+            self::rmdir($subdir);
         }
 
         rmdir($dir);
