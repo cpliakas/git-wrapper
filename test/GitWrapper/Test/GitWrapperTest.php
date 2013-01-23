@@ -36,6 +36,9 @@ class GitWrapperTest extends GitWrapperTestCase
         $this->_wrapper->setEnvVar($var, $value);
         $this->assertEquals($value, $this->_wrapper->getEnvVar($var));
 
+        $envvars = $this->_wrapper->getEnvVars();
+        $this->assertEquals($value, $envvars[$var]);
+
         $this->_wrapper->unsetEnvVar($var);
         $this->assertNull($this->_wrapper->getEnvVar($var));
     }
