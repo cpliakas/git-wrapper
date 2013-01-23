@@ -46,7 +46,7 @@ class GitWorkingCopyTest extends GitWrapperTestCase
     public function testCallError()
     {
         $git = $this->getRandomWorkingCopy();
-        $git->badMethid();
+        $git->badMethod();
     }
 
 }

@@ -146,7 +146,7 @@ class GitWorkingCopy
     /**
      * @defgroup commands Git Commands
      *
-     * All methods in this group correspond with Git commands, got example
+     * All methods in this group correspond with Git commands, for example
      * "git add", "git commit", "git push", etc.
      *
      * @{
