@@ -2,7 +2,7 @@
 
 namespace GitWrapper\Test\Event;
 
-use Symfony\Component\EventDispatcher\Event;
+use GitWrapper\Event\GitEvent;
 
 class TestListener
 {
@@ -18,22 +18,22 @@ class TestListener
         return in_array($method, $this->_methods);
     }
 
-    public function onCommand(Event $event)
+    public function onCommand(GitEvent $event)
     {
         $this->_methods[] = 'onCommand';
     }
 
-    public function onSuccess(Event $event)
+    public function onSuccess(GitEvent $event)
     {
         $this->_methods[] = 'onSuccess';
     }
 
-    public function onError(Event $event)
+    public function onError(GitEvent $event)
     {
         $this->_methods[] = 'onError';
     }
 
-    public function onBypass(Event $event)
+    public function onBypass(GitEvent $event)
     {
         $this->_methods[] = 'onBypass';
     }
