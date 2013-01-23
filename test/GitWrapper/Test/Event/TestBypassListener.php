@@ -2,11 +2,11 @@
 
 namespace GitWrapper\Test\Event;
 
-use Symfony\Component\EventDispatcher\Event;
+use GitWrapper\Event\GitEvent;
 
 class TestBypassListener
 {
-    public function onCommand(Event $event)
+    public function onCommand(GitEvent $event)
     {
         $event->getCommand()->bypass();
     }
