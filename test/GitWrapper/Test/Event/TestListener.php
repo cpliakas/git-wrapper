@@ -18,9 +18,9 @@ class TestListener
         return in_array($method, $this->_methods);
     }
 
-    public function onCommand(GitEvent $event)
+    public function onPrepare(GitEvent $event)
     {
-        $this->_methods[] = 'onCommand';
+        $this->_methods[] = 'onPrepare';
     }
 
     public function onSuccess(GitEvent $event)

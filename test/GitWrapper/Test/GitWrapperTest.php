@@ -145,7 +145,7 @@ class GitWrapperTest extends GitWrapperTestCase
         $listener = $this->addListener();
         $this->_wrapper->version();
 
-        $this->assertTrue($listener->methodCalled('onCommand'));
+        $this->assertTrue($listener->methodCalled('onPrepare'));
         $this->assertTrue($listener->methodCalled('onSuccess'));
         $this->assertFalse($listener->methodCalled('onError'));
         $this->assertFalse($listener->methodCalled('onBypass'));
@@ -156,7 +156,7 @@ class GitWrapperTest extends GitWrapperTestCase
         $listener = $this->addListener();
         $this->runBadCommand(true);
 
-        $this->assertTrue($listener->methodCalled('onCommand'));
+        $this->assertTrue($listener->methodCalled('onPrepare'));
         $this->assertFalse($listener->methodCalled('onSuccess'));
         $this->assertTrue($listener->methodCalled('onError'));
         $this->assertFalse($listener->methodCalled('onBypass'));
@@ -169,7 +169,7 @@ class GitWrapperTest extends GitWrapperTestCase
 
         $output = $this->_wrapper->version();
 
-        $this->assertTrue($listener->methodCalled('onCommand'));
+        $this->assertTrue($listener->methodCalled('onPrepare'));
         $this->assertFalse($listener->methodCalled('onSuccess'));
         $this->assertFalse($listener->methodCalled('onError'));
         $this->assertTrue($listener->methodCalled('onBypass'));
