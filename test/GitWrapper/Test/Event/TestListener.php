@@ -13,14 +13,30 @@ class TestListener
      */
     protected $_methods = array();
 
+    /**
+     * The event object passed to the onPrepare method.
+     *
+     * @var GitEvent
+     */
+    protected $_event;
+
     public function methodCalled($method)
     {
         return in_array($method, $this->_methods);
     }
 
+    /**
+     * @return GitEvent
+     */
+    public function getEvent()
+    {
+        return $this->_event;
+    }
+
     public function onPrepare(GitEvent $event)
     {
         $this->_methods[] = 'onPrepare';
+        $this->_event = $event;
     }
 
     public function onSuccess(GitEvent $event)

@@ -110,6 +110,18 @@ class GitWorkingCopy
     }
 
     /**
+     * Returns the output of a `git status -s` command.
+     *
+     * @return string
+     *
+     * @throws GitWrapper::Exception::GitException
+     */
+    public function getStatus()
+    {
+        return $this->_wrapper->git('status -s', $this->_directory);
+    }
+
+    /**
      * Returns true if there are changes to commit.
      *
      * @return bool
@@ -118,7 +130,7 @@ class GitWorkingCopy
      */
     public function hasChanges()
     {
-        $output = $this->_wrapper->git('status -s', $this->_directory);
+        $output = $this->getStatus();
         return !empty($output);
     }
 
