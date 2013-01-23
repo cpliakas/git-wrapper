@@ -18,39 +18,39 @@ to think about it.
 Usage
 =====
 
-    <?php
+```php
+use GitWrapper\GitWrapper;
 
-    use GitWrapper\GitWrapper;
+// Initialize the library. If the path to the Git binary is not passed as
+// the first argument when instantiating GitWrapper, it is auto-discovered.
+require_once 'vendor/autoload.php';
+$wrapper = new GitWrapper();
 
-    // Initialize the library. If the path to the Git binary is not passed as
-    // the first argument when instantiating GitWrapper, it is auto-discovered.
-    require_once 'vendor/autoload.php';
-    $wrapper = new GitWrapper();
+// Optionally specify a private key other than one of the defaults.
+$wrapper->setPrivateKey('/path/to/private/key');
 
-    // Optionally specify a private key other than one of the defaults.
-    $wrapper->setPrivateKey('/path/to/private/key');
+// Specify the working copy.
+$git = $wrapper->workingCopy('./path/to/working/copy');
 
-    // Specify the working copy.
-    $git = $wrapper->workingCopy('./path/to/working/copy');
+// Clone a repo into `./path/to/working/copy`.
+$git->clone('git://github.com/cpliakas/git-wrapper.git');
 
-    // Clone a repo into `./path/to/working/copy`.
-    $git->clone('git://github.com/cpliakas/git-wrapper.git');
+// Create a file in the working copy.
+touch('./path/to/working/copy/text.txt');
 
-    // Create a file in the working copy.
-    touch('./path/to/working/copy/text.txt');
+// Add it, commit it, and push the change.
+$git
+    ->add('test.txt')
+    ->commit('Added the test.txt file as per the examples.')
+    ->push();
 
-    // Add it, commit it, and push the change.
-    $git
-        ->add('test.txt')
-        ->commit('Added the test.txt file as per the examples.')
-        ->push();
+// Render the output.
+print $git->getOutput();
 
-    // Render the output.
-    print $git->getOutput();
-
-    // Execute an arbitrary git command.
-    // The following is synonymous with `git config -l`
-    print $wrapper->git('config -l');
+// Execute an arbitrary git command.
+// The following is synonymous with `git config -l`
+print $wrapper->git('config -l');
+```
 
 Installation
 ============
@@ -86,7 +86,9 @@ set the `HOME` environment variable to a path outside of the document root that
 the web server has write access to. Note that this environment variable is only
 set for the process running Git and NOT the PHP process that is spawns it.
 
-    $wrapper->setEnvVar('HOME', '/path/to/a/private/writable/dir');
+```php
+$wrapper->setEnvVar('HOME', '/path/to/a/private/writable/dir');
+```
 
 It is important that the storage is persistent as the ~/.gitconfig file will be
 written to this location. See the following "gotcha" for why this is important.
@@ -101,14 +103,16 @@ via PHP, however, the process might have a different home directory than the
 user who normally runs git via the command line. Therefore no identity is sent
 to the repository, and it will likely throw an error.
 
-    // Set configuration options globally.
-    $wrapper->git('config --global user.name "User name"');
-    $wrapper->git('config --global user.email user@example.com');
+```php
+// Set configuration options globally.
+$wrapper->git('config --global user.name "User name"');
+$wrapper->git('config --global user.email user@example.com');
 
-    // Set configuration options per repository.
-    $git
-        ->config('user.name', 'User name')
-        ->config('user.email', 'user@example.com');
+// Set configuration options per repository.
+$git
+    ->config('user.name', 'User name')
+    ->config('user.email', 'user@example.com');
+```
 
 Commits To Repositories With No Changes
 ---------------------------------------
@@ -119,9 +123,11 @@ correctly detected an error. It is advisable to check whether a working copy has
 any changes prior to running the commit operation in order to prevent unwanted
 exceptions.
 
-    if ($git->hasChanges()) {
-        $git->commit('Committed the changes.');
-    }
+```php
+if ($git->hasChanges()) {
+    $git->commit('Committed the changes.');
+}
+```
 
 Permissions Of The GIT_SSH Wrapper Script
 ----------------------------------------
