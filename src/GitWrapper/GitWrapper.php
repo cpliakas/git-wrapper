@@ -378,8 +378,8 @@ class GitWrapper
             $process = new Process($command_line, $cwd, $env, null, $this->_timeout, $this->_procOptions);
             $event = new GitEvent($this, $process, $command);
 
-            // Throw the "git.command" event prior to executing.
-            $this->_dispatcher->dispatch(GitEvents::GIT_COMMAND, $event);
+            // Throw the "git.command.prepare" event prior to executing.
+            $this->_dispatcher->dispatch(GitEvents::GIT_PREPARE, $event);
 
             // Execute command if it is not flagged to be bypassed and throw the
             // "git.command.success" event, otherwise do not execute the comamnd

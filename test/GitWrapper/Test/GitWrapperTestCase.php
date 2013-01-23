@@ -54,7 +54,7 @@ class GitWrapperTestCase extends \PHPUnit_Framework_TestCase
         $dispatcher = $this->_wrapper->getDispatcher();
         $listener = new TestListener();
 
-        $dispatcher->addListener(GitEvents::GIT_COMMAND, array($listener, 'onCommand'));
+        $dispatcher->addListener(GitEvents::GIT_PREPARE, array($listener, 'onPrepare'));
         $dispatcher->addListener(GitEvents::GIT_SUCCESS, array($listener, 'onSuccess'));
         $dispatcher->addListener(GitEvents::GIT_ERROR, array($listener, 'onError'));
         $dispatcher->addListener(GitEvents::GIT_BYPASS, array($listener, 'onBypass'));
@@ -71,7 +71,7 @@ class GitWrapperTestCase extends \PHPUnit_Framework_TestCase
     {
         $listener = new TestBypassListener();
         $dispatcher = $this->_wrapper->getDispatcher();
-        $dispatcher->addListener(GitEvents::GIT_COMMAND, array($listener, 'onCommand'), -5);
+        $dispatcher->addListener(GitEvents::GIT_PREPARE, array($listener, 'onPrepare'), -5);
         return $listener;
     }
 

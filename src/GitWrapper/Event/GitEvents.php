@@ -16,12 +16,13 @@ namespace GitWrapper\Event;
  */
 final class GitEvents
 {
+
     /**
      * Event thrown prior to executing a git command.
      *
      * @var string
      */
-    const GIT_COMMAND = 'git.command';
+    const GIT_PREPARE = 'git.command.prepare';
 
     /**
      * Event thrown after executing a succesful git command.
@@ -43,4 +44,13 @@ final class GitEvents
      * @var string
      */
     const GIT_BYPASS = 'git.command.bypass';
+
+    /**
+     * Deprecated in favor of GitEvents::GIT_PREPARE.
+     *
+     * @var string
+     *
+     * @deprecated since version 1.0.0beta5
+     */
+    const GIT_COMMAND = 'git.command.prepare';
 }
