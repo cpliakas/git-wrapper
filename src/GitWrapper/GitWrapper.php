@@ -194,6 +194,17 @@ class GitWrapper
     }
 
     /**
+     * Returns the associative array of environment variables that are defined
+     * only in the scope of the Git command.
+     *
+     * @return array
+     */
+    public function getEnvVars()
+    {
+        return $this->_env;
+    }
+
+    /**
      * Sets the timeout of the Git command.
      *
      * @param int $timeout
