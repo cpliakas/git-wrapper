@@ -143,43 +143,6 @@ class GitWrapperTest extends GitWrapperTestCase
         $this->_wrapper->run($command);
     }
 
-    public function testListener()
-    {
-        $listener = $this->addListener();
-        $this->_wrapper->version();
-
-        $this->assertTrue($listener->methodCalled('onPrepare'));
-        $this->assertTrue($listener->methodCalled('onSuccess'));
-        $this->assertFalse($listener->methodCalled('onError'));
-        $this->assertFalse($listener->methodCalled('onBypass'));
-    }
-
-    public function testListenerError()
-    {
-        $listener = $this->addListener();
-        $this->runBadCommand(true);
-
-        $this->assertTrue($listener->methodCalled('onPrepare'));
-        $this->assertFalse($listener->methodCalled('onSuccess'));
-        $this->assertTrue($listener->methodCalled('onError'));
-        $this->assertFalse($listener->methodCalled('onBypass'));
-    }
-
-    public function testGitBypass()
-    {
-        $this->addBypassListener();
-        $listener = $this->addListener();
-
-        $output = $this->_wrapper->version();
-
-        $this->assertTrue($listener->methodCalled('onPrepare'));
-        $this->assertFalse($listener->methodCalled('onSuccess'));
-        $this->assertFalse($listener->methodCalled('onError'));
-        $this->assertTrue($listener->methodCalled('onBypass'));
-
-        $this->assertEmpty($output);
-    }
-
     public function testWrapperExecutable()
     {
         $ssh_wrapper = realpath(__DIR__ . '/../../../bin/git-ssh-wrapper.sh');
