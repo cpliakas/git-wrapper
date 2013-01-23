@@ -342,7 +342,8 @@ class GitWrapper
      */
     public function git($command_line, $cwd = null)
     {
-        $command = new Git($command_line, $cwd);
+        $command = new Git($command_line);
+        $command->setDirectory($cwd);
         return $this->run($command);
     }
 
