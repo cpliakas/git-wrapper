@@ -40,6 +40,13 @@ abstract class GitCommandAbstract
     protected $_args = array();
 
     /**
+     * Whether command execution should be bypassed.
+     *
+     * @var boolean
+     */
+    protected $_bypass = false;
+
+    /**
      * Sets the path to the directory containing the working copy.
      *
      * @param string $directory
@@ -62,6 +69,37 @@ abstract class GitCommandAbstract
     public function getDirectory()
     {
         return $this->_directory;
+    }
+
+    /**
+     * A boolean flagging whether to skip running the command.
+     *
+     * @param boolean $bypass
+     *   Whether to bypass execution of the command. The parameter defaults to
+     *   true for code readability, however the default behavior of this class
+     *   is to run the command.
+     *
+     * @return GitCommandAbstract
+     */
+    public function bypass($bypass = true)
+    {
+        $this->_bypass = (bool) $bypass;
+        return $this;
+    }
+
+    /**
+     * Returns true if the Git command should be run.
+     *
+     * The return value is the boolean opposite $this->_bypass. Although this
+     * seems complex, it makes the code more readable when checking whether the
+     * command should be run or not.
+     *
+     * @return boolean
+     *   If true, the command should be run.
+     */
+    public function notBypassed()
+    {
+        return !$this->_bypass;
     }
 
     /**

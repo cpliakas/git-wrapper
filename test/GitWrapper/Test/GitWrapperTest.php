@@ -4,7 +4,6 @@ namespace GitWrapper\Test;
 
 use GitWrapper\Command\Git;
 use GitWrapper\Test\Event\TestDispatcher;
-use GitWrapper\GitWorkingCopy;
 
 class GitWrapperTest extends GitWrapperTestCase
 {
@@ -149,6 +148,7 @@ class GitWrapperTest extends GitWrapperTestCase
         $this->assertTrue($listener->methodCalled('onCommand'));
         $this->assertTrue($listener->methodCalled('onSuccess'));
         $this->assertFalse($listener->methodCalled('onError'));
+        $this->assertFalse($listener->methodCalled('onBypass'));
     }
 
     public function testListenerError()
@@ -159,6 +159,22 @@ class GitWrapperTest extends GitWrapperTestCase
         $this->assertTrue($listener->methodCalled('onCommand'));
         $this->assertFalse($listener->methodCalled('onSuccess'));
         $this->assertTrue($listener->methodCalled('onError'));
+        $this->assertFalse($listener->methodCalled('onBypass'));
+    }
+
+    public function testGitBypass()
+    {
+        $this->addBypassListener();
+        $listener = $this->addListener();
+
+        $output = $this->_wrapper->version();
+
+        $this->assertTrue($listener->methodCalled('onCommand'));
+        $this->assertFalse($listener->methodCalled('onSuccess'));
+        $this->assertFalse($listener->methodCalled('onError'));
+        $this->assertTrue($listener->methodCalled('onBypass'));
+
+        $this->assertEmpty($output);
     }
 
     public function testWrapperExecutable()

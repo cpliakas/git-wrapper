@@ -32,4 +32,9 @@ class TestListener
     {
         $this->_methods[] = 'onError';
     }
+
+    public function onBypass(Event $event)
+    {
+        $this->_methods[] = 'onBypass';
+    }
 }
