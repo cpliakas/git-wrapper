@@ -12,6 +12,7 @@
 namespace GitWrapper\Command;
 
 use GitWrapper\Exception\GitException;
+use GitWrapper\GitWrapper;
 
 /**
  * Class that models `git clone` commands.
@@ -35,22 +36,9 @@ class GitClone extends GitCommandAbstract
      */
     public function __construct($repository, $directory = null)
     {
-        // Use the name of the repo as the directory if not passed.
+        // If the drectory was not passed, use the name of the repo.
         if (null === $directory) {
-            $scheme = parse_url($repository, PHP_URL_SCHEME);
-
-            if (null === $scheme) {
-                $parts = explode('/', $repository);
-                $path = basename(end($parts), '.git');
-                if (false === $path) {
-                    throw new GitException('Repository URL not valid.');
-                }
-            } else {
-                $strpos = strpos($repository, ':');
-                $path = substr($repository, $strpos + 1);
-            }
-
-            $directory = basename($path, '.git');
+            $directory = GitWrapper::parseRepositoryName($repository);
         }
 
         $this
