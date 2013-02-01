@@ -39,8 +39,9 @@ class GitClone extends GitCommandAbstract
         if (null === $directory) {
             $scheme = parse_url($repository, PHP_URL_SCHEME);
 
-            if (null === $repository) {
-                $path = parse_url($url, PHP_URL_PATH);
+            if (null === $scheme) {
+                $parts = explode('/', $repository);
+                $path = basename(end($parts), '.git');
                 if (false === $path) {
                     throw new GitException('Repository URL not valid.');
                 }
