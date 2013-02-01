@@ -111,6 +111,16 @@ class GitWorkingCopy
     }
 
     /**
+     * Checks whether a repository has already been cloned to this directory.
+     *
+     * @return boolean
+     */
+    public function isCloned()
+    {
+        return is_dir($this->_directory . '/.git');
+    }
+
+    /**
      * Returns the output of a `git status -s` command.
      *
      * @return string
