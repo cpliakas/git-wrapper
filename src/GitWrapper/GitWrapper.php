@@ -317,6 +317,32 @@ class GitWrapper
     }
 
     /**
+     * Parses name of the repository from the path.
+     *
+     * For example, passing the "git@github.com:cpliakas/git-wrapper.git"
+     * repository would return "git-wrapper".
+     *
+     * @param string $repository
+     *   The repository URL.
+     *
+     * @return string
+     */
+    public static function parseRepositoryName($repository)
+    {
+        $scheme = parse_url($repository, PHP_URL_SCHEME);
+
+        if (null === $scheme) {
+            $parts = explode('/', $repository);
+            $path = end($parts);
+        } else {
+            $strpos = strpos($repository, ':');
+            $path = substr($repository, $strpos + 1);
+        }
+
+        return basename($path, '.git');
+    }
+
+    /**
      * Runs an arbitrary Git command.
      *
      * The command is simply a raw command line entry for everything after the
