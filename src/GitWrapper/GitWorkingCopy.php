@@ -17,6 +17,7 @@ use GitWrapper\Command\GitConfig;
 use GitWrapper\Command\GitCommandAbstract;
 use GitWrapper\Command\GitCommit;
 use GitWrapper\Command\GitInit;
+use GitWrapper\Command\GitLog;
 use GitWrapper\Command\GitPull;
 use GitWrapper\Command\GitPush;
 use GitWrapper\Command\GitRm;
@@ -281,6 +282,31 @@ class GitWorkingCopy
     {
         $init = new GitInit($this->_directory);
         return $this->run($init, $options);
+    }
+
+    /**
+     * Executes a `git log` command.
+     *
+     * Show commit logs.
+     *
+     * @param string|null $path
+     *   Show only commits that are enough to explain how the files that match
+     *   the specified paths came to be.
+     * @param string|null $since_until
+     *   Show only commits between the named two commits.
+     * @param array $options
+     *   Associative array of command line options and flags.
+     *
+     * @return GitWorkingCopy
+     *
+     * @throws GitWrapper::Exception::GitException
+     *
+     * @see GitWrapper::GitCommand::GitLog
+     */
+    public function log($path = null, $since_until = null, array $options = array())
+    {
+        $log = new GitLog($this->_directory, $path, $since_until);
+        return $this->run($log, $options);
     }
 
     /**
