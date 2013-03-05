@@ -11,19 +11,6 @@
 
 namespace GitWrapper;
 
-use GitWrapper\Command\GitAdd;
-use GitWrapper\Command\GitClone;
-use GitWrapper\Command\GitConfig;
-use GitWrapper\Command\GitCommandAbstract;
-use GitWrapper\Command\GitCommit;
-use GitWrapper\Command\GitInit;
-use GitWrapper\Command\GitLog;
-use GitWrapper\Command\GitPull;
-use GitWrapper\Command\GitPush;
-use GitWrapper\Command\GitRm;
-use GitWrapper\Command\GitStatus;
-use GitWrapper\Command\GitTag;
-
 /**
  * Interacts with a working copy.
  *
@@ -88,6 +75,28 @@ class GitWorkingCopy
     }
 
     /**
+     * Properly escapes file patterns that are passed as arguments.
+     *
+     * This method only escape paths with files that have extensions. If the
+     * path does not have an extension, there is no need to excape the periods.
+     *
+     * This is most useful for Git "add" and "rm" commands.
+     *
+     * @param string $filepattern
+     *   The file pattern being escaped.
+     *
+     * @return string
+     */
+    public function escapeFilepattern($filepattern)
+    {
+        $path_info = pathinfo($filepattern);
+        if (isset($path_info['extension'])) {
+            $path_info['basename'] = str_replace('.', '\\.', $path_info['basename']);
+        }
+        return $path_info['dirname'] . DIRECTORY_SEPARATOR . $path_info['basename'];
+    }
+
+    /**
      * Gets the output captured by the last run Git commnd(s).
      *
      * @return string
@@ -125,7 +134,7 @@ class GitWorkingCopy
      *
      * @return string
      *
-     * @throws GitWrapper::Exception::GitException
+     * @throws GitException
      */
     public function getStatus()
     {
@@ -137,7 +146,7 @@ class GitWorkingCopy
      *
      * @return bool
      *
-     * @throws GitWrapper::Exception::GitException
+     * @throws GitException
      */
     public function hasChanges()
     {
@@ -148,20 +157,23 @@ class GitWorkingCopy
     /**
      * Runs a Git command and captures the output.
      *
-     * @param GitCommandAbstract $command
-     *   The Git command being executed.
-     * @param array $options
-     *   An associative array of command line options and flags.
+     * @param array $args
+     *   The arguments passed to the command method.
+     * @param boolean $set_directory
+     *   Set the working directory, defaults to true.
      *
      * @return GitWorkingCopy
      *
-     * @throws GitWrapper::Exception::GitException
+     * @throws GitException
      *
      * @see GitWrapper::run()
      */
-    public function run(GitCommandAbstract $command, array $options)
+    public function run($args, $set_directory = true)
     {
-        $command->setOptions($options);
+        $command = call_user_func_array(array('GitWrapper\GitCommand', 'getInstance'), $args);
+        if ($set_directory) {
+            $command->setDirectory($this->_directory);
+        }
         $this->_output .= $this->_wrapper->run($command);
         return $this;
     }
@@ -178,7 +190,7 @@ class GitWorkingCopy
     /**
      * Executes a `git add` command.
      *
-     * Adds file contents to the index.
+     * Add file contents to the index.
      *
      * @param string $filepattern
      *   Files to add content from. Fileglobs (e.g.  *.c) can be given to add
@@ -186,112 +198,181 @@ class GitWorkingCopy
      *   dir/file1 and dir/file2) can be given to add all files in the
      *   directory, recursively.
      * @param array $options
-     *   Associative array of command line options and flags.
+     *   An optional array of command line options.
      *
      * @return GitWorkingCopy
      *
-     * @throws GitWrapper::Exception::GitException
-     *
-     * @see GitWrapper::GitCommand::GitAdd
+     * @throws GitException
      */
     public function add($filepattern, array $options = array())
     {
-        $add = new GitAdd($this->_directory, $filepattern);
-        return $this->run($add, $options);
+        $args = func_get_args();
+        $args[0] = $this->escapeFilepattern($args[0]);
+        array_unshift($args, 'add');
+        return $this->run($args);
+    }
+
+    /**
+     * Executes a `git bisect` command.
+     *
+     * Find by binary search the change that introduced a bug.
+     *
+     * @param string $sub_command
+     *   The subcommand passed to `git bisect`.
+     *
+     * @return GitWorkingCopy
+     *
+     * @throws GitException
+     */
+    public function bisect($sub_command)
+    {
+        $args = func_get_args();
+        $arg[0] = 'bisect ' . escapeshellcmd($sub_command);
+        return $this->run($args);
+    }
+
+    /**
+     * Executes a `git branch` command.
+     *
+     * List, create, or delete branches.
+     *
+     * @return GitWorkingCopy
+     *
+     * @throws GitException
+     */
+    public function branch()
+    {
+        $args = func_get_args();
+        array_unshift($args, 'branch');
+        return $this->run($args);
+    }
+
+    /**
+     * Executes a `git checkout` command.
+     *
+     * Checkout a branch or paths to the working tree.
+     *
+     * @return GitWorkingCopy
+     *
+     * @throws GitException
+     */
+    public function checkout()
+    {
+        $args = func_get_args();
+        array_unshift($args, 'checkout');
+        return $this->run($args);
     }
 
     /**
      * Executes a `git clone` command.
      *
-     * Clones a repository into the directory passed as the working copy to
-     * GitWorkingCopy::__construct().
-     *
-     * Use GitWorkingCopy::clone() instead for more readable code.
+     * Clone a repository into a new directory. Use GitWorkingCopy::clone()
+     * instead for more readable code.
      *
      * @param string $repository
-     *   The URL of the Git repository.
-     * @param array $options
-     *   Associative array of command line options and flags.
+     *   The URL of the repository being cloned.
      *
      * @return GitWorkingCopy
      *
-     * @throws GitWrapper::Exception::GitException
-     *
-     * @see GitWrapper::GitCommand::GitClone
+     * @throws GitException
      */
-    public function cloneRepository($repository, array $options = array())
+    public function cloneRepository($repository)
     {
-        $clone = new GitClone($repository, $this->_directory);
-        return $this->run($clone, $options);
+        $args = func_get_args();
+        if (!isset($args[1]) || !is_string($args[1])) {
+            array_unshift($args, $repository);
+            $args[1] = GitWrapper::parseRepositoryName($repository);
+        }
+        array_unshift($args, 'clone');
+        return $this->run($args, false);
     }
 
     /**
      * Executes a `git commit` command.
      *
-     * Records changes to the repository.
-     *
-     * @param string|null $log_message
-     *   An optional log message passed as the "-m" option.
-     * @param string|null $files
-     *   The contents of these files will be committed without recording the
-     *   changes already staged. Defaults to null which passes the "-a" flag.
-     * @param array $options
-     *   Associative array of command line options and flags.
+     * Record changes to the repository. If only one argument is passed, it is
+     * assumed to be the commit message. Therefore `$git->commit('Message');`
+     * yields a `git commit -am "Message"` command.
      *
      * @return GitWorkingCopy
      *
-     * @throws GitWrapper::Exception::GitException
-     *
-     * @see GitWrapper::GitCommand::GitCommit
+     * @throws GitException
      */
-    public function commit($log_message = null, $files = null, array $options = array())
+    public function commit()
     {
-        $commit = new GitCommit($this->_directory, $log_message, $files);
-        return $this->run($commit, $options);
+        $args = func_get_args();
+        if (isset($args[0]) && is_string($args[0]) && !isset($args[1])) {
+            $args[0] = array(
+                'm' => $args[0],
+                'a' => true,
+            );
+        }
+        array_unshift($args, 'commit');
+        return $this->run($args);
     }
 
     /**
      * Executes a `git config` command.
      *
-     * Gets and sets repository or global options.
-     *
-     * @param string $option
-     *   The configuration options being set.
-     * @param string $value
-     *   The value of the configuration option being set.
-     * @param array $options
-     *   Associative array of command line options and flags.
+     * Get and set repository options.
      *
      * @return GitWorkingCopy
      *
-     * @throws GitWrapper::Exception::GitException
-     *
-     * @see GitWrapper::GitCommand::GitConfig
+     * @throws GitException
      */
-    public function config($option = null, $value = null, array $options = array())
+    public function config()
     {
-        $config = new GitConfig($option, $value);
-        return $this->run($config, $options);
+        $args = func_get_args();
+        array_unshift($args, 'config');
+        return $this->run($args);
     }
 
     /**
-     * Executes a `git init` command.
+     * Executes a `git diff` command.
      *
-     * Creates an empty git repository or reinitialize an existing one.
-     *
-     * @param array $options
-     *   Associative array of command line options and flags.
+     * Show changes between commits, commit and working tree, etc.
      *
      * @return GitWorkingCopy
      *
-     * @throws GitWrapper::Exception::GitException
-     *
-     * @see GitWrapper::GitCommand::GitInit
+     * @throws GitException
      */
-    public function init(array $options = array())
+    public function diff()
     {
-        $init = new GitInit($this->_directory);
-        return $this->run($init, $options);
+        $args = func_get_args();
+        array_unshift($args, 'diff');
+        return $this->run($args);
+    }
+
+    /**
+     * Executes a `git fetch` command.
+     *
+     * Download objects and refs from another repository.
+     *
+     * @return GitWorkingCopy
+     *
+     * @throws GitException
+     */
+    public function fetch()
+    {
+        $args = func_get_args();
+        array_unshift($args, 'fetch');
+        return $this->run($args);
+    }
+
+    /**
+     * Executes a `git grep` command.
+     *
+     * Print lines matching a pattern.
+     *
+     * @return GitWorkingCopy
+     *
+     * @throws GitException
+     */
+    public function grep()
+    {
+        $args = func_get_args();
+        array_unshift($args, 'grep');
+        return $this->run($args);
     }
 
     /**
@@ -299,78 +380,122 @@ class GitWorkingCopy
      *
      * Show commit logs.
      *
-     * @param string|null $path
-     *   Show only commits that are enough to explain how the files that match
-     *   the specified paths came to be.
-     * @param string|null $since_until
-     *   Show only commits between the named two commits.
-     * @param array $options
-     *   Associative array of command line options and flags.
+     * @return GitWorkingCopy
+     *
+     * @throws GitException
+     */
+    public function log()
+    {
+        $args = func_get_args();
+        array_unshift($args, 'log');
+        return $this->run($args);
+    }
+
+    /**
+     * Executes a `git merge` command.
+     *
+     * Join two or more development histories together.
      *
      * @return GitWorkingCopy
      *
-     * @throws GitWrapper::Exception::GitException
-     *
-     * @see GitWrapper::GitCommand::GitLog
+     * @throws GitException
      */
-    public function log($path = null, $since_until = null, array $options = array())
+    public function merge()
     {
-        $log = new GitLog($this->_directory, $path, $since_until);
-        return $this->run($log, $options);
+        $args = func_get_args();
+        array_unshift($args, 'merge');
+        return $this->run($args);
     }
 
     /**
      * Executes a `git pull` command.
      *
-     * Fetches from and merges with another repository or a local branch.
+     * Move or rename a file, a directory, or a symlink.
      *
-     * @param string|null $repository
-     *   The repository being pulled from.
-     * @param string|null $refspec
-     *   Optionally pass a refspec to a remote repository.
-     * @param array $options
-     *   Associative array of command line options and flags.
+     * @param string $source
+     *   The file / directory being moved.
+     * @param string $destination
+     *   The target file / directory that the source is being move to.
      *
      * @return GitWorkingCopy
      *
-     * @throws GitWrapper::Exception::GitException
-     *
-     * @see GitWrapper::GitCommand::GitPull
+     * @throws GitException
      */
-    public function pull($repository = null, $refspec = null, array $options = array())
+    public function mv($source, $destination)
     {
-        $pull = new GitPull($this->_directory, $repository, $refspec);
-        return $this->run($pull, $options);
+        $args = func_get_args();
+        array_unshift($args, 'mv');
+        return $this->run($args);
+    }
+
+    /**
+     * Executes a `git pull` command.
+     *
+     * Fetch from and merge with another repository or a local branch.
+     *
+     * @return GitWorkingCopy
+     *
+     * @throws GitException
+     */
+    public function pull()
+    {
+        $args = func_get_args();
+        array_unshift($args, 'pull');
+        return $this->run($args);
     }
 
     /**
      * Executes a `git push` command.
      *
-     * Updates remote refs along with associated objects.
-     *
-     * @param string|null $repository
-     *   The "remote" repository that is destination of a push operation.
-     * @param string|null $refspec
-     *   Optionally pass a refspec to a remote repository.
-     * @param array $options
-     *   Associative array of command line options and flags.
+     * Update remote refs along with associated objects.
      *
      * @return GitWorkingCopy
      *
-     * @throws GitWrapper::Exception::GitException
-     *
-     * @see GitWrapper::GitCommand::GitPush
+     * @throws GitException
      */
-    public function push($repository = null, $refspec = null, array $options = array())
+    public function push()
     {
-        $push = new GitPush($this->_directory, $repository, $refspec);
-        return $this->run($push, $options);
+        $args = func_get_args();
+        array_unshift($args, 'push');
+        return $this->run($args);
+    }
+
+    /**
+     * Executes a `git rebase` command.
+     *
+     * Forward-port local commits to the updated upstream head.
+     *
+     * @return GitWorkingCopy
+     *
+     * @throws GitException
+     */
+    public function rebase()
+    {
+        $args = func_get_args();
+        array_unshift($args, 'rebase');
+        return $this->run($args);
+    }
+
+    /**
+     * Executes a `git reset` command.
+     *
+     * Reset current HEAD to the specified state.
+     *
+     * @return GitWorkingCopy
+     *
+     * @throws GitException
+     */
+    public function reset()
+    {
+        $args = func_get_args();
+        array_unshift($args, 'reset');
+        return $this->run($args);
     }
 
     /**
      * Executes a `git rm` command.
      *
-     * Removes files from the working tree and from the index.
+     * Remove files from the working tree and from the index.
      *
      * @param string $filepattern
      *   Files to remove from version control. Fileglobs (e.g.  *.c) can be
@@ -378,64 +503,70 @@ class GitWorkingCopy
      *   dir to add dir/file1 and dir/file2) can be given to add all files in
      *   the directory, recursively.
      * @param array $options
-     *   Associative array of command line options and flags.
+     *   An optional array of command line options.
      *
      * @return GitWorkingCopy
      *
-     * @throws GitWrapper::Exception::GitException
-     *
-     * @see GitWrapper::GitCommand::GitAdd
+     * @throws GitException
      */
     public function rm($filepattern, array $options = array())
     {
-        $rm = new GitRm($this->_directory, $filepattern);
-        return $this->run($rm, $options);
+        $args = func_get_args();
+        $args[0] = $this->escapeFilepattern($args[0]);
+        array_unshift($args, 'rm');
+        return $this->run($args);
+    }
+
+    /**
+     * Executes a `git show` command.
+     *
+     * Show various types of objects.
+     *
+     * @param string $object
+     *   The names of objects to show. For a more complete list of ways to spell
+     *   object names, see "SPECIFYING REVISIONS" section in gitrevisions(7).
+     *
+     * @return GitWorkingCopy
+     *
+     * @throws GitException
+     */
+    public function show($object)
+    {
+        $args = func_get_args();
+        array_unshift($args, 'show');
+        return $this->run($args);
     }
 
     /**
      * Executes a `git status` command.
      *
-     * Shows the working tree status.
-     *
-     * @param string|null $pathspec
-     *   Optionally pass a pathspec.
-     * @param array $options
-     *   Associative array of command line options and flags.
+     * Show the working tree status.
      *
      * @return GitWorkingCopy
      *
-     * @throws GitWrapper::Exception::GitException
-     *
-     * @see GitWrapper::GitCommand::GitStatus
+     * @throws GitException
      */
-    public function status($pathspec = null, array $options = array())
+    public function status()
     {
-        $status = new GitStatus($this->_directory, $pathspec);
-        return $this->run($status, $options);
+        $args = func_get_args();
+        array_unshift($args, 'status');
+        return $this->run($args);
     }
 
     /**
      * Executes a `git tag` command.
      *
-     * Creates, lists, deletes or verifies a tag.
-     *
-     * @param string|null $tagname
-     *   The name of the tag.
-     * @param string|null $commit
-     *   The commit hash.
-     * @param array $options
-     *   Associative array of command line options and flags.
+     * Create, list, delete or verify a tag object signed with GPG.
      *
      * @return GitWorkingCopy
      *
-     * @throws GitWrapper::Exception::GitException
-     *
-     * @see GitWrapper::GitCommand::GitTag
+     * @throws GitException
      */
-    public function tag($tagname = null, $commit = null, array $options = array())
+    public function tag()
     {
-        $tag = new GitTag($this->_directory, $tagname, $commit);
-        return $this->run($tag, $options);
+        $args = func_get_args();
+        array_unshift($args, 'tag');
+        return $this->run($args);
     }
 
     /**
@@ -446,7 +577,7 @@ class GitWorkingCopy
      * Hackish, allows us to use "clone" as a method name.
      *
      * $throws \BadMethodCallException
-     * @throws GitWrapper::Exception::GitException
+     * @throws GitException
      */
     public function __call($method, $args)
     {

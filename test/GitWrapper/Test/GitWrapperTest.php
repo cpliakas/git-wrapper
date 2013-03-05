@@ -2,7 +2,7 @@
 
 namespace GitWrapper\Test;
 
-use GitWrapper\Command\Git;
+use GitWrapper\GitCommand;
 use GitWrapper\Test\Event\TestDispatcher;
 
 class GitWrapperTest extends GitWrapperTestCase
@@ -92,7 +92,7 @@ class GitWrapperTest extends GitWrapperTestCase
     }
 
     /**
-     * @expectedException \GitWrapper\Exception\GitException
+     * @expectedException \GitWrapper\GitException
      */
     public function testSetPrivateKeyError()
     {
@@ -101,7 +101,7 @@ class GitWrapperTest extends GitWrapperTestCase
     }
 
     /**
-     * @expectedException \GitWrapper\Exception\GitException
+     * @expectedException \GitWrapper\GitException
      */
     public function testSetPrivateKeyWrapperError()
     {
@@ -116,7 +116,7 @@ class GitWrapperTest extends GitWrapperTestCase
     }
 
     /**
-     * @expectedException \GitWrapper\Exception\GitException
+     * @expectedException \GitWrapper\GitException
      */
     public function testGitCommandError()
     {
@@ -125,7 +125,7 @@ class GitWrapperTest extends GitWrapperTestCase
 
     public function testGitRun()
     {
-        $command = new Git();
+        $command = GitCommand::getInstance();
         $command->setFlag('version');
         $command->setDirectory('./test'); // Directory just has to exist.
         $version = $this->_wrapper->run($command);
@@ -133,13 +133,13 @@ class GitWrapperTest extends GitWrapperTestCase
     }
 
     /**
-     * @expectedException \GitWrapper\Exception\GitException
+     * @expectedException \GitWrapper\GitException
      */
     public function testGitRunDirectoryError()
     {
-        $command = new Git();
+        $command = GitCommand::getInstance();
         $command->setFlag('version');
-        $command->setDirectory('./bad-directory');
+        $command->setDirectory('/some/bad/directory');
         $this->_wrapper->run($command);
     }
 
