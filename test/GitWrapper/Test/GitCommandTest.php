@@ -118,6 +118,8 @@ class GitCommandTest extends GitWrapperTestCase
         $message = $this->randomString();
 
         $git = $this->getWorkingCopy();
+        $git->config('user.email', 'opensource@chrispliakas.com');
+        $git->config('user.name', 'Chris Pliakas');
         $git->commit($message);
 
         $last_log = $this->_wrapper->git('log -n 1', self::WORKING_DIR);
