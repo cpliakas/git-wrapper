@@ -192,6 +192,10 @@ class GitWorkingCopy
      *
      * Add file contents to the index.
      *
+     * @code
+     * $git->add('some/file.txt');
+     * @endcode
+     *
      * @param string $filepattern
      *   Files to add content from. Fileglobs (e.g.  *.c) can be given to add
      *   all matching files. Also a leading directory name (e.g.  dir to add
@@ -217,8 +221,17 @@ class GitWorkingCopy
      *
      * Find by binary search the change that introduced a bug.
      *
+     * @code
+     * $git->bisect('good', '2.6.13-rc2');
+     * $git->bisect('view', array('stat' => true));
+     * @endcode
+     *
      * @param string $sub_command
      *   The subcommand passed to `git bisect`.
+     * @param string ...
+     *   (optional) Additional command line arguments.
+     * @param array $options
+     *   (optional) An associative array of command line options.
      *
      * @return GitWorkingCopy
      *
@@ -236,6 +249,16 @@ class GitWorkingCopy
      *
      * List, create, or delete branches.
      *
+     * @code
+     * $git->branch('my2.6.14', 'v2.6.14');
+     * $git->branch('origin/html', 'origin/man', array('d' => true, 'r' => 'origin/todo'));
+     * @endcode
+     *
+     * @param string ...
+     *   (optional) Additional command line arguments.
+     * @param array $options
+     *   (optional) An associative array of command line options.
+     *
      * @return GitWorkingCopy
      *
      * @throws GitException
@@ -251,6 +274,16 @@ class GitWorkingCopy
      * Executes a `git checkout` command.
      *
      * Checkout a branch or paths to the working tree.
+     *
+     * @code
+     * $git->branch('checkout', 'existing-branch');
+     * $git->branch('checkout', 'new-branch', array('b' => true));
+     * @endcode
+     *
+     * @param string ...
+     *   (optional) Additional command line arguments.
+     * @param array $options
+     *   (optional) An associative array of command line options.
      *
      * @return GitWorkingCopy
      *
@@ -268,6 +301,17 @@ class GitWorkingCopy
      *
      * Clone a repository into a new directory. Use GitWorkingCopy::clone()
      * instead for more readable code.
+     *
+     * @code
+     * $git->clone('git://github.com/cpliakas/git-wrapper.git', './working-copy');
+     * @endcode
+     *
+     * @param string $repository
+     *   The Git URL of the repository being cloned.
+     * @param string ...
+     *   (optional) Additional command line arguments.
+     * @param array $options
+     *   (optional) An associative array of command line options.
      *
      * @param string $repository
      *   The URL of the repository being cloned.
@@ -294,6 +338,16 @@ class GitWorkingCopy
      * assumed to be the commit message. Therefore `$git->commit('Message');`
      * yields a `git commit -am "Message"` command.
      *
+     * @code
+     * $git->commit('My commit message');
+     * $git->commit('Makefile', array('m' => 'My commit message'));
+     * @endcode
+     *
+     * @param string ...
+     *   (optional) Additional command line arguments.
+     * @param array $options
+     *   (optional) An associative array of command line options.
+     *
      * @return GitWorkingCopy
      *
      * @throws GitException
@@ -316,6 +370,16 @@ class GitWorkingCopy
      *
      * Get and set repository options.
      *
+     * @code
+     * $git->config('user.email', 'opensource@chrispliakas.com');
+     * $git->config('user.name', 'Chris Pliakas');
+     * @endcode
+     *
+     * @param string ...
+     *   (optional) Additional command line arguments.
+     * @param array $options
+     *   (optional) An associative array of command line options.
+     *
      * @return GitWorkingCopy
      *
      * @throws GitException
@@ -331,6 +395,16 @@ class GitWorkingCopy
      * Executes a `git diff` command.
      *
      * Show changes between commits, commit and working tree, etc.
+     *
+     * @code
+     * $git->diff();
+     * $git->diff('topic', 'master');
+     * @endcode
+     *
+     * @param string ...
+     *   (optional) Additional command line arguments.
+     * @param array $options
+     *   (optional) An associative array of command line options.
      *
      * @return GitWorkingCopy
      *
@@ -348,6 +422,16 @@ class GitWorkingCopy
      *
      * Download objects and refs from another repository.
      *
+     * @code
+     * $git->fetch('origin');
+     * $git->fetch(array('all' => true));
+     * @endcode
+     *
+     * @param string ...
+     *   (optional) Additional command line arguments.
+     * @param array $options
+     *   (optional) An associative array of command line options.
+     *
      * @return GitWorkingCopy
      *
      * @throws GitException
@@ -363,6 +447,11 @@ class GitWorkingCopy
      * Executes a `git grep` command.
      *
      * Print lines matching a pattern.
+     *
+     * @param string ...
+     *   (optional) Additional command line arguments.
+     * @param array $options
+     *   (optional) An associative array of command line options.
      *
      * @return GitWorkingCopy
      *
@@ -380,6 +469,11 @@ class GitWorkingCopy
      *
      * Show commit logs.
      *
+     * @param string ...
+     *   (optional) Additional command line arguments.
+     * @param array $options
+     *   (optional) An associative array of command line options.
+     *
      * @return GitWorkingCopy
      *
      * @throws GitException
@@ -395,6 +489,11 @@ class GitWorkingCopy
      * Executes a `git merge` command.
      *
      * Join two or more development histories together.
+     *
+     * @param string ...
+     *   (optional) Additional command line arguments.
+     * @param array $options
+     *   (optional) An associative array of command line options.
      *
      * @return GitWorkingCopy
      *
@@ -416,12 +515,14 @@ class GitWorkingCopy
      *   The file / directory being moved.
      * @param string $destination
      *   The target file / directory that the source is being move to.
+     * @param array $options
+     *   (optional) An associative array of command line options.
      *
      * @return GitWorkingCopy
      *
      * @throws GitException
      */
-    public function mv($source, $destination)
+    public function mv($source, $destination, array $options = array())
     {
         $args = func_get_args();
         array_unshift($args, 'mv');
@@ -432,6 +533,11 @@ class GitWorkingCopy
      * Executes a `git pull` command.
      *
      * Fetch from and merge with another repository or a local branch.
+     *
+     * @param string ...
+     *   (optional) Additional command line arguments.
+     * @param array $options
+     *   (optional) An associative array of command line options.
      *
      * @return GitWorkingCopy
      *
@@ -449,6 +555,11 @@ class GitWorkingCopy
      *
      * Update remote refs along with associated objects.
      *
+     * @param string ...
+     *   (optional) Additional command line arguments.
+     * @param array $options
+     *   (optional) An associative array of command line options.
+     *
      * @return GitWorkingCopy
      *
      * @throws GitException
@@ -465,6 +576,11 @@ class GitWorkingCopy
      *
      * Forward-port local commits to the updated upstream head.
      *
+     * @param string ...
+     *   (optional) Additional command line arguments.
+     * @param array $options
+     *   (optional) An associative array of command line options.
+     *
      * @return GitWorkingCopy
      *
      * @throws GitException
@@ -480,6 +596,11 @@ class GitWorkingCopy
      * Executes a `git reset` command.
      *
      * Reset current HEAD to the specified state.
+     *
+     * @param string ...
+     *   (optional) Additional command line arguments.
+     * @param array $options
+     *   (optional) An associative array of command line options.
      *
      * @return GitWorkingCopy
      *
@@ -503,7 +624,7 @@ class GitWorkingCopy
      *   dir to add dir/file1 and dir/file2) can be given to add all files in
      *   the directory, recursively.
      * @param array $options
-     *   An optional array of command line options.
+     *   (optional) An associative array of command line options.
      *
      * @return GitWorkingCopy
      *
@@ -525,12 +646,14 @@ class GitWorkingCopy
      * @param string $object
      *   The names of objects to show. For a more complete list of ways to spell
      *   object names, see "SPECIFYING REVISIONS" section in gitrevisions(7).
+     * @param array $options
+     *   (optional) An associative array of command line options.
      *
      * @return GitWorkingCopy
      *
      * @throws GitException
      */
-    public function show($object)
+    public function show($object, array $options = array())
     {
         $args = func_get_args();
         array_unshift($args, 'show');
@@ -541,6 +664,11 @@ class GitWorkingCopy
      * Executes a `git status` command.
      *
      * Show the working tree status.
+     *
+     * @param string ...
+     *   (optional) Additional command line arguments.
+     * @param array $options
+     *   (optional) An associative array of command line options.
      *
      * @return GitWorkingCopy
      *
@@ -557,6 +685,11 @@ class GitWorkingCopy
      * Executes a `git tag` command.
      *
      * Create, list, delete or verify a tag object signed with GPG.
+     *
+     * @param string ...
+     *   (optional) Additional command line arguments.
+     * @param array $options
+     *   (optional) An associative array of command line options.
      *
      * @return GitWorkingCopy
      *
