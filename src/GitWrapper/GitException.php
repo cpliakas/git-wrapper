@@ -9,7 +9,7 @@
  * @copyright Copyright (c) 2013 Acquia, Inc.
  */
 
-namespace GitWrapper\Exception;
+namespace GitWrapper;
 
 /**
  * Base class for exceptions thrown by the Git library.

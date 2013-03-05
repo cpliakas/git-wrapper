@@ -9,12 +9,12 @@
  * @copyright Copyright (c) 2013 Acquia, Inc.
  */
 
-namespace GitWrapper\Command;
+namespace GitWrapper;
 
 /**
  * Base class extended by all Git command classes.
  */
-abstract class GitCommandAbstract
+class GitCommand
 {
     /**
      * Path to the directory containing the working copy. If this variable is
@@ -24,6 +24,13 @@ abstract class GitCommandAbstract
      * @var string|null
      */
     protected $_directory;
+
+    /**
+     * The command being run, e.g. "clone", "commit", etc.
+     *
+     * @var string
+     */
+    protected $_command = '';
 
     /**
      * An associative array of command line options and flags.
@@ -47,12 +54,73 @@ abstract class GitCommandAbstract
     protected $_bypass = false;
 
     /**
+     * Constructs a GitCommand object.
+     *
+     * Use GitCommand::getInstance() as the factory method for this class.
+     *
+     * @param array $args
+     *   The arguments passed to GitCommand::getInstance().
+     */
+    protected function __construct($args)
+    {
+        if ($args) {
+
+            // The first argument is the command.
+            $this->_command = array_shift($args);
+
+            // If the last element is an array, set it as the options.
+            $options = end($args);
+            if (is_array($options)) {
+                $this->setOptions($options);
+                array_pop($args);
+            }
+
+            // Pass all other method arguments as the Git command arguments.
+            foreach ($args as $arg) {
+                $this->addArgument($arg);
+            }
+        }
+    }
+
+    /**
+     * Constructs a GitCommand object.
+     *
+     * Accepts a variable number of arguments to model the arguments passed to
+     * the Git command line utility. If the last argument is an array, it is
+     * passed as the command options.
+     *
+     * @param string $command
+     *   The Git command being run, e.g. "clone", "commit", etc.
+     * @param string ...
+     *   Zero or more arguments passed to the Git command.
+     * @param array $options
+     *   An optional array of arguments to pass to the command.
+     *
+     * @return GitCommand
+     */
+    static public function getInstance()
+    {
+        $args = func_get_args();
+        return new static($args);
+    }
+
+    /**
+     * Returns Git command being run, e.g. "clone", "commit", etc.
+     *
+     * @return string
+     */
+    public function getCommand()
+    {
+        return $this->_command;
+    }
+
+    /**
      * Sets the path to the directory containing the working copy.
      *
      * @param string $directory
      *   The path to the directory containing the working copy.
      *
-     * @return GitCommandAbstract
+     * @return GitCommand
      */
     public function setDirectory($directory)
     {
@@ -79,7 +147,7 @@ abstract class GitCommandAbstract
      *   true for code readability, however the default behavior of this class
      *   is to run the command.
      *
-     * @return GitCommandAbstract
+     * @return GitCommand
      */
     public function bypass($bypass = true)
     {
@@ -133,7 +201,7 @@ abstract class GitCommandAbstract
      * @param string|true $value
      *   The option's value, pass true if the options is a flag.
      *
-     * @reutrn GitCommandAbstract
+     * @reutrn GitCommand
      */
     public function setOption($option, $value)
     {
@@ -147,7 +215,7 @@ abstract class GitCommandAbstract
      * @param array $options
      *   An associative array of command line options.
      *
-     * @reutrn GitCommandAbstract
+     * @reutrn GitCommand
      */
     public function setOptions(array $options)
     {
@@ -163,9 +231,9 @@ abstract class GitCommandAbstract
      * @param string $flag
      *   The flag name, e.g. "q", "a".
      *
-     * @reutrn GitCommandAbstract
+     * @reutrn GitCommand
      *
-     * @see GitCommandAbstract::setOption()
+     * @see GitCommand::setOption()
      */
     public function setFlag($option)
     {
@@ -193,7 +261,7 @@ abstract class GitCommandAbstract
      * @param string $option
      *   The option name, e.g. "branch", "q".
      *
-     * @return GitCommandAbstract
+     * @return GitCommand
      */
     public function unsetOption($option)
     {
@@ -207,7 +275,7 @@ abstract class GitCommandAbstract
      * @param string $arg
      *   The argument, e.g. the repo URL, directory, etc.
      *
-     * @reutrn GitCommandAbstract
+     * @reutrn GitCommand
      */
     public function addArgument($arg)
     {
@@ -216,42 +284,12 @@ abstract class GitCommandAbstract
     }
 
     /**
-     * Properly escapes file patterns that are passed as arguments.
-     *
-     * This method only escape paths with files that have extensions. If the
-     * path does not have an extension, there is no need to excape the periods.
-     *
-     * This is most useful for Git "add" and "rm" commands.
-     *
-     * @param string $filepattern
-     *   The file pattern being escaped.
-     *
-     * @return string
-     */
-    public function escapeFilepattern($filepattern)
-    {
-        $path_info = pathinfo($filepattern);
-        if (isset($path_info['extension'])) {
-            $path_info['basename'] = str_replace('.', '\\.', $path_info['basename']);
-        }
-        return $path_info['dirname'] . DIRECTORY_SEPARATOR . $path_info['basename'];
-    }
-
-    /**
-     * Returns the Git command passed as the first argument on the command line,
-     * e.g. "clone", "push".
-     *
-     * @return string
-     */
-    abstract public function getCommand();
-
-    /**
      * Renders the arguments and options for the Git command.
      *
      * @return string
      *
-     * @see GitCommandAbstract::getCommand()
-     * @see GitCommandAbstract::buildOptions()
+     * @see GitCommand::getCommand()
+     * @see GitCommand::buildOptions()
      */
     public function getCommandLine()
     {
