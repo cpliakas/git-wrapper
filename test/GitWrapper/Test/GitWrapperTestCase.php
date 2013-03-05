@@ -3,7 +3,7 @@
 namespace GitWrapper\Test;
 
 use GitWrapper\Event\GitEvents;
-use GitWrapper\Exception\GitException;
+use GitWrapper\GitException;
 use GitWrapper\GitWrapper;
 use GitWrapper\Test\Event\TestBypassListener;
 use GitWrapper\Test\Event\TestListener;
@@ -83,7 +83,7 @@ class GitWrapperTestCase extends \PHPUnit_Framework_TestCase
      */
     public function assertGitVersion($version)
     {
-        $match = preg_match('/^git version [.0-9]+$/', $version);
+        $match = preg_match('/^git version [.0-9]+/', $version);
         $this->assertNotEmpty($match);
     }
 

@@ -2,9 +2,7 @@
 
 namespace GitWrapper\Test;
 
-use GitWrapper\Command\Git;
-use GitWrapper\Command\GitCommit;
-use GitWrapper\Command\GitClone;
+use GitWrapper\GitCommand;
 
 class GitCommandTest extends GitWrapperTestCase
 {
@@ -28,8 +26,7 @@ class GitCommandTest extends GitWrapperTestCase
         $option_name = $this->randomString();
         $option_value = $this->randomString();
 
-        $git = new Git($command);
-        $git
+        $git = GitCommand::getInstance($command)
             ->addArgument($argument)
             ->setFlag($flag)
             ->setOption($option_name, $option_value);
@@ -45,8 +42,8 @@ class GitCommandTest extends GitWrapperTestCase
         $option_name = $this->randomString();
         $option_value = $this->randomString();
 
-        $git = new Git();
-        $git->setOption($option_name, $option_value);
+        $git = GitCommand::getInstance()
+            ->setOption($option_name, $option_value);
 
         $this->assertEquals($option_value, $git->getOption($option_name));
 
@@ -59,15 +56,14 @@ class GitCommandTest extends GitWrapperTestCase
         $filepattern = 'a.directory/test.txt';
         $expected = 'a.directory/test\\.txt';
 
-        $git = new Git();
+        $git = $this->getWorkingCopy();
         $this->assertEquals($expected, $git->escapeFilepattern($filepattern));
     }
 
     public function testGitInit()
     {
         $directory = self::WORKING_DIR . '-init';
-        $git = $this->_wrapper->workingCopy($directory);
-        $git->init();
+        $this->_wrapper->init($directory);
         $this->assertFileExists($directory . '/.git');
         self::rmdir($directory);
     }
@@ -75,16 +71,17 @@ class GitCommandTest extends GitWrapperTestCase
     public function testGitClone()
     {
         $git = $this->getWorkingCopy();
-        $git->clone(self::TEST_REPO);
+        $git->clone(self::TEST_REPO, self::WORKING_DIR);
         $this->assertFileExists(self::WORKING_DIR . '/.git');
         $this->assertFalse($git->hasChanges());
     }
 
     public function testGitCloneWithoutDirectory()
     {
-        $clone = new GitClone(self::TEST_REPO);
-        $expected = "clone 'git://github.com/cpliakas/git-wrapper-test.git' 'git-wrapper-test'";
-        $this->assertEquals($expected, $clone->getCommandLine());
+        $git = $this->getWorkingCopy();
+        $git->clone(self::TEST_REPO);
+        $this->assertTrue(is_dir('git-wrapper-test'));
+        self::rmdir('./git-wrapper-test');
     }
 
     /**
@@ -149,7 +146,7 @@ class GitCommandTest extends GitWrapperTestCase
      */
     public function testGitCommitArgs()
     {
-        $commit = new GitCommit(self::WORKING_DIR, 'log message', 'files');
+        $commit = GitCommand::getInstance('commit', 'files', array('m' => 'log message'));
         $expected = "commit -m 'log message' 'files'";
         $this->assertEquals($expected, $commit->getCommandLine());
     }

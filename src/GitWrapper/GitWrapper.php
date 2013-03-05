@@ -13,11 +13,8 @@
 
 namespace GitWrapper;
 
-use GitWrapper\Command\Git;
-use GitWrapper\Command\GitCommandAbstract;
 use GitWrapper\Event\GitEvent;
 use GitWrapper\Event\GitEvents;
-use GitWrapper\Exception\GitException;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -75,7 +72,7 @@ class GitWrapper
      *   The path to the Git binary. Defaults to null, which uses Symfony's
      *   ExecutableFinder to resolve it automatically.
      *
-     * @throws GitWrapper::Exception::GitException
+     * @throws GitException
      *   Throws an exception if the path to the Git binary couldn't be resolved
      *   by the ExecutableFinder class.
      */
@@ -270,7 +267,7 @@ class GitWrapper
      *
      * @return GitWrapper
      *
-     * @throws GitWrapper::Exception::GitException
+     * @throws GitException
      *   Thrown when any of the paths cannot be resolved.
      */
     public function setPrivateKey($private_key, $port = 22, $wrapper = null)
@@ -309,7 +306,7 @@ class GitWrapper
      *
      * @return string
      *
-     * @throws GitWrapper::Exception::GitException
+     * @throws GitException
      */
     public function version()
     {
@@ -343,6 +340,28 @@ class GitWrapper
     }
 
     /**
+     * Executes a `git init` command.
+     *
+     * Create an empty git repository or reinitialize an existing one.
+     *
+     * @return string
+     *   The STDOUT returned by the Git command.
+     *
+     * @throws GitException
+     *
+     * @see GitWrapper::run()
+     *
+     * @ingroup commands
+     */
+    public function init()
+    {
+        $args = func_get_args();
+        array_unshift($args, 'init');
+        $command = call_user_func_array(array('GitWrapper\GitCommand', 'getInstance'), $args);
+        return $this->run($command);
+    }
+
+    /**
      * Runs an arbitrary Git command.
      *
      * The command is simply a raw command line entry for everything after the
@@ -362,13 +381,13 @@ class GitWrapper
      * @return string
      *   The STDOUT returned by the Git command.
      *
-     * @throws GitWrapper::Exception::GitException
+     * @throws GitException
      *
      * @see GitWrapper::run()
      */
     public function git($command_line, $cwd = null)
     {
-        $command = new Git($command_line);
+        $command = GitCommand::getInstance($command_line);
         $command->setDirectory($cwd);
         return $this->run($command);
     }
@@ -376,7 +395,7 @@ class GitWrapper
     /**
      * Runs a Git command.
      *
-     * @param GitCommandAbstract $command
+     * @param GitCommand $command
      *   The Git command being executed.
      * @param string|null $cwd
      *   Explicitly specify the working directory of the Git process. Defaults
@@ -386,11 +405,11 @@ class GitWrapper
      * @return string
      *   The STDOUT returned by the Git command.
      *
-     * @throws GitWrapper::Exception::GitException
+     * @throws GitException
      *
      * @see Process
      */
-    public function run(GitCommandAbstract $command, $cwd = null)
+    public function run(GitCommand $command, $cwd = null)
     {
         $event = null;
 
