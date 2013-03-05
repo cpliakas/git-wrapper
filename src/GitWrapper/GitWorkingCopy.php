@@ -155,6 +155,17 @@ class GitWorkingCopy
     }
 
     /**
+     * Returns an GitBranches object containing information on the repository's
+     * branches.
+     *
+     * @return GitBranches
+     */
+    public function getBranches()
+    {
+        return new GitBranches($this);
+    }
+
+    /**
      * Runs a Git command and captures the output.
      *
      * @param array $args
