@@ -289,6 +289,19 @@ class GitWrapper
     }
 
     /**
+     * Unsets the private key by removing the appropriate environment variables.
+     *
+     * @return GitWrapper
+     */
+    public function unsetPrivateKey()
+    {
+        return $this
+            ->unsetEnvVar('GIT_SSH')
+            ->unsetEnvVar('GIT_SSH_KEY')
+            ->unsetEnvVar('GIT_SSH_PORT');
+    }
+
+    /**
      * Returns an object that interacts with a working copy.
      *
      * @param string $directory
