@@ -166,6 +166,41 @@ class GitWorkingCopy
     }
 
     /**
+     * Helper method that pushes a tag to a repository.
+     *
+     * @param string $tag
+     *   The tag being pushed.
+     * @param string $repository
+     *   The destination of the push operation, which is either a URL or name of
+     *   the remote. Defaults to "origin".
+     * @param array $options
+     *   (optional) An associative array of command line options.
+     *
+     * @see GitWorkingCopy::push()
+     */
+    public function pushTag($tag, $repository = 'origin', array $options = array())
+    {
+        return $this->push($repository, 'tag', $tag, $options);
+    }
+
+    /**
+     * Helper method that pushes all tags to a repository.
+     *
+     * @param string $repository
+     *   The destination of the push operation, which is either a URL or name of
+     *   the remote. Defaults to "origin".
+     * @param array $options
+     *   (optional) An associative array of command line options.
+     *
+     * @see GitWorkingCopy::push()
+     */
+    public function pushTags($repository = 'origin', array $options = array())
+    {
+        $options['tags'] = true;
+        return $this->push($repository, $options);
+    }
+
+    /**
      * Runs a Git command and captures the output.
      *
      * @param array $args
