@@ -168,6 +168,8 @@ class GitWorkingCopy
     /**
      * Helper method that pushes a tag to a repository.
      *
+     * This is synonymous with `git push origin tag v1.2.3`.
+     *
      * @param string $tag
      *   The tag being pushed.
      * @param string $repository
@@ -186,6 +188,8 @@ class GitWorkingCopy
     /**
      * Helper method that pushes all tags to a repository.
      *
+     * This is synonymous with `git push --tags origin`.
+     *
      * @param string $repository
      *   The destination of the push operation, which is either a URL or name of
      *   the remote. Defaults to "origin".
@@ -198,6 +202,22 @@ class GitWorkingCopy
     {
         $options['tags'] = true;
         return $this->push($repository, $options);
+    }
+
+    /**
+     * Fetches all remotes.
+     *
+     * This is synonymous with `git fetch --all`.
+     *
+     * @param array $options
+     *   (optional) An associative array of command line options.
+     *
+     * @see GitWorkingCopy::fetch()
+     */
+    public function fetchAll(array $options = array())
+    {
+        $options['all'] = true;
+        return $this->fetch($options);
     }
 
     /**
