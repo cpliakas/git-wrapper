@@ -395,6 +395,9 @@ class GitWrapper
      */
     public function cloneRepository($repository, $directory = null, array $options = array())
     {
+        if (null === $directory) {
+            $directory = self::parseRepositoryName($repository);
+        }
         $git = $this->workingCopy($directory);
         $git->clone($repository, $options);
         $git->setCloned(true);
