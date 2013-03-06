@@ -130,6 +130,38 @@ class GitWorkingCopy
     }
 
     /**
+     * Runs a Git command and captures the output.
+     *
+     * @param array $args
+     *   The arguments passed to the command method.
+     * @param boolean $set_directory
+     *   Set the working directory, defaults to true.
+     *
+     * @return GitWorkingCopy
+     *
+     * @throws GitException
+     *
+     * @see GitWrapper::run()
+     */
+    public function run($args, $set_directory = true)
+    {
+        $command = call_user_func_array(array('GitWrapper\GitCommand', 'getInstance'), $args);
+        if ($set_directory) {
+            $command->setDirectory($this->_directory);
+        }
+        $this->_output .= $this->_wrapper->run($command);
+        return $this;
+    }
+
+    /**
+     * @defgroup command_helpers Git Command Helpers
+     *
+     * Helper methods that wrap common Git commands.
+     *
+     * @{
+     */
+
+    /**
      * Returns the output of a `git status -s` command.
      *
      * @return string
@@ -221,28 +253,8 @@ class GitWorkingCopy
     }
 
     /**
-     * Runs a Git command and captures the output.
-     *
-     * @param array $args
-     *   The arguments passed to the command method.
-     * @param boolean $set_directory
-     *   Set the working directory, defaults to true.
-     *
-     * @return GitWorkingCopy
-     *
-     * @throws GitException
-     *
-     * @see GitWrapper::run()
+     * @} End of "defgroup command_helpers".
      */
-    public function run($args, $set_directory = true)
-    {
-        $command = call_user_func_array(array('GitWrapper\GitCommand', 'getInstance'), $args);
-        if ($set_directory) {
-            $command->setDirectory($this->_directory);
-        }
-        $this->_output .= $this->_wrapper->run($command);
-        return $this;
-    }
 
     /**
      * @defgroup commands Git Commands
