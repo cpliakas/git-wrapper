@@ -361,10 +361,6 @@ class GitWrapper
      *   The STDOUT returned by the Git command.
      *
      * @throws GitException
-     *
-     * @see GitWrapper::run()
-     *
-     * @ingroup commands
      */
     public function init()
     {
@@ -372,6 +368,37 @@ class GitWrapper
         array_unshift($args, 'init');
         $command = call_user_func_array(array('GitWrapper\GitCommand', 'getInstance'), $args);
         return $this->run($command);
+    }
+
+    /**
+     * Executes a `git clone` command and returns a working copy object.
+     *
+     * Clone a repository into a new directory. Use GitWorkingCopy::clone()
+     * instead for more readable code.
+     *
+     * @param string $repository
+     *   The Git URL of the repository being cloned.
+     * @param string $directory
+     *   The directory that the repository will be cloned into. If null is
+     *   passed, the directory will automatically be generated from the URL via
+     *   the GitWrapper::parseRepositoryName() method.
+     * @param array $options
+     *   (optional) An associative array of command line options.
+     *
+     * @return GitWorkingCopy
+     *
+     * @throws GitException
+     *
+     * @see GitWorkingCopy::cloneRepository()
+     *
+     * @ingroup commands
+     */
+    public function cloneRepository($repository, $directory = null, array $options = array())
+    {
+        $git = $this->workingCopy($directory);
+        $git->clone($repository, $options);
+        $git->setCloned(true);
+        return $git;
     }
 
     /**
@@ -474,5 +501,22 @@ class GitWrapper
         }
 
         return $process->getOutput();
+    }
+
+    /**
+     * Hackish, allows us to use "clone" as a method name.
+     *
+     * $throws \BadMethodCallException
+     * @throws GitException
+     */
+    public function __call($method, $args)
+    {
+        if ('clone' == $method) {
+            return call_user_func_array(array($this, 'cloneRepository'), $args);
+        } else {
+            $class = get_called_class();
+            $message = "Call to undefined method $class::$method()";
+            throw new \BadMethodCallException($message);
+        }
     }
 }
