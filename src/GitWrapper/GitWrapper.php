@@ -357,17 +357,25 @@ class GitWrapper
      *
      * Create an empty git repository or reinitialize an existing one.
      *
-     * @return string
-     *   The STDOUT returned by the Git command.
+     * @param string $directory
+     *   The directory being initialized.
+     * @param array $options
+     *   (optional) An associative array of command line options.
+     *
+     * @return GitWorkingCopy
      *
      * @throws GitException
+     *
+     * @see GitWorkingCopy::cloneRepository()
+     *
+     * @ingroup commands
      */
-    public function init()
+    public function init($directory, array $options = array())
     {
-        $args = func_get_args();
-        array_unshift($args, 'init');
-        $command = call_user_func_array(array('GitWrapper\GitCommand', 'getInstance'), $args);
-        return $this->run($command);
+        $git = $this->workingCopy($directory);
+        $git->init($options);
+        $git->setCloned(true);
+        return $git;
     }
 
     /**
