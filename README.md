@@ -29,10 +29,8 @@ $wrapper = new GitWrapper();
 // Optionally specify a private key other than one of the defaults.
 $wrapper->setPrivateKey('/path/to/private/key');
 
-// Specify the working copy.
+// Get a working copy object, clone a repo into `./path/to/working/copy`.
 $git = $wrapper->workingCopy('./path/to/working/copy');
-
-// Clone a repo into `./path/to/working/copy`.
 $git->clone('git://github.com/cpliakas/git-wrapper.git');
 
 // Create a file in the working copy.
@@ -51,6 +49,16 @@ print $git->getOutput();
 // The following is synonymous with `git config -l`
 print $wrapper->git('config -l');
 ```
+
+All command methods adhere to the following paradigm:
+
+```php
+$git->command($arg1, $arg2, ..., $options);
+```
+
+The `$arg*` parameters are a variable number of arguments as they would be
+passed to the Git command line tool, and `$options` is an optional array of
+command line options.
 
 Installation
 ============
