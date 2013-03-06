@@ -41,6 +41,16 @@ class GitWorkingCopy
     protected $_output = '';
 
     /**
+     * A boolean flagging whether the repository is cloned.
+     *
+     * If the variable is null, the a rudimentary check will be performed to see
+     * if the directory looks like it is a working copy.
+     *
+     * @param bool|null
+     */
+    protected $_cloned;
+
+    /**
      * Constructs a GitWorkingCopy object.
      *
      * @param GitWrapper $wrapper
@@ -120,13 +130,36 @@ class GitWorkingCopy
     }
 
     /**
+     * Manually sets the cloned flag.
+     *
+     * @param boolean $cloned
+     *   Whether the repository is cloned into the directory or not.
+     *
+     * @return GitWorkingCopy
+     */
+    public function setCloned($cloned)
+    {
+        $this->_cloned = (bool) $cloned;
+        return $this;
+    }
+
+    /**
      * Checks whether a repository has already been cloned to this directory.
+     *
+     * If the flag is not set, test if it looks like we're at a git directory.
      *
      * @return boolean
      */
     public function isCloned()
     {
-        return is_dir($this->_directory . '/.git');
+        if (!isset($this->_cloned)) {
+            $git_dir = $this->_directory;
+            if (is_dir($git_dir . '/.git')) {
+                $git_dir .= '/.git';
+            };
+            $this->_cloned = (is_dir($git_dir . '/objects') && is_dir($git_dir . '/refs') && is_file($git_dir . '/HEAD'));
+        }
+        return $this->_cloned;
     }
 
     /**
@@ -381,13 +414,11 @@ class GitWorkingCopy
      * instead for more readable code.
      *
      * @code
-     * $git->clone('git://github.com/cpliakas/git-wrapper.git', './working-copy');
+     * $git->clone('git://github.com/cpliakas/git-wrapper.git');
      * @endcode
      *
      * @param string $repository
      *   The Git URL of the repository being cloned.
-     * @param string ...
-     *   (optional) Additional command line arguments.
      * @param array $options
      *   (optional) An associative array of command line options.
      *
@@ -398,14 +429,14 @@ class GitWorkingCopy
      *
      * @throws GitException
      */
-    public function cloneRepository($repository)
+    public function cloneRepository($repository, $options = array())
     {
-        $args = func_get_args();
-        if (!isset($args[1]) || !is_string($args[1])) {
-            array_unshift($args, $repository);
-            $args[1] = GitWrapper::parseRepositoryName($repository);
-        }
-        array_unshift($args, 'clone');
+        $args = array(
+            'clone',
+            $repository,
+            $this->_directory,
+            $options,
+        );
         return $this->run($args, false);
     }
 
