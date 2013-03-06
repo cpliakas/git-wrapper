@@ -659,6 +659,31 @@ class GitWorkingCopy
     }
 
     /**
+     * Executes a `git remote` command.
+     *
+     * Manage the set of repositories ("remotes") whose branches you track.
+     *
+     * @code
+     * $git->remote('add', 'upstream', 'git://github.com/cpliakas/git-wrapper.git');
+     * @endcode
+     *
+     * @param string ...
+     *   (optional) Additional command line arguments.
+     * @param array $options
+     *   (optional) An associative array of command line options.
+     *
+     * @return GitWorkingCopy
+     *
+     * @throws GitException
+     */
+    public function remote()
+    {
+        $args = func_get_args();
+        array_unshift($args, 'remote');
+        return $this->run($args);
+    }
+
+    /**
      * Executes a `git reset` command.
      *
      * Reset current HEAD to the specified state.
