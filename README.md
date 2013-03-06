@@ -56,9 +56,17 @@ All command methods adhere to the following paradigm:
 $git->command($arg1, $arg2, ..., $options);
 ```
 
-The `$arg*` parameters are a variable number of arguments as they would be
-passed to the Git command line tool, and `$options` is an optional array of
-command line options.
+Replace `command` with the Git command being executed, e.g. `checkout`, `push`,
+etc. The `$arg*` parameters are a variable number of arguments as they would be
+passed to the Git command line tool. `$options` is an optional array of command
+line options in the following format:
+
+```php
+$options = array(
+    'verbose' => true,   // Passes the "--verbose" flag.
+    't' => 'my-branch',  // Passes the "-t my-branch" option.
+);
+```
 
 Installation
 ============
