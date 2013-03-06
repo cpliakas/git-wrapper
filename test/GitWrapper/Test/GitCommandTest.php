@@ -71,15 +71,14 @@ class GitCommandTest extends GitWrapperTestCase
     public function testGitClone()
     {
         $git = $this->getWorkingCopy();
-        $git->clone(self::TEST_REPO, self::WORKING_DIR);
+        $git->clone(self::TEST_REPO);
         $this->assertFileExists(self::WORKING_DIR . '/.git');
         $this->assertFalse($git->hasChanges());
     }
 
     public function testGitCloneWithoutDirectory()
     {
-        $git = $this->getWorkingCopy();
-        $git->clone(self::TEST_REPO);
+        $git = $this->_wrapper->clone(self::TEST_REPO);
         $this->assertTrue(is_dir('git-wrapper-test'));
         self::rmdir('./git-wrapper-test');
     }
