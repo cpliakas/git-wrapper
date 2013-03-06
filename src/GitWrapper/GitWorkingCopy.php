@@ -574,6 +574,28 @@ class GitWorkingCopy
     }
 
     /**
+     * Executes a `git init` command.
+     *
+     * Create an empty git repository or reinitialize an existing one.
+     *
+     * @param array $options
+     *   (optional) An associative array of command line options.
+     *
+     * @return GitWorkingCopy
+     *
+     * @throws GitException
+     */
+    public function init(array $options = array())
+    {
+        $args = array(
+            'init',
+            $this->_directory,
+            $options,
+        );
+        return $this->run($args, false);
+    }
+
+    /**
      * Executes a `git log` command.
      *
      * Show commit logs.
