@@ -14,6 +14,7 @@ class GitListenerTest extends GitWrapperTestCase
         $this->_wrapper->version();
 
         $this->assertTrue($listener->methodCalled('onPrepare'));
+        $this->assertTrue($listener->methodCalled('onProcess'), "Expecting onProcess listener to be triggered");
         $this->assertTrue($listener->methodCalled('onSuccess'));
         $this->assertFalse($listener->methodCalled('onError'));
         $this->assertFalse($listener->methodCalled('onBypass'));
@@ -25,6 +26,7 @@ class GitListenerTest extends GitWrapperTestCase
         $this->runBadCommand(true);
 
         $this->assertTrue($listener->methodCalled('onPrepare'));
+        $this->assertTrue($listener->methodCalled('onProcess'), "Expecting onProcess listener to not be triggered");
         $this->assertFalse($listener->methodCalled('onSuccess'));
         $this->assertTrue($listener->methodCalled('onError'));
         $this->assertFalse($listener->methodCalled('onBypass'));
@@ -38,11 +40,28 @@ class GitListenerTest extends GitWrapperTestCase
         $output = $this->_wrapper->version();
 
         $this->assertTrue($listener->methodCalled('onPrepare'));
+        $this->assertFalse($listener->methodCalled('onProcess'), "Expecting onProcess listener to not be triggered");
         $this->assertFalse($listener->methodCalled('onSuccess'));
         $this->assertFalse($listener->methodCalled('onError'));
         $this->assertTrue($listener->methodCalled('onBypass'));
 
         $this->assertEmpty($output);
+    }
+
+    public function testGitProcess()
+    {
+        $listener = $this->addListener();
+
+        $this->_wrapper->version();
+
+        $this->assertTrue($listener->methodCalled('onProcess'), "Expecting onProcess listener to have been triggered");
+        $this->assertStringStartsWith('out', $listener->getOnProcessBufferType('onProcess'), "Expecting onProcess listener recieved buffer type 'out'");
+        $this->assertStringStartsWith('git version', $listener->getOnProcessBuffer('onProcess'), "Expecting onProcess listener recieved buffer to start with 'git version'");
+
+        $this->runBadCommand(true);
+        $this->assertTrue($listener->methodCalled('onProcess'), "Expecting onProcess listener to have been triggered");
+        $this->assertStringStartsWith('err', $listener->getOnProcessBufferType('onProcess'), "Expecting onProcess listener recieved buffer type 'err'");
+        $this->assertStringStartsWith('git: \'a-bad-command\'', $listener->getOnProcessBuffer('onProcess'), "Expecting onProcess listener recieved buffer to start with 'git: \'a-bad-command\''");
     }
 
     public function testEvent()

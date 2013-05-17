@@ -44,6 +44,13 @@ final class GitEvents
      * @var string
      */
     const GIT_BYPASS = 'git.command.bypass';
+    
+    /**
+     * Event thrown when processing git command
+     * 
+     * @var string
+     */
+    const GIT_PROCESS = 'git.command.process';
 
     /**
      * Deprecated in favor of GitEvents::GIT_PREPARE.

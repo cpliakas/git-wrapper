@@ -3,6 +3,7 @@
 namespace GitWrapper\Test\Event;
 
 use GitWrapper\Event\GitEvent;
+use GitWrapper\Event\GitProcessEvent;
 
 class TestListener
 {
@@ -20,6 +21,17 @@ class TestListener
      */
     protected $_event;
 
+    /**
+     * The type of buffer from the processEvent passed to the onProcess method
+     */
+    protected $_onProcessBufferType;
+
+    /**
+     * The buffer string from the processEvent passed to the onProcess method
+     */
+    protected $_onProcessBuffer;
+
+
     public function methodCalled($method)
     {
         return in_array($method, $this->_methods);
@@ -31,6 +43,22 @@ class TestListener
     public function getEvent()
     {
         return $this->_event;
+    }
+
+    /**
+     * @return  string
+     */
+    public function getOnProcessBufferType()
+    {
+        return $this->_onProcessBufferType;
+    }
+
+    /**
+     * @return  string
+     */
+    public function getOnProcessBuffer()
+    {
+        return $this->_onProcessBuffer;
     }
 
     public function onPrepare(GitEvent $event)
@@ -52,5 +80,12 @@ class TestListener
     public function onBypass(GitEvent $event)
     {
         $this->_methods[] = 'onBypass';
+    }
+
+    public function onProcess(GitProcessEvent $processEvent)
+    {
+        $this->_methods[] = 'onProcess';
+        $this->_onProcessBufferType = $processEvent->getType();
+        $this->_onProcessBuffer = $processEvent->getBuffer();
     }
 }
