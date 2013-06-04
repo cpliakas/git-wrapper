@@ -15,6 +15,7 @@ namespace GitWrapper;
 
 use GitWrapper\Event\GitEvent;
 use GitWrapper\Event\GitEvents;
+use GitWrapper\Event\GitProcessEvent;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -493,7 +494,12 @@ class GitWrapper
             // "git.command.success" event, otherwise do not execute the comamnd
             // and throw the "git.command.bypass" event.
             if ($command->notBypassed()) {
-                $process->run();
+                $dispatcher = $this->_dispatcher;
+                $process->run(function($type, $buff) use($dispatcher, $event) {
+                    $processEvent = new GitProcessEvent($event, $type, $buff);
+                    $dispatcher->dispatch(GitEvents::GIT_PROCESS, $processEvent);
+                });
+
                 if ($process->isSuccessful()) {
                     $this->_dispatcher->dispatch(GitEvents::GIT_SUCCESS, $event);
                 } else {

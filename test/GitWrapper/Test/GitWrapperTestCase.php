@@ -58,6 +58,7 @@ class GitWrapperTestCase extends \PHPUnit_Framework_TestCase
         $dispatcher->addListener(GitEvents::GIT_SUCCESS, array($listener, 'onSuccess'));
         $dispatcher->addListener(GitEvents::GIT_ERROR, array($listener, 'onError'));
         $dispatcher->addListener(GitEvents::GIT_BYPASS, array($listener, 'onBypass'));
+        $dispatcher->addListener(GitEvents::GIT_PROCESS, array($listener, 'onProcess'));
 
         return $listener;
     }
