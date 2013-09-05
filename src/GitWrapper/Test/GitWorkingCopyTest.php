@@ -44,7 +44,7 @@ class GitWorkingCopyTest extends GitWrapperTestCase
         $branch = 'test-branch';
         file_put_contents($directory . '/branch.txt', "$branch\n");
         $git
-            ->checkout($branch, array('b' => true))
+            ->checkoutNewBranch($branch)
             ->add('branch.txt')
             ->commit('Committed testing branch.')
             ->push('origin', $branch, array('u' => true))

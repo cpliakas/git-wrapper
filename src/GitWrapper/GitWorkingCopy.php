@@ -284,6 +284,22 @@ class GitWorkingCopy
     }
 
     /**
+     * Create a new branch and check it out.
+     *
+     * This is synonymous with `git checkout -b`.
+     *
+     * @param string $branch
+     *   The new branch being created.
+     *
+     * @see GitWorkingCopy::checkout()
+     */
+    public function checkoutNewBranch($branch, array $options = array())
+    {
+        $options['b'] = true;
+        return $this->checkout($branch, $options);
+    }
+
+    /**
      * @} End of "defgroup command_helpers".
      */
 
