@@ -3,6 +3,8 @@
 namespace GitWrapper\Test;
 
 use GitWrapper\GitCommand;
+use GitWrapper\GitWorkingCopy;
+use GitWrapper\GitWrapper;
 use GitWrapper\Test\Event\TestDispatcher;
 
 class GitWrapperTest extends GitWrapperTestCase
@@ -109,6 +111,19 @@ class GitWrapperTest extends GitWrapperTestCase
         $this->_wrapper->setPrivateKey('./test/id_rsa', 22, $bad_wrapper);
     }
 
+    public function testUnsetPrivateKey()
+    {
+        // Set and unset the private key.
+        $key = './test/id_rsa';
+        $ssh_wrapper = './test/dummy-wrapper.sh';
+        $this->_wrapper->setPrivateKey($key, 22, $ssh_wrapper);
+        $this->_wrapper->unsetPrivateKey();
+
+        $this->assertNull($this->_wrapper->getEnvVar('GIT_SSH_KEY'));
+        $this->assertNull($this->_wrapper->getEnvVar('GIT_SSH_PORT'));
+        $this->assertNull($this->_wrapper->getEnvVar('GIT_SSH'));
+    }
+
     public function testGitCommand()
     {
         $version = $this->_wrapper->git('--version');
@@ -147,5 +162,38 @@ class GitWrapperTest extends GitWrapperTestCase
     {
         $ssh_wrapper = realpath(__DIR__ . '/../../../bin/git-ssh-wrapper.sh');
         $this->assertTrue(is_executable($ssh_wrapper));
+    }
+
+    /**
+     * @expectedException \BadMethodCallException
+     */
+    public function testCallError()
+    {
+        $this->_wrapper->badMethod();
+    }
+
+    public function testWorkingCopy()
+    {
+        $directory = './' . $this->randomString();
+        $git = $this->_wrapper->workingCopy($directory);
+
+        $this->assertTrue($git instanceof GitWorkingCopy);
+        $this->assertEquals($directory, $git->getDirectory());
+        $this->assertEquals($this->_wrapper, $git->getWrapper());
+    }
+
+    public function testParseRepositoryName()
+    {
+        $name_git = GitWrapper::parseRepositoryName('git@github.com:cpliakas/git-wrapper.git');
+        $this->assertEquals($name_git, 'git-wrapper');
+
+        $name_https = GitWrapper::parseRepositoryName('https://github.com/cpliakas/git-wrapper.git');
+        $this->assertEquals($name_https, 'git-wrapper');
+    }
+
+    public function testCloneWothoutDirectory()
+    {
+        $this->addBypassListener();
+        $this->_wrapper->clone('file:///' . $this->randomString());
     }
 }
