@@ -1,7 +1,7 @@
 {
     "name": "cpliakas/git-wrapper",
     "type": "library",
-    "description": "A command line wrapper aroung Git.",
+    "description": "A command line wrapper around Git.",
     "keywords": ["git"],
     "homepage": "https://github.com/cpliakas/git-wrapper",
     "license": "GPL-3.0",
