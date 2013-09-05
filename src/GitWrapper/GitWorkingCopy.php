@@ -220,7 +220,7 @@ class GitWorkingCopy
     }
 
     /**
-     * Returns an GitBranches object containing information on the repository's
+     * Returns a GitBranches object containing information on the repository's
      * branches.
      *
      * @return GitBranches
@@ -387,8 +387,7 @@ class GitWorkingCopy
      * Checkout a branch or paths to the working tree.
      *
      * @code
-     * $git->branch('checkout', 'existing-branch');
-     * $git->branch('checkout', 'new-branch', array('b' => true));
+     * $git->checkout('new-branch', array('b' => true));
      * @endcode
      *
      * @param string ...
@@ -557,6 +556,10 @@ class GitWorkingCopy
      *
      * Print lines matching a pattern.
      *
+     * @code
+     * $git->grep('time_t', '--', '*.[ch]');
+     * @endcode
+     *
      * @param string ...
      *   (optional) Additional command line arguments.
      * @param array $options
@@ -577,6 +580,10 @@ class GitWorkingCopy
      * Executes a `git init` command.
      *
      * Create an empty git repository or reinitialize an existing one.
+     *
+     * @code
+     * $git->init(array('bare' => true));
+     * @endcode
      *
      * @param array $options
      *   (optional) An associative array of command line options.
@@ -600,6 +607,11 @@ class GitWorkingCopy
      *
      * Show commit logs.
      *
+     * @code
+     * $git->log(array('no-merges' => true));
+     * $git->log('v2.6.12..', 'include/scsi', 'drivers/scsi');
+     * @endcode
+     *
      * @param string ...
      *   (optional) Additional command line arguments.
      * @param array $options
@@ -621,6 +633,10 @@ class GitWorkingCopy
      *
      * Join two or more development histories together.
      *
+     * @code
+     * $git->merge('fixes', 'enhancements');
+     * @endcode
+     *
      * @param string ...
      *   (optional) Additional command line arguments.
      * @param array $options
@@ -638,9 +654,13 @@ class GitWorkingCopy
     }
 
     /**
-     * Executes a `git pull` command.
+     * Executes a `git mv` command.
      *
      * Move or rename a file, a directory, or a symlink.
+     *
+     * @code
+     * $git->mv('orig.txt', 'dest.txt');
+     * @endcode
      *
      * @param string $source
      *   The file / directory being moved.
@@ -665,6 +685,10 @@ class GitWorkingCopy
      *
      * Fetch from and merge with another repository or a local branch.
      *
+     * @code
+     * $git->pull('upstream', 'master');
+     * @endcode
+     *
      * @param string ...
      *   (optional) Additional command line arguments.
      * @param array $options
@@ -686,6 +710,10 @@ class GitWorkingCopy
      *
      * Update remote refs along with associated objects.
      *
+     * @code
+     * $git->push('upstream', 'master');
+     * @endcode
+     *
      * @param string ...
      *   (optional) Additional command line arguments.
      * @param array $options
@@ -706,6 +734,10 @@ class GitWorkingCopy
      * Executes a `git rebase` command.
      *
      * Forward-port local commits to the updated upstream head.
+     *
+     * @code
+     * $git->rebase('subsystem@{1}', array('onto' => 'subsystem'));
+     * @endcode
      *
      * @param string ...
      *   (optional) Additional command line arguments.
@@ -753,6 +785,10 @@ class GitWorkingCopy
      *
      * Reset current HEAD to the specified state.
      *
+     * @code
+     * $git->reset(array('hard' => true));
+     * @endcode
+     *
      * @param string ...
      *   (optional) Additional command line arguments.
      * @param array $options
@@ -773,6 +809,10 @@ class GitWorkingCopy
      * Executes a `git rm` command.
      *
      * Remove files from the working tree and from the index.
+     *
+     * @code
+     * $git->rm('oldfile.txt');
+     * @endcode
      *
      * @param string $filepattern
      *   Files to remove from version control. Fileglobs (e.g.  *.c) can be
@@ -799,6 +839,10 @@ class GitWorkingCopy
      *
      * Show various types of objects.
      *
+     * @code
+     * $git->show('v1.0.0');
+     * @endcode
+     *
      * @param string $object
      *   The names of objects to show. For a more complete list of ways to spell
      *   object names, see "SPECIFYING REVISIONS" section in gitrevisions(7).
@@ -821,6 +865,10 @@ class GitWorkingCopy
      *
      * Show the working tree status.
      *
+     * @code
+     * $git->status(array('s' => true));
+     * @endcode
+     *
      * @param string ...
      *   (optional) Additional command line arguments.
      * @param array $options
@@ -841,6 +889,10 @@ class GitWorkingCopy
      * Executes a `git tag` command.
      *
      * Create, list, delete or verify a tag object signed with GPG.
+
+     * @code
+     * $git->tag('v1.0.0');
+     * @endcode
      *
      * @param string ...
      *   (optional) Additional command line arguments.
