@@ -321,9 +321,11 @@ class GitWorkingCopy
      */
     public function add($filepattern, array $options = array())
     {
-        $args = func_get_args();
-        $args[0] = $this->escapeFilepattern($args[0]);
-        array_unshift($args, 'add');
+        $args = array(
+            'add',
+            $this->escapeFilepattern($filepattern),
+            $options,
+        );
         return $this->run($args);
     }
 
@@ -675,8 +677,12 @@ class GitWorkingCopy
      */
     public function mv($source, $destination, array $options = array())
     {
-        $args = func_get_args();
-        array_unshift($args, 'mv');
+        $args = array(
+            'mv',
+            $source,
+            $destination,
+            $options,
+        );
         return $this->run($args);
     }
 
@@ -828,9 +834,11 @@ class GitWorkingCopy
      */
     public function rm($filepattern, array $options = array())
     {
-        $args = func_get_args();
-        $args[0] = $this->escapeFilepattern($args[0]);
-        array_unshift($args, 'rm');
+        $args = array(
+            'rm',
+            $this->escapeFilepattern($filepattern),
+            $options,
+        );
         return $this->run($args);
     }
 
@@ -855,8 +863,7 @@ class GitWorkingCopy
      */
     public function show($object, array $options = array())
     {
-        $args = func_get_args();
-        array_unshift($args, 'show');
+        $args = array('show', $object, $options);
         return $this->run($args);
     }
 
