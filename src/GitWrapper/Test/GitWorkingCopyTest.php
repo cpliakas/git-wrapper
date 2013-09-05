@@ -8,6 +8,8 @@ class GitWorkingCopyTest extends GitWrapperTestCase
 {
     const REPO_DIR = 'test/repo';
     const WORKING_DIR = 'test/wc';
+    const CONFIG_EMAIL = 'opensource@chrispliakas.com';
+    const CONFIG_NAME = 'Chris Pliakas';
 
     /**
      * Creates and initializes the local repository used for testing.
@@ -22,6 +24,8 @@ class GitWorkingCopyTest extends GitWrapperTestCase
         // Clone the local repository.
         $directory = 'test/wc_init';
         $git = $this->_wrapper->clone('file://' . realpath(self::REPO_DIR), $directory);
+        $git->config('user.email', self::CONFIG_EMAIL);
+        $git->config('user.name', self::CONFIG_NAME);
 
         // Create the initial structure.
         file_put_contents($directory . '/change.me', "unchanged\n");
@@ -82,7 +86,11 @@ class GitWorkingCopyTest extends GitWrapperTestCase
     public function getWorkingCopy($directory = self::WORKING_DIR)
     {
         $git = $this->_wrapper->workingCopy($directory);
-        $git->cloneRepository('file://' . realpath(self::REPO_DIR));
+        $git
+            ->cloneRepository('file://' . realpath(self::REPO_DIR))
+            ->config('user.email', self::CONFIG_EMAIL)
+            ->config('user.name', self::CONFIG_NAME)
+        ;
         return $git;
     }
 
@@ -261,7 +269,6 @@ class GitWorkingCopyTest extends GitWrapperTestCase
     public function testGitConfig()
     {
         $git = $this->getWorkingCopy();
-        $git->config('user.email', 'opensource@chrispliakas.com');
 
         $git->clearOutput();
         $email = rtrim((string) $git->config('user.email'));
