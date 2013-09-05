@@ -95,15 +95,13 @@ class GitWorkingCopy
      * @param string $filepattern
      *   The file pattern being escaped.
      *
-     * @return string
+     * @deprecated since version 1.0.0
+     *
+     * @see GitCommand::escapeFilepattern()
      */
     public function escapeFilepattern($filepattern)
     {
-        $path_info = pathinfo($filepattern);
-        if (isset($path_info['extension'])) {
-            $path_info['basename'] = str_replace('.', '\\.', $path_info['basename']);
-        }
-        return $path_info['dirname'] . DIRECTORY_SEPARATOR . $path_info['basename'];
+        return GitCommand::escapeFilepattern($filepattern);
     }
 
     /**
@@ -323,7 +321,7 @@ class GitWorkingCopy
     {
         $args = array(
             'add',
-            $this->escapeFilepattern($filepattern),
+            GitCommand::escapeFilepattern($filepattern),
             $options,
         );
         return $this->run($args);
@@ -836,7 +834,7 @@ class GitWorkingCopy
     {
         $args = array(
             'rm',
-            $this->escapeFilepattern($filepattern),
+            GitCommand::escapeFilepattern($filepattern),
             $options,
         );
         return $this->run($args);
