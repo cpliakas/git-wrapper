@@ -90,6 +90,7 @@ class GitWorkingCopyTest extends GitWrapperTestCase
             ->cloneRepository('file://' . realpath(self::REPO_DIR))
             ->config('user.email', self::CONFIG_EMAIL)
             ->config('user.name', self::CONFIG_NAME)
+            ->clearOutput()
         ;
         return $git;
     }
@@ -156,9 +157,9 @@ class GitWorkingCopyTest extends GitWrapperTestCase
     {
         $git = $this->getWorkingCopy();
 
-        // Assume last command was a clone.
-        $output = (string) $git;
-        $this->assertTrue(0 === strpos($output, 'Cloning into'));
+        // Test getting output of a simple status command.
+        $output = (string) $git->status();
+        $this->assertTrue(strpos($output, 'nothing to commit') !== false);
 
         // Getting output should clear the buffer.
         $cleared = (string) $git;
@@ -169,8 +170,9 @@ class GitWorkingCopyTest extends GitWrapperTestCase
     {
         $git = $this->getWorkingCopy();
 
-        // Assume there is output in the buffer. The test above will fail if
-        // there is not.
+        // Put stuff in the output buffer.
+        $git->status();
+
         $git->clearOutput();
         $output = $git->getOutput();
         $this->assertEmpty($output);
@@ -207,7 +209,6 @@ class GitWorkingCopyTest extends GitWrapperTestCase
     {
         $git = $this->getWorkingCopy();
 
-        $git->clearOutput();
         $output = rtrim((string) $git->fetchAll());
 
         $this->assertEquals('Fetching origin', $output);
@@ -249,7 +250,6 @@ class GitWorkingCopyTest extends GitWrapperTestCase
         $git->branch($branch_name);
 
         // Get list of local branches.
-        $git->clearOutput();
         $branches = (string) $git->branch();
 
         // Check that our branch is there.
@@ -259,20 +259,14 @@ class GitWorkingCopyTest extends GitWrapperTestCase
     public function testGitLog()
     {
         $git = $this->getWorkingCopy();
-
-        $git->clearOutput();
         $output = (string) $git->log();
-
         return $this->assertTrue(strpos($output, 'Initial commit.') !== false);
     }
 
     public function testGitConfig()
     {
         $git = $this->getWorkingCopy();
-
-        $git->clearOutput();
         $email = rtrim((string) $git->config('user.email'));
-
         $this->assertEquals('opensource@chrispliakas.com', $email);
     }
 
@@ -286,7 +280,6 @@ class GitWorkingCopyTest extends GitWrapperTestCase
             ->pushTag($tag)
         ;
 
-        $git->clearOutput();
         $tags = (string) $git->tag();
         $this->assertTrue(strpos($tags, $tag) !== false);
     }
@@ -305,20 +298,75 @@ class GitWorkingCopyTest extends GitWrapperTestCase
     {
         $git = $this->getWorkingCopy();
         file_put_contents(self::WORKING_DIR . '/change.me', "changed\n");
-
-        $git->clearOutput();
         $output = (string) $git->status(array('s' => true));
-
         $this->assertEquals(" M change.me\n", $output);
     }
 
     public function testGitPull()
     {
         $git = $this->getWorkingCopy();
-
-        $git->clearOutput();
         $output = (string) $git->pull();
-
         $this->assertEquals("Already up-to-date.\n", $output);
+    }
+
+    public function testGitDiff()
+    {
+        $git = $this->getWorkingCopy();
+        file_put_contents(self::WORKING_DIR . '/change.me', "changed\n");
+        $output = (string) $git->diff();
+        $this->assertTrue(strpos($output, 'diff --git a/change.me b/change.me') === 0);
+    }
+
+    public function testGitGrep()
+    {
+        $git = $this->getWorkingCopy();
+        $output = (string) $git->grep('changed', '--', '*.me');
+        $this->assertTrue(strpos($output, 'change.me') === 0);
+    }
+
+    public function testGitShow()
+    {
+        $git = $this->getWorkingCopy();
+        $output = (string) $git->show('test-tag');
+        $this->assertTrue(strpos($output, 'commit ') === 0);
+    }
+
+    public function testGitBisect()
+    {
+        $git = $this->getWorkingCopy();
+        $output = (string) $git->bisect('help');
+        $this->assertTrue(strpos($output, 'Usage: git bisect') === 0);
+    }
+
+    public function testGitRemote()
+    {
+        $git = $this->getWorkingCopy();
+        $output = (string) $git->remote();
+        $this->assertEquals(rtrim($output), 'origin');
+    }
+
+    public function testRebase()
+    {
+        $git = $this->getWorkingCopy();
+        $git
+            ->checkout('test-branch')
+            ->clearOutput()
+        ;
+
+        $output = (string) $git->rebase('test-branch', 'master');
+        $this->assertTrue(strpos($output, 'First, rewinding head') === 0);
+    }
+
+    public function testMerge()
+    {
+        $git = $this->getWorkingCopy();
+        $git
+            ->checkout('test-branch')
+            ->checkout('master')
+            ->clearOutput()
+        ;
+
+        $output = (string) $git->merge('test-branch');
+        $this->assertTrue(strpos($output, 'Updating ') === 0);
     }
 }
