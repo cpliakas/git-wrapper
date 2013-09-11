@@ -16,6 +16,9 @@
         "symfony/process": "~2.0",
         "symfony/event-dispatcher": "~2.0"
     },
+    "require-dev": {
+        "satooshi/php-coveralls": "dev-master"
+    },
     "autoload": {
         "psr-0": {
             "GitWrapper": "src/"
