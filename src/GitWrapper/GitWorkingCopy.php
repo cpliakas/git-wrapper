@@ -367,7 +367,7 @@ class GitWorkingCopy
     public function bisect($sub_command)
     {
         $args = func_get_args();
-        $arg[0] = 'bisect ' . escapeshellcmd($sub_command);
+        $args[0] = 'bisect ' . escapeshellcmd($sub_command);
         return $this->run($args);
     }
 
