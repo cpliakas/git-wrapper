@@ -48,6 +48,7 @@
     <exec executable="php">
       <arg value="${basedir}/build/composer.phar"/>
       <arg value="update"/>
+      <arg value="--no-dev"/>
     </exec>
   </target>
 
