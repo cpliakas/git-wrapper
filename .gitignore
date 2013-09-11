@@ -1,4 +1,4 @@
-/vendor/
+build/
 composer.lock
-/test/report/
-/nbproject/private/
+nbproject
+vendor/
