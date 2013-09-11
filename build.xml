@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="git-wrapper" default="build">
+
+  <target name="build" depends="phploc,pdepend,composer,phpunit"/>
+
+  <target name="clean" description="Cleanup build artifacts">
+    <delete file="${basedir}/build/composer.phar"/>
+    <delete dir="${basedir}/build/coverage"/>
+    <delete dir="${basedir}/build/logs"/>
+    <delete dir="${basedir}/build/pdepend"/>
+    <delete file="${basedir}/composer.lock"/>
+    <delete dir="${basedir}/vendor"/>
+  </target>
+
+  <target name="prepare">
+    <mkdir dir="${basedir}/build/logs"/>
+  </target>
+
+  <target name="phploc" depends="prepare" description="Measure project size using PHPLOC">
+    <exec executable="phploc">
+      <arg value="--log-csv=${basedir}/build/logs/phploc.csv" />
+      <arg value="--exclude=src/GitWrapper/Test" />
+      <arg value="--quiet" />
+      <arg path="${basedir}/src" />
+    </exec>
+  </target>
+
+  <target name="pdepend" depends="prepare" description="Calculate software metrics using PHP_Depend">
+    <mkdir dir="${basedir}/build/pdepend"/>
+    <exec executable="pdepend">
+      <arg value="--jdepend-xml=${basedir}/build/logs/jdepend.xml" />
+      <arg value="--jdepend-chart=${basedir}/build/pdepend/dependencies.svg" />
+      <arg value="--overview-pyramid=${basedir}/build/pdepend/overview-pyramid.svg" />
+      <arg value="--ignore=src/GitWrapper/Test" />
+      <arg path="${basedir}/src" />
+    </exec>
+  </target>
+
+  <target name="composer-check" depends="prepare">
+    <available file="${basedir}/build/composer.phar" property="composer.present"/>
+  </target>
+
+  <target name="composer-download" unless="composer.present">
+    <get src="https://getcomposer.org/composer.phar" dest="${basedir}/build/composer.phar"/>
+  </target>
+
+  <target name="composer" depends="composer-check,composer-download" description="Run composer update">
+    <exec executable="php">
+      <arg value="${basedir}/build/composer.phar"/>
+      <arg value="update"/>
+    </exec>
+  </target>
+
+  <target name="phpunit" depends="composer" description="Run unit tests with PHPUnit">
+    <mkdir dir="${basedir}/build/coverage"/>
+    <exec executable="phpunit" failonerror="true"/>
+  </target>
+
+</project>
