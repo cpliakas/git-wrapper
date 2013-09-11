@@ -335,8 +335,7 @@ class GitWorkingCopyTest extends GitWrapperTestCase
     {
         $git = $this->getWorkingCopy();
         $output = (string) $git->bisect('help');
-        echo $output;
-        //$this->assertTrue(strpos($output, 'Usage: git bisect') === 0);
+        $this->assertTrue(stripos($output, 'usage: git bisect') === 0);
     }
 
     public function testGitRemote()
