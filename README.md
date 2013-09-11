@@ -2,6 +2,7 @@ Overview
 ========
 
 [![Build Status](https://travis-ci.org/cpliakas/git-wrapper.png)](https://travis-ci.org/cpliakas/git-wrapper.png)
+[![Coverage Status](https://coveralls.io/repos/cpliakas/git-wrapper/badge.png?branch=master)](https://coveralls.io/r/cpliakas/git-wrapper?branch=master)
 [![Total Downloads](https://poser.pugx.org/cpliakas/git-wrapper/downloads.png)](https://packagist.org/packages/cpliakas/git-wrapper)
 [![Latest Stable Version](https://poser.pugx.org/cpliakas/git-wrapper/v/stable.png)](https://packagist.org/packages/cpliakas/git-wrapper)
 
