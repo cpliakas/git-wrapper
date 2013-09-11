@@ -6,8 +6,8 @@ use GitWrapper\GitWorkingCopy;
 
 class GitWorkingCopyTest extends GitWrapperTestCase
 {
-    const REPO_DIR = 'test/repo';
-    const WORKING_DIR = 'test/wc';
+    const REPO_DIR = 'build/test/repo';
+    const WORKING_DIR = 'build/test/wc';
     const CONFIG_EMAIL = 'opensource@chrispliakas.com';
     const CONFIG_NAME = 'Chris Pliakas';
 
@@ -22,7 +22,7 @@ class GitWorkingCopyTest extends GitWrapperTestCase
         $this->_wrapper->init(self::REPO_DIR, array('bare' => true));
 
         // Clone the local repository.
-        $directory = 'test/wc_init';
+        $directory = 'build/test/wc_init';
         $git = $this->_wrapper->clone('file://' . realpath(self::REPO_DIR), $directory);
         $git->config('user.email', self::CONFIG_EMAIL);
         $git->config('user.name', self::CONFIG_NAME);

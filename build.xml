@@ -8,6 +8,7 @@
     <delete dir="${basedir}/build/coverage"/>
     <delete dir="${basedir}/build/logs"/>
     <delete dir="${basedir}/build/pdepend"/>
+    <delete dir="${basedir}/build/test"/>
     <delete file="${basedir}/composer.lock"/>
     <delete dir="${basedir}/vendor"/>
   </target>
@@ -53,8 +54,10 @@
   </target>
 
   <target name="phpunit" depends="composer" description="Run unit tests with PHPUnit">
+    <mkdir dir="${basedir}/build/test"/>
     <mkdir dir="${basedir}/build/coverage"/>
     <exec executable="phpunit" failonerror="true"/>
+    <delete dir="${basedir}/build/test"/>
   </target>
 
 </project>
