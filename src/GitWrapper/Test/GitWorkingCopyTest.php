@@ -369,4 +369,5 @@ class GitWorkingCopyTest extends GitWrapperTestCase
         $output = (string) $git->merge('test-branch');
         $this->assertTrue(strpos($output, 'Updating ') === 0);
     }
+
 }
