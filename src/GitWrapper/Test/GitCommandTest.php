@@ -39,6 +39,20 @@ class GitCommandTest extends GitWrapperTestCase
         $this->assertNull($git->getOption($option_name));
     }
 
+    /**
+     * @see https://github.com/cpliakas/git-wrapper/issues/50
+     */
+    public function testMultiOption()
+    {
+        $git = GitCommand::getInstance('test-command')
+            ->setOption('test-arg', array(true, true));
+
+        $expected = 'test-command --test-arg --test-arg';
+        $command_line = $git->getCommandLine();
+
+        $this->assertEquals($expected, $command_line);
+    }
+
     public function testEscapeFilepattern()
     {
         $filepattern = 'a.directory/test.txt';

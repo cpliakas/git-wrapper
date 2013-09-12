@@ -200,14 +200,16 @@ class GitCommand
     public function buildOptions()
     {
         $options = array();
-        foreach ($this->_options as $option => $value) {
-            $prefix = (strlen($option) != 1) ? '--' : '-';
-            $rendered = $prefix . $option;
-            if ($value !== true) {
-                $rendered .= ('--' == $prefix) ? '=' : ' ';
-                $rendered .= escapeshellarg($value);
+        foreach ($this->_options as $option => $values) {
+            foreach ((array) $values as $value) {
+                $prefix = (strlen($option) != 1) ? '--' : '-';
+                $rendered = $prefix . $option;
+                if ($value !== true) {
+                    $rendered .= ('--' == $prefix) ? '=' : ' ';
+                    $rendered .= escapeshellarg($value);
+                }
+                $options[] = $rendered;
             }
-            $options[] = $rendered;
         }
         return join(' ', $options);
     }
