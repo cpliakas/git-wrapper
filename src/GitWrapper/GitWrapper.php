@@ -13,8 +13,6 @@
 
 namespace GitWrapper;
 
-use GitWrapper\Event\GitEvent;
-use GitWrapper\Event\GitEvents;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -64,6 +62,11 @@ class GitWrapper
      * @var array
      */
     protected $_procOptions = array();
+
+    /**
+     * @var Event\GitOutputListenerInterface
+     */
+    protected $_streamListener;
 
     /**
      * Constructs a GitWrapper object.
@@ -302,6 +305,60 @@ class GitWrapper
     }
 
     /**
+     * Adds output listener.
+     *
+     * @param Event\GitOutputListenerInterface $listener
+     *
+     * @return GitWrapper
+     */
+    public function addOutputListener(Event\GitOutputListenerInterface $listener)
+    {
+        $this
+            ->getDispatcher()
+            ->addListener(Event\GitEvents::GIT_OUTPUT, array($listener, 'handleOutput'))
+        ;
+        return $this;
+    }
+
+    /**
+     * Removes an output listener.
+     *
+     * @param Event\GitOutputListenerInterface $listener
+     *
+     * @return GitWrapper
+     */
+    public function removeOutputListener(Event\GitOutputListenerInterface $listener)
+    {
+        $this
+            ->getDispatcher()
+            ->removeListener(Event\GitEvents::GIT_OUTPUT, array($listener, 'handleOutput'))
+        ;
+        return $this;
+    }
+
+    /**
+     * Set whether or not to stream real-time output to STDOUT and STDERR.
+     *
+     * @param boolean $stream_output
+     *
+     * @return GitWrapper
+     */
+    public function streamOutput($stream_output = true)
+    {
+        if ($stream_output && !isset($this->_streamListener)) {
+            $this->_streamListener = new Event\GitOutputStreamListener();
+            $this->addOutputListener($this->_streamListener);
+        }
+
+        if (!$stream_output && isset($this->_streamListener)) {
+            $this->removeOutputListener($this->_streamListener);
+            unset($this->_streamListener);
+        }
+
+        return $this;
+    }
+
+    /**
      * Returns an object that interacts with a working copy.
      *
      * @param string $directory
@@ -462,55 +519,12 @@ class GitWrapper
      */
     public function run(GitCommand $command, $cwd = null)
     {
-        $event = null;
-
-        try {
-
-            // Build the command line options, flags, and arguments.
-            $command_line = rtrim($this->_gitBinary . ' ' . $command->getCommandLine());
-
-            // Resolve the working directory of the Git process. Use the
-            // directory in the command object if it exists.
-            if (null === $cwd) {
-                if (null !== $directory = $command->getDirectory()) {
-                    if (!$cwd = realpath($directory)) {
-                        throw new GitException('Path to working directory could not be resolved: ' . $directory);
-                    }
-                }
-            }
-
-            // Finalize the environment variables, an empty array is converted
-            // to null which enherits the environment of the PHP process.
-            $env = ($this->_env) ? $this->_env : null;
-
-            $process = new Process($command_line, $cwd, $env, null, $this->_timeout, $this->_procOptions);
-            $event = new GitEvent($this, $process, $command);
-
-            // Throw the "git.command.prepare" event prior to executing.
-            $this->_dispatcher->dispatch(GitEvents::GIT_PREPARE, $event);
-
-            // Execute command if it is not flagged to be bypassed and throw the
-            // "git.command.success" event, otherwise do not execute the comamnd
-            // and throw the "git.command.bypass" event.
-            if ($command->notBypassed()) {
-                $process->run();
-                if ($process->isSuccessful()) {
-                    $this->_dispatcher->dispatch(GitEvents::GIT_SUCCESS, $event);
-                } else {
-                    throw new \RuntimeException($process->getErrorOutput());
-                }
-            } else {
-                $this->_dispatcher->dispatch(GitEvents::GIT_BYPASS, $event);
-            }
-
-        } catch (\RuntimeException $e) {
-            if ($event !== null) {
-                // Throw the "git.command.error" event.
-                $this->_dispatcher->dispatch(GitEvents::GIT_ERROR, $event);
-            }
-            throw new GitException($e->getMessage());
-        }
-
+        $wrapper = $this;
+        $process = new GitProcess($this, $command, $cwd);
+        $process->run(function($type, $buffer) use($wrapper, $process, $command) {
+            $event = new Event\GitOutputEvent($wrapper, $process, $command, $type, $buffer);
+            $this->getDispatcher()->dispatch(Event\GitEvents::GIT_OUTPUT, $event);
+        });
         return $process->getOutput();
     }
 

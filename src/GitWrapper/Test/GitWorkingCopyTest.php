@@ -3,14 +3,10 @@
 namespace GitWrapper\Test;
 
 use GitWrapper\GitWorkingCopy;
+use Symfony\Component\Process\Process;
 
 class GitWorkingCopyTest extends GitWrapperTestCase
 {
-    const REPO_DIR = 'build/test/repo';
-    const WORKING_DIR = 'build/test/wc';
-    const CONFIG_EMAIL = 'opensource@chrispliakas.com';
-    const CONFIG_NAME = 'Chris Pliakas';
-
     /**
      * Creates and initializes the local repository used for testing.
      */
@@ -93,38 +89,6 @@ class GitWorkingCopyTest extends GitWrapperTestCase
             ->clearOutput()
         ;
         return $git;
-    }
-
-    /**
-     * Recursive helper function to remove a non-empty directory.
-     *
-     * @param string $dir
-     *   The directory being removed.
-     *
-     * @todo There has to be a more elegant, accepted way to do this.
-     */
-    public static function rmdir($dir)
-    {
-        $subdirs = array();
-        if ($handle = opendir($dir)) {
-            while (false !== ($file = readdir($handle))) {
-                if ('.' != $file && '..' != $file) {
-                    $filepath = $dir . '/' . $file;
-                    if (is_dir($filepath)) {
-                        $subdirs[] = $filepath;
-                    } else {
-                        unlink($filepath);
-                    }
-                }
-            }
-            closedir($handle);
-        }
-
-        foreach ($subdirs as $subdir) {
-            self::rmdir($subdir);
-        }
-
-        rmdir($dir);
     }
 
     /**
@@ -368,5 +332,52 @@ class GitWorkingCopyTest extends GitWrapperTestCase
 
         $output = (string) $git->merge('test-branch');
         $this->assertTrue(strpos($output, 'Updating ') === 0);
+    }
+
+    public function testOutputListener()
+    {
+        $git = $this->getWorkingCopy();
+
+        $listener = new Event\TestOutputListener();
+        $git->getWrapper()->addOutputListener($listener);
+
+        $git->status();
+        $event = $listener->getLastEvent();
+
+        $expected_type = Process::OUT;
+        $this->assertEquals($expected_type, $event->getType());
+
+        $expected_buffer = "# On branch master\nnothing to commit (working directory clean)\n";
+        $this->assertEquals($expected_buffer, $event->getBuffer());
+    }
+
+    public function testLiveOutput()
+    {
+        $git = $this->getWorkingCopy();
+
+        // Capture output written to STDOUT and use echo so we can suppress and
+        // capture it using normal output buffering.
+        stream_filter_register('suppress', '\GitWrapper\Test\StreamSuppressFilter');
+        $stdout_suppress = stream_filter_append(STDOUT, 'suppress');
+
+        $git->getWrapper()->streamOutput(true);
+        ob_start();
+        $git->status();
+        $contents = ob_get_contents();
+        ob_end_clean();
+
+        $expected = "# On branch master\nnothing to commit (working directory clean)\n";
+        $this->assertEquals($contents, $expected);
+
+        $git->clearOutput();
+        $git->getWrapper()->streamOutput(false);
+        ob_start();
+        $git->status();
+        $empty = ob_get_contents();
+        ob_end_clean();
+
+        $this->assertEmpty($empty);
+
+        stream_filter_remove($stdout_suppress);
     }
 }
