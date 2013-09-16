@@ -25,6 +25,13 @@ final class GitEvents
     const GIT_PREPARE = 'git.command.prepare';
 
     /**
+     * Event thrown when real-time output is returned from the Git command.
+     *
+     * @var string
+     */
+    const GIT_OUTPUT = 'git.command.output';
+
+    /**
      * Event thrown after executing a succesful git command.
      *
      * @var string
