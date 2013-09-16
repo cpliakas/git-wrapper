@@ -523,7 +523,7 @@ class GitWrapper
         $process = new GitProcess($this, $command, $cwd);
         $process->run(function($type, $buffer) use($wrapper, $process, $command) {
             $event = new Event\GitOutputEvent($wrapper, $process, $command, $type, $buffer);
-            $this->getDispatcher()->dispatch(Event\GitEvents::GIT_OUTPUT, $event);
+            $wrapper->getDispatcher()->dispatch(Event\GitEvents::GIT_OUTPUT, $event);
         });
         return $process->getOutput();
     }
