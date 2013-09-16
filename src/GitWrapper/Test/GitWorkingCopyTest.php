@@ -347,8 +347,7 @@ class GitWorkingCopyTest extends GitWrapperTestCase
         $expected_type = Process::OUT;
         $this->assertEquals($expected_type, $event->getType());
 
-        $expected_buffer = "# On branch master\nnothing to commit (working directory clean)\n";
-        $this->assertEquals($expected_buffer, $event->getBuffer());
+        $this->assertTrue(stripos($event->getBuffer(), 'nothing to commit') !== false);
     }
 
     public function testLiveOutput()
@@ -366,8 +365,7 @@ class GitWorkingCopyTest extends GitWrapperTestCase
         $contents = ob_get_contents();
         ob_end_clean();
 
-        $expected = "# On branch master\nnothing to commit (working directory clean)\n";
-        $this->assertEquals($contents, $expected);
+        $this->assertTrue(stripos($contents, 'nothing to commit') !== false);
 
         $git->clearOutput();
         $git->getWrapper()->streamOutput(false);
