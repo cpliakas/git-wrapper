@@ -55,7 +55,7 @@ $wrapper->streamOutput();
 
 // Execute an arbitrary git command.
 // The following is synonymous with `git config -l`
-print $wrapper->git('config -l');
+$wrapper->git('config -l');
 ```
 
 All command methods adhere to the following paradigm:
