@@ -23,35 +23,35 @@ class GitCommand
      *
      * @var string|null
      */
-    protected $_directory;
+    protected $directory;
 
     /**
      * The command being run, e.g. "clone", "commit", etc.
      *
      * @var string
      */
-    protected $_command = '';
+    protected $command = '';
 
     /**
      * An associative array of command line options and flags.
      *
      * @var array
      */
-    protected $_options = array();
+    protected $options = array();
 
     /**
      * Command line arguments passed to the Git command.
      *
      * @var array
      */
-    protected $_args = array();
+    protected $args = array();
 
     /**
      * Whether command execution should be bypassed.
      *
      * @var boolean
      */
-    protected $_bypass = false;
+    protected $bypass = false;
 
     /**
      * Constructs a GitCommand object.
@@ -66,7 +66,7 @@ class GitCommand
         if ($args) {
 
             // The first argument is the command.
-            $this->_command = array_shift($args);
+            $this->command = array_shift($args);
 
             // If the last element is an array, set it as the options.
             $options = end($args);
@@ -133,7 +133,7 @@ class GitCommand
      */
     public function getCommand()
     {
-        return $this->_command;
+        return $this->command;
     }
 
     /**
@@ -146,7 +146,7 @@ class GitCommand
      */
     public function setDirectory($directory)
     {
-        $this->_directory = $directory;
+        $this->directory = $directory;
         return $this;
     }
 
@@ -158,7 +158,7 @@ class GitCommand
      */
     public function getDirectory()
     {
-        return $this->_directory;
+        return $this->directory;
     }
 
     /**
@@ -173,14 +173,14 @@ class GitCommand
      */
     public function bypass($bypass = true)
     {
-        $this->_bypass = (bool) $bypass;
+        $this->bypass = (bool) $bypass;
         return $this;
     }
 
     /**
      * Returns true if the Git command should be run.
      *
-     * The return value is the boolean opposite $this->_bypass. Although this
+     * The return value is the boolean opposite $this->bypass. Although this
      * seems complex, it makes the code more readable when checking whether the
      * command should be run or not.
      *
@@ -189,7 +189,7 @@ class GitCommand
      */
     public function notBypassed()
     {
-        return !$this->_bypass;
+        return !$this->bypass;
     }
 
     /**
@@ -200,7 +200,7 @@ class GitCommand
     public function buildOptions()
     {
         $options = array();
-        foreach ($this->_options as $option => $values) {
+        foreach ($this->options as $option => $values) {
             foreach ((array) $values as $value) {
                 $prefix = (strlen($option) != 1) ? '--' : '-';
                 $rendered = $prefix . $option;
@@ -229,7 +229,7 @@ class GitCommand
      */
     public function setOption($option, $value)
     {
-        $this->_options[$option] = $value;
+        $this->options[$option] = $value;
         return $this;
     }
 
@@ -276,7 +276,7 @@ class GitCommand
      */
     public function getOption($option, $default = null)
     {
-        return (isset($this->_options[$option])) ? $this->_options[$option] : $default;
+        return (isset($this->options[$option])) ? $this->options[$option] : $default;
     }
 
     /**
@@ -289,7 +289,7 @@ class GitCommand
      */
     public function unsetOption($option)
     {
-        unset($this->_options[$option]);
+        unset($this->options[$option]);
         return $this;
     }
 
@@ -303,7 +303,7 @@ class GitCommand
      */
     public function addArgument($arg)
     {
-        $this->_args[] = $arg;
+        $this->args[] = $arg;
         return $this;
     }
 
@@ -320,7 +320,7 @@ class GitCommand
         $command = array(
             $this->getCommand(),
             $this->buildOptions(),
-            join(' ', array_map('escapeshellarg', $this->_args)),
+            join(' ', array_map('escapeshellarg', $this->args)),
         );
         return join(' ', array_filter($command));
     }

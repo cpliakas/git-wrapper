@@ -26,21 +26,21 @@ class GitEvent extends Event
      *
      * @var GitWrapper
      */
-    protected $_wrapper;
+    protected $wrapper;
 
     /**
      * The Process object being run.
      *
      * @var Process
      */
-    protected $_process;
+    protected $process;
 
     /**
      * The GitCommand object being executed.
      *
      * @var GitCommand
      */
-    protected $_command;
+    protected $command;
 
     /**
      * Constructs a GitEvent object.
@@ -54,9 +54,9 @@ class GitEvent extends Event
      */
     public function __construct(GitWrapper $wrapper, Process $process, GitCommand $command)
     {
-        $this->_wrapper = $wrapper;
-        $this->_process = $process;
-        $this->_command = $command;
+        $this->wrapper = $wrapper;
+        $this->process = $process;
+        $this->command = $command;
     }
 
     /**
@@ -66,7 +66,7 @@ class GitEvent extends Event
      */
     public function getWrapper()
     {
-        return $this->_wrapper;
+        return $this->wrapper;
     }
 
     /**
@@ -76,7 +76,7 @@ class GitEvent extends Event
      */
     public function getProcess()
     {
-        return $this->_process;
+        return $this->process;
     }
 
     /**
@@ -86,6 +86,6 @@ class GitEvent extends Event
      */
     public function getCommand()
     {
-        return $this->_command;
+        return $this->command;
     }
 }

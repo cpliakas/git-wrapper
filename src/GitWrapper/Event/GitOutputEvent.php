@@ -23,12 +23,12 @@ class GitOutputEvent extends GitEvent
     /**
      * @var string
      */
-    protected $_type;
+    protected $type;
 
     /**
      * @var string
      */
-    protected $_buffer;
+    protected $buffer;
 
     /**
      * Constructs a GitEvent object.
@@ -43,8 +43,8 @@ class GitOutputEvent extends GitEvent
     public function __construct(GitWrapper $wrapper, Process $process, GitCommand $command, $type, $buffer)
     {
         parent::__construct($wrapper, $process, $command);
-        $this->_type = $type;
-        $this->_buffer = $buffer;
+        $this->type = $type;
+        $this->buffer = $buffer;
     }
 
     /**
@@ -52,7 +52,7 @@ class GitOutputEvent extends GitEvent
      */
     public function getType()
     {
-        return $this->_type;
+        return $this->type;
     }
 
     /**
@@ -60,7 +60,7 @@ class GitOutputEvent extends GitEvent
      */
     public function getBuffer()
     {
-        return $this->_buffer;
+        return $this->buffer;
     }
 
     /**
@@ -68,6 +68,6 @@ class GitOutputEvent extends GitEvent
      */
     public function isError()
     {
-        return (Process::ERR == $this->_type);
+        return (Process::ERR == $this->type);
     }
 }
