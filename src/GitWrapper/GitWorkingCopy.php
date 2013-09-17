@@ -24,21 +24,21 @@ class GitWorkingCopy
      *
      * @var GitWrapper
      */
-    protected $_wrapper;
+    protected $wrapper;
 
     /**
      * Path to the directory containing the working copy.
      *
      * @var string
      */
-    protected $_directory;
+    protected $directory;
 
     /**
      * The output captured by the last run Git commnd(s).
      *
      * @var string
      */
-    protected $_output = '';
+    protected $output = '';
 
     /**
      * A boolean flagging whether the repository is cloned.
@@ -48,7 +48,7 @@ class GitWorkingCopy
      *
      * @param bool|null
      */
-    protected $_cloned;
+    protected $cloned;
 
     /**
      * Constructs a GitWorkingCopy object.
@@ -60,8 +60,8 @@ class GitWorkingCopy
      */
     public function __construct(GitWrapper $wrapper, $directory)
     {
-        $this->_wrapper = $wrapper;
-        $this->_directory = $directory;
+        $this->wrapper = $wrapper;
+        $this->directory = $directory;
     }
 
     /**
@@ -71,7 +71,7 @@ class GitWorkingCopy
      */
     public function getWrapper()
     {
-        return $this->_wrapper;
+        return $this->wrapper;
     }
 
     /**
@@ -81,7 +81,7 @@ class GitWorkingCopy
      */
     public function getDirectory()
     {
-        return $this->_directory;
+        return $this->directory;
     }
 
     /**
@@ -111,8 +111,8 @@ class GitWorkingCopy
      */
     public function getOutput()
     {
-        $output = $this->_output;
-        $this->_output = '';
+        $output = $this->output;
+        $this->output = '';
         return $output;
     }
 
@@ -123,7 +123,7 @@ class GitWorkingCopy
      */
     public function clearOutput()
     {
-        $this->_output = '';
+        $this->output = '';
         return $this;
     }
 
@@ -137,7 +137,7 @@ class GitWorkingCopy
      */
     public function setCloned($cloned)
     {
-        $this->_cloned = (bool) $cloned;
+        $this->cloned = (bool) $cloned;
         return $this;
     }
 
@@ -150,14 +150,14 @@ class GitWorkingCopy
      */
     public function isCloned()
     {
-        if (!isset($this->_cloned)) {
-            $git_dir = $this->_directory;
+        if (!isset($this->cloned)) {
+            $git_dir = $this->directory;
             if (is_dir($git_dir . '/.git')) {
                 $git_dir .= '/.git';
             };
-            $this->_cloned = (is_dir($git_dir . '/objects') && is_dir($git_dir . '/refs') && is_file($git_dir . '/HEAD'));
+            $this->cloned = (is_dir($git_dir . '/objects') && is_dir($git_dir . '/refs') && is_file($git_dir . '/HEAD'));
         }
-        return $this->_cloned;
+        return $this->cloned;
     }
 
     /**
@@ -178,9 +178,9 @@ class GitWorkingCopy
     {
         $command = call_user_func_array(array('GitWrapper\GitCommand', 'getInstance'), $args);
         if ($set_directory) {
-            $command->setDirectory($this->_directory);
+            $command->setDirectory($this->directory);
         }
-        $this->_output .= $this->_wrapper->run($command);
+        $this->output .= $this->wrapper->run($command);
         return $this;
     }
 
@@ -201,7 +201,7 @@ class GitWorkingCopy
      */
     public function getStatus()
     {
-        return $this->_wrapper->git('status -s', $this->_directory);
+        return $this->wrapper->git('status -s', $this->directory);
     }
 
     /**
@@ -449,7 +449,7 @@ class GitWorkingCopy
         $args = array(
             'clone',
             $repository,
-            $this->_directory,
+            $this->directory,
             $options,
         );
         return $this->run($args, false);
@@ -612,7 +612,7 @@ class GitWorkingCopy
     {
         $args = array(
             'init',
-            $this->_directory,
+            $this->directory,
             $options,
         );
         return $this->run($args, false);

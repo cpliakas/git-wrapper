@@ -33,40 +33,40 @@ class GitWrapper
      *
      * @var EventDispatcherInterface
      */
-    protected $_dispatcher;
+    protected $dispatcher;
 
     /**
      * Path to the Git binary.
      *
      * @var string
      */
-    protected $_gitBinary;
+    protected $gitBinary;
 
     /**
      * Environment variables defined in the scope of the Git command.
      *
      * @var array
      */
-    protected $_env = array();
+    protected $env = array();
 
     /**
      * The timeout of the Git command in seconds, defaults to 60.
      *
      * @var int
      */
-    protected $_timeout = 60;
+    protected $timeout = 60;
 
     /**
      * An array of options passed to the proc_open() function.
      *
      * @var array
      */
-    protected $_procOptions = array();
+    protected $procOptions = array();
 
     /**
      * @var Event\GitOutputListenerInterface
      */
-    protected $_streamListener;
+    protected $streamListener;
 
     /**
      * Constructs a GitWrapper object.
@@ -81,7 +81,7 @@ class GitWrapper
      */
     public function __construct($git_binary = null)
     {
-        $this->_dispatcher = new EventDispatcher();
+        $this->dispatcher = new EventDispatcher();
 
         if (null === $git_binary) {
             // @codeCoverageIgnoreStart
@@ -103,7 +103,7 @@ class GitWrapper
      */
     public function getDispatcher()
     {
-        return $this->_dispatcher;
+        return $this->dispatcher;
     }
 
     /**
@@ -116,7 +116,7 @@ class GitWrapper
      */
     public function setDispatcher(EventDispatcherInterface $dispatcher)
     {
-        $this->_dispatcher = $dispatcher;
+        $this->dispatcher = $dispatcher;
         return $this;
     }
 
@@ -130,7 +130,7 @@ class GitWrapper
      */
     public function setGitBinary($git_binary)
     {
-        $this->_gitBinary = escapeshellcmd($git_binary);
+        $this->gitBinary = escapeshellcmd($git_binary);
         return $this;
     }
 
@@ -141,7 +141,7 @@ class GitWrapper
      */
     public function getGitBinary()
     {
-        return $this->_gitBinary;
+        return $this->gitBinary;
     }
 
     /**
@@ -157,7 +157,7 @@ class GitWrapper
      */
     public function setEnvVar($var, $value)
     {
-        $this->_env[$var] = $value;
+        $this->env[$var] = $value;
         return $this;
     }
 
@@ -172,7 +172,7 @@ class GitWrapper
      */
     public function unsetEnvVar($var)
     {
-        unset($this->_env[$var]);
+        unset($this->env[$var]);
         return $this;
     }
 
@@ -190,7 +190,7 @@ class GitWrapper
      */
     public function getEnvVar($var, $default = null)
     {
-        return isset($this->_env[$var]) ? $this->_env[$var] : $default;
+        return isset($this->env[$var]) ? $this->env[$var] : $default;
     }
 
     /**
@@ -201,7 +201,7 @@ class GitWrapper
      */
     public function getEnvVars()
     {
-        return $this->_env;
+        return $this->env;
     }
 
     /**
@@ -214,7 +214,7 @@ class GitWrapper
      */
     public function setTimeout($timeout)
     {
-        $this->_timeout = (int) $timeout;
+        $this->timeout = (int) $timeout;
         return $this;
     }
 
@@ -226,7 +226,7 @@ class GitWrapper
      */
     public function getTimeout()
     {
-        return $this->_timeout;
+        return $this->timeout;
     }
 
     /**
@@ -239,7 +239,7 @@ class GitWrapper
      */
     public function setProcOptions(array $options)
     {
-        $this->_procOptions = $options;
+        $this->procOptions = $options;
         return $this;
     }
 
@@ -250,7 +250,7 @@ class GitWrapper
      */
     public function getProcOptions()
     {
-        return $this->_procOptions;
+        return $this->procOptions;
     }
 
     /**
@@ -345,14 +345,14 @@ class GitWrapper
      */
     public function streamOutput($stream_output = true)
     {
-        if ($stream_output && !isset($this->_streamListener)) {
-            $this->_streamListener = new Event\GitOutputStreamListener();
-            $this->addOutputListener($this->_streamListener);
+        if ($stream_output && !isset($this->streamListener)) {
+            $this->streamListener = new Event\GitOutputStreamListener();
+            $this->addOutputListener($this->streamListener);
         }
 
-        if (!$stream_output && isset($this->_streamListener)) {
-            $this->removeOutputListener($this->_streamListener);
-            unset($this->_streamListener);
+        if (!$stream_output && isset($this->streamListener)) {
+            $this->removeOutputListener($this->streamListener);
+            unset($this->streamListener);
         }
 
         return $this;

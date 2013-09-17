@@ -23,7 +23,7 @@ class GitBranches implements \IteratorAggregate
      *
      * @var GitWorkingCopy
      */
-    protected $_git;
+    protected $git;
 
     /**
      * Constructs a GitBranches object.
@@ -35,7 +35,7 @@ class GitBranches implements \IteratorAggregate
      */
     public function __construct(GitWorkingCopy $git)
     {
-        $this->_git = clone $git;
+        $this->git = clone $git;
         $output = (string) $git->branch(array('a' => true));
     }
 
@@ -50,9 +50,9 @@ class GitBranches implements \IteratorAggregate
      */
     public function fetchBranches($only_remote = false)
     {
-        $this->_git->clearOutput();
+        $this->git->clearOutput();
         $options = ($only_remote) ? array('r' => true) : array('a' => true);
-        $output = (string) $this->_git->branch($options);
+        $output = (string) $this->git->branch($options);
         $branches = preg_split("/\r\n|\n|\r/", rtrim($output));
         return array_map(array($this, 'trimBranch'), $branches);
     }
