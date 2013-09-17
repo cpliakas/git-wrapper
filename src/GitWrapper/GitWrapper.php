@@ -33,7 +33,7 @@ class GitWrapper
      *
      * @var EventDispatcherInterface
      */
-    protected $dispatcher;
+    private $dispatcher;
 
     /**
      * Path to the Git binary.
@@ -81,8 +81,6 @@ class GitWrapper
      */
     public function __construct($git_binary = null)
     {
-        $this->dispatcher = new EventDispatcher();
-
         if (null === $git_binary) {
             // @codeCoverageIgnoreStart
             $finder = new ExecutableFinder();
@@ -103,6 +101,9 @@ class GitWrapper
      */
     public function getDispatcher()
     {
+        if (!isset($this->dispatcher)) {
+            $this->dispatcher = new EventDispatcher();
+        }
         return $this->dispatcher;
     }
 
