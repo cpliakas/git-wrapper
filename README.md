@@ -50,6 +50,9 @@ $git
 // Render the output.
 print $git->getOutput();
 
+// Stream output of subsequent Git commands in real time to STDOUT and STDERR.
+$wrapper->streamOutput();
+
 // Execute an arbitrary git command.
 // The following is synonymous with `git config -l`
 print $wrapper->git('config -l');
