@@ -5,6 +5,7 @@ Overview
 [![Coverage Status](https://coveralls.io/repos/cpliakas/git-wrapper/badge.png?branch=master)](https://coveralls.io/r/cpliakas/git-wrapper?branch=master)
 [![Total Downloads](https://poser.pugx.org/cpliakas/git-wrapper/downloads.png)](https://packagist.org/packages/cpliakas/git-wrapper)
 [![Latest Stable Version](https://poser.pugx.org/cpliakas/git-wrapper/v/stable.png)](https://packagist.org/packages/cpliakas/git-wrapper)
+[![Dependency Status](https://www.versioneye.com/user/projects/5242f27e632bac4c4100342f/badge.png)](https://www.versioneye.com/user/projects/5242f27e632bac4c4100342f)
 
 This library is a PHP wrapper around the Git command line tool.
 
