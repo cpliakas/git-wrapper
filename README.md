@@ -76,19 +76,19 @@ $options = array(
 Installation
 ============
 
-To install the required libraries, execute the following commands in the
-directory where this library is extracted.
+Git Wrapper can be installed with [Composer](http://getcomposer.org) by adding
+the library as a dependency to your composer.json file.
 
-    curl -s https://getcomposer.org/installer | php
-    php composer.phar install
+```json
+{
+    "require": {
+        "cpliakas/git-wrapper": "~1.0"
+    }
+}
+```
 
-If curl is not available, replace the first command with the one below:
-
-    php -r "eval('?>'.file_get_contents('https://getcomposer.org/installer'));"
-
-Please refer to the [Composer](http://getcomposer.org/) tool's
-[installation documentation](http://getcomposer.org/doc/00-intro.md#installation-nix)
-for more information.
+Please refer to the [Composer's documentation](https://github.com/composer/composer/blob/master/doc/00-intro.md#introduction)
+for installation and usage instructions.
 
 Gotchas
 =======
