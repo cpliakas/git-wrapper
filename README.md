@@ -4,7 +4,6 @@ Overview
 [![Build Status](https://travis-ci.org/cpliakas/git-wrapper.png?branch=1.0)](https://travis-ci.org/cpliakas/git-wrapper)
 [![Total Downloads](https://poser.pugx.org/cpliakas/git-wrapper/downloads.png)](https://packagist.org/packages/cpliakas/git-wrapper)
 [![Latest Stable Version](https://poser.pugx.org/cpliakas/git-wrapper/v/stable.png)](https://packagist.org/packages/cpliakas/git-wrapper)
-[![Dependency Status](http://www.versioneye.com/php/cpliakas:git-wrapper/1.0.x-dev/badge.png)](http://www.versioneye.com/php/cpliakas:git-wrapper/1.0.x-dev)
 
 This library is a PHP wrapper around the Git command line tool.
 
