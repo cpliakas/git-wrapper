@@ -526,7 +526,7 @@ class GitWrapper
             $event = new Event\GitOutputEvent($wrapper, $process, $command, $type, $buffer);
             $wrapper->getDispatcher()->dispatch(Event\GitEvents::GIT_OUTPUT, $event);
         });
-        return $process->getOutput();
+        return $command->notBypassed() ? $process->getOutput() : '';
     }
 
     /**
