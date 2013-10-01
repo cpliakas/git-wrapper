@@ -511,7 +511,7 @@ class GitWrapper
             throw new GitException($e->getMessage());
         }
 
-        return $process->getOutput();
+        return $command->notBypassed() ? $process->getOutput() : '';
     }
 
     /**
