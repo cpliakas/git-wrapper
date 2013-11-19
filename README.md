@@ -90,7 +90,7 @@ the library as a dependency to your composer.json file.
 }
 ```
 
-Please refer to the [Composer's documentation](https://github.com/composer/composer/blob/master/doc/00-intro.md#introduction)
+Please refer to [Composer's documentation](https://github.com/composer/composer/blob/master/doc/00-intro.md#introduction)
 for installation and usage instructions.
 
 Gotchas

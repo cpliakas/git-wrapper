@@ -1,65 +1,105 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="git-wrapper" default="build">
+<project name="Git Wrapper" default="build">
 
-  <target name="build" depends="phploc,pdepend,composer,phpunit"/>
+  <property name="builddir" value="${basedir}/build"/>
+
+  <target name="build" depends="lint,composer,pdepend,phploc,phpmd-ci,phpunit"/>
 
   <target name="clean" description="Cleanup build artifacts">
+    <delete dir="${builddir}"/>
+    <delete file="${basedir}/cache.properties"/>
+  </target>
+
+  <target name="clean-src" description="Cleanup dependency source code">
     <delete file="${basedir}/composer.lock"/>
-    <delete file="${basedir}/build/composer.phar"/>
-    <delete dir="${basedir}/build/coverage"/>
-    <delete dir="${basedir}/build/logs"/>
-    <delete dir="${basedir}/build/pdepend"/>
-    <delete dir="${basedir}/build/test"/>
     <delete dir="${basedir}/vendor"/>
   </target>
 
+  <target name="clean-all" depends="clean,clean-src" description="Cleanup build artifacts and dependency source code"/>
+
   <target name="prepare">
-    <mkdir dir="${basedir}/build/coverage"/>
-    <mkdir dir="${basedir}/build/logs"/>
-    <mkdir dir="${basedir}/build/pdepend"/>
-    <mkdir dir="${basedir}/build/test"/>
+    <mkdir dir="${builddir}/coverage"/>
+    <mkdir dir="${builddir}/logs"/>
+    <mkdir dir="${builddir}/pdepend"/>
+    <mkdir dir="${builddir}/test"/>
+  </target>
+
+  <target name="lint" description="Perform syntax check of source code files">
+    <apply executable="php" failonerror="true">
+      <arg value="-l" />
+
+      <fileset dir="${basedir}/src">
+        <include name="**/*.php" />
+        <modified />
+      </fileset>
+
+      <fileset dir="${basedir}/test">
+        <include name="**/*.php" />
+        <modified />
+      </fileset>
+    </apply>
   </target>
 
   <target name="composer-check" depends="prepare">
-    <available file="${basedir}/build/composer.phar" property="composer.present"/>
+    <available file="${builddir}/composer.phar" property="composer.present"/>
   </target>
 
   <target name="composer-download" unless="composer.present">
-    <get src="https://getcomposer.org/composer.phar" dest="${basedir}/build/composer.phar"/>
+    <get src="https://getcomposer.org/composer.phar" dest="${builddir}/composer.phar"/>
   </target>
 
-  <target name="composer" depends="composer-check,composer-download" description="Run composer update">
+  <target name="composer" depends="composer-check,composer-download" unless="composer.noupdate" description="Run composer update">
     <exec executable="php">
-      <arg value="${basedir}/build/composer.phar"/>
+      <arg value="${builddir}/composer.phar"/>
       <arg value="update"/>
     </exec>
   </target>
 
   <target name="phploc" depends="composer" description="Measure project size using PHPLOC">
     <exec executable="${basedir}/vendor/bin/phploc">
-      <arg value="--log-csv=${basedir}/build/logs/phploc.csv" />
-      <arg value="--exclude=${basedir}/src/GitWrapper/Test" />
-      <arg value="--quiet" />
+      <arg value="--log-csv" />
+      <arg value="${builddir}/logs/phploc.csv" />
       <arg path="${basedir}/src" />
     </exec>
   </target>
 
-  <target name="pdepend" depends="prepare" description="Calculate software metrics using PHP_Depend">
-    <mkdir dir="${basedir}/build/pdepend"/>
+  <target name="pdepend" depends="composer" description="Calculate software metrics using PHP_Depend">
     <exec executable="${basedir}/vendor/bin/pdepend">
-      <arg value="--jdepend-xml=${basedir}/build/logs/jdepend.xml" />
-      <arg value="--jdepend-chart=${basedir}/build/pdepend/dependencies.svg" />
-      <arg value="--overview-pyramid=${basedir}/build/pdepend/overview-pyramid.svg" />
-      <arg value="--ignore=${basedir}/src/GitWrapper/Test" />
+      <arg value="--jdepend-xml=${builddir}/logs/jdepend.xml" />
+      <arg value="--jdepend-chart=${builddir}/pdepend/dependencies.svg" />
+      <arg value="--overview-pyramid=${builddir}/pdepend/overview-pyramid.svg" />
+      <arg path="${basedir}/src" />
+    </exec>
+  </target>
+
+  <target name="phpmd" description="Perform mess detection using PHPMD, print human readable output.">
+    <exec executable="${basedir}/vendor/bin/phpmd">
+      <arg path="${basedir}/src" />
+      <arg value="text" />
+      <arg value="${basedir}/phpmd.xml" />
+    </exec>
+  </target>
+
+  <target name="phpmd-ci" description="Perform mess detection using PHPMD, creating a log file for the CI server">
+    <exec executable="${basedir}/vendor/bin/phpmd">
+      <arg path="${basedir}/src" />
+      <arg value="xml" />
+      <arg value="${basedir}/phpmd.xml" />
+      <arg value="--reportfile" />
+      <arg value="${basedir}/build/logs/pmd.xml" />
+    </exec>
+  </target>
+
+  <target name="phpcpd" description="Find duplicate code using PHPCPD">
+    <exec executable="${basedir}/vendor/bin/phpcpd">
+      <arg value="--log-pmd" />
+      <arg value="${basedir}/build/logs/pmd-cpd.xml" />
       <arg path="${basedir}/src" />
     </exec>
   </target>
 
   <target name="phpunit" depends="composer" description="Run unit tests with PHPUnit">
-    <mkdir dir="${basedir}/build/test"/>
-    <mkdir dir="${basedir}/build/coverage"/>
     <exec executable="${basedir}/vendor/bin/phpunit" failonerror="true"/>
-    <delete dir="${basedir}/build/test"/>
   </target>
 
 </project>
