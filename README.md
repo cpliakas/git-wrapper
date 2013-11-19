@@ -1,5 +1,4 @@
-Overview
-========
+# Overview
 
 [![Build Status](https://travis-ci.org/cpliakas/git-wrapper.png)](https://travis-ci.org/cpliakas/git-wrapper)
 [![Coverage Status](https://coveralls.io/repos/cpliakas/git-wrapper/badge.png?branch=master)](https://coveralls.io/r/cpliakas/git-wrapper?branch=master)
@@ -20,8 +19,7 @@ containing the working copy. Although this a fairly simple challenge to
 overcome, the library handles this transparently so the developer doesn't have
 to think about it.
 
-Usage
-=====
+## Usage
 
 ```php
 use GitWrapper\GitWrapper;
@@ -76,8 +74,7 @@ $options = array(
 );
 ```
 
-Installation
-============
+## Installation
 
 Git Wrapper can be installed with [Composer](http://getcomposer.org) by adding
 the library as a dependency to your composer.json file.
@@ -93,16 +90,14 @@ the library as a dependency to your composer.json file.
 Please refer to [Composer's documentation](https://github.com/composer/composer/blob/master/doc/00-intro.md#introduction)
 for installation and usage instructions.
 
-Gotchas
-=======
+## Gotchas
 
 There are a few "gotchas" that are out of scope for this library to solve but
 might prevent a successful implementation of running Git via PHP. The following
 is an incomplete list of challenges that are often encountered when executing
 Git from PHP.
 
-Missing HOME Environment Variable
----------------------------------
+### Missing HOME Environment Variable
 
 Sometimes the `HOME` environment variable is not set in the Git process that is
 spawned by PHP. This will cause many Git operations to fail. It is advisable to
@@ -117,8 +112,7 @@ $wrapper->setEnvVar('HOME', '/path/to/a/private/writable/dir');
 It is important that the storage is persistent as the ~/.gitconfig file will be
 written to this location. See the following "gotcha" for why this is important.
 
-Missing Identity And Configurations
------------------------------------
+### Missing Identity And Configurations
 
 Many repositories require that a name and email address are specified. This data
 is set by running `git config [name] [value]` on the command line, and the
@@ -138,8 +132,7 @@ $git
     ->config('user.email', 'user@example.com');
 ```
 
-Commits To Repositories With No Changes
----------------------------------------
+### Commits To Repositories With No Changes
 
 Running `git commit` on a repository with no changes returns no output but exits
 with a status of 1. Therefore the library will throw a `GitException` since it
@@ -153,10 +146,15 @@ if ($git->hasChanges()) {
 }
 ```
 
-Permissions Of The GIT_SSH Wrapper Script
-----------------------------------------
+### Permissions Of The GIT_SSH Wrapper Script
 
 On checkout, the bin/git-ssh-wrapper.sh script should be executable. If it is
 not, git commands with fail if a non-default private key is specified.
 
     $> chmod 0755 ./bin/git-ssh-wrapper.sh
+
+## For Developers
+
+This project uses the conventions in the [PHP Project Starter](https://github.com/cpliakas/php-project-starter).
+Refer to its documentation for the Apache Ant targets that assist with
+development.
