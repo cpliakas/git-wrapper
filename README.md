@@ -32,11 +32,11 @@ $wrapper = new GitWrapper();
 // Optionally specify a private key other than one of the defaults.
 $wrapper->setPrivateKey('/path/to/private/key');
 
-// Get a working copy object, clone a repo into `./path/to/working/copy`.
-$git = $wrapper->clone('git://github.com/cpliakas/git-wrapper.git', './path/to/working/copy');
+// Clone a repo into `/path/to/working/copy`, get a working copy object.
+$git = $wrapper->clone('git://github.com/cpliakas/git-wrapper.git', '/path/to/working/copy');
 
 // Create a file in the working copy.
-touch('./path/to/working/copy/text.txt');
+touch('/path/to/working/copy/text.txt');
 
 // Add it, commit it, and push the change.
 $git
