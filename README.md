@@ -155,6 +155,5 @@ not, git commands with fail if a non-default private key is specified.
 
 ## For Developers
 
-This project uses the conventions in the [PHP Project Starter](https://github.com/cpliakas/php-project-starter).
-Refer to its documentation for the Apache Ant targets that assist with
-development.
+Refer to [PHP Project Starter's documentation](https://github.com/cpliakas/php-project-starter#using-apache-ant)
+for the Apache Ant targets supported by this project.
