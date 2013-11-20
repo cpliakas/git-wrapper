@@ -7,7 +7,6 @@
 
   <target name="clean" description="Cleanup build artifacts">
     <delete dir="${builddir}"/>
-    <delete file="${basedir}/cache.properties"/>
   </target>
 
   <target name="clean-src" description="Cleanup dependency source code">
@@ -27,15 +26,11 @@
   <target name="lint" description="Perform syntax check of source code files">
     <apply executable="php" failonerror="true">
       <arg value="-l" />
-
       <fileset dir="${basedir}/src">
         <include name="**/*.php" />
-        <modified />
       </fileset>
-
       <fileset dir="${basedir}/test">
         <include name="**/*.php" />
-        <modified />
       </fileset>
     </apply>
   </target>
