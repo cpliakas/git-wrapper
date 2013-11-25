@@ -2,8 +2,9 @@
 <project name="Git Wrapper" default="build">
 
   <property name="builddir" value="${basedir}/build"/>
+  <property name="composer" value="${builddir}/composer.phar"/>
 
-  <target name="build" depends="lint,composer,pdepend,phploc,phpmd-ci,phpunit"/>
+  <target name="build" depends="lint,composer,phploc,pdepend,phpmd-ci,phpcpd,phpunit"/>
 
   <target name="clean" description="Cleanup build artifacts">
     <delete dir="${builddir}"/>
@@ -16,6 +17,14 @@
 
   <target name="clean-all" depends="clean,clean-src" description="Cleanup build artifacts and dependency source code"/>
 
+  <target name="php-check">
+    <condition property="php" value="php">
+      <not>
+        <isset property="${php}"/>
+      </not>
+    </condition>
+  </target>
+
   <target name="prepare">
     <mkdir dir="${builddir}/coverage"/>
     <mkdir dir="${builddir}/logs"/>
@@ -23,8 +32,8 @@
     <mkdir dir="${builddir}/test"/>
   </target>
 
-  <target name="lint" description="Perform syntax check of source code files">
-    <apply executable="php" failonerror="true">
+  <target name="lint" depends="php-check" description="Perform syntax check of source code files">
+    <apply executable="${php}" failonerror="true">
       <arg value="-l" />
       <fileset dir="${basedir}/src">
         <include name="**/*.php" />
@@ -36,16 +45,25 @@
   </target>
 
   <target name="composer-check" depends="prepare">
-    <available file="${builddir}/composer.phar" property="composer.present"/>
+    <available file="${composer}" property="composer.present"/>
   </target>
 
-  <target name="composer-download" unless="composer.present">
-    <get src="https://getcomposer.org/composer.phar" dest="${builddir}/composer.phar"/>
+  <target name="composer-download" depends="composer-check" unless="composer.present">
+    <property name="composer.noselfupdate" value="true"/>
+    <get src="https://getcomposer.org/composer.phar" dest="${composer}"/>
   </target>
 
-  <target name="composer" depends="composer-check,composer-download" unless="composer.noupdate" description="Run composer update">
-    <exec executable="php">
-      <arg value="${builddir}/composer.phar"/>
+  <target name="composer-selfupdate" depends="php-check,composer-download" unless="composer.noselfupdate">
+    <exec executable="${php}">
+      <arg value="${composer}"/>
+      <arg value="self-update"/>
+      <arg value="--quiet"/>
+    </exec>
+  </target>
+
+  <target name="composer" depends="composer-selfupdate" unless="composer.noupdate" description="Run composer update">
+    <exec executable="${php}">
+      <arg value="${composer}"/>
       <arg value="update"/>
     </exec>
   </target>
