@@ -105,28 +105,6 @@ class GitCommand
     }
 
     /**
-     * Properly escapes file patterns that are passed as arguments.
-     *
-     * This method only escape paths with files that have extensions. If the
-     * path does not have an extension, there is no need to excape the periods.
-     *
-     * This is most useful for Git "add" and "rm" commands.
-     *
-     * @param string $filepattern
-     *   The file pattern being escaped.
-     *
-     * @return string
-     */
-    static public function escapeFilepattern($filepattern)
-    {
-        $path_info = pathinfo($filepattern);
-        if (isset($path_info['extension'])) {
-            $path_info['basename'] = str_replace('.', '\\.', $path_info['basename']);
-        }
-        return $path_info['dirname'] . DIRECTORY_SEPARATOR . $path_info['basename'];
-    }
-
-    /**
      * Returns Git command being run, e.g. "clone", "commit", etc.
      *
      * @return string
