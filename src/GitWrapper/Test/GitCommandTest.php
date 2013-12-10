@@ -52,11 +52,4 @@ class GitCommandTest extends GitWrapperTestCase
 
         $this->assertEquals($expected, $command_line);
     }
-
-    public function testEscapeFilepattern()
-    {
-        $filepattern = 'a.directory/test.txt';
-        $expected = 'a.directory/test\\.txt';
-        $this->assertEquals($expected, GitCommand::escapeFilepattern($filepattern));
-    }
 }
