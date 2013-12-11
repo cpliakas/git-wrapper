@@ -11,16 +11,13 @@
 
     <testsuites>
        <testsuite name="Git Wrapper">
-         <directory suffix="Test.php">src/GitWrapper/Test</directory>
+         <directory suffix="Test.php">test</directory>
        </testsuite>
     </testsuites>
 
     <filter>
       <whitelist>
         <directory suffix=".php">src</directory>
-        <exclude>
-          <directory>src/GitWrapper/Test</directory>
-        </exclude>
       </whitelist>
     </filter>
 
