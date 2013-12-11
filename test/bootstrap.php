@@ -1,8 +1,11 @@
 <?php
 
-// Ensure the dependencies have been downloaded.
-$autoload_file = __DIR__ . '/../vendor/autoload.php';
-if (!file_exists($autoload_file)) {
+$autoloadFile = __DIR__ . '/../vendor/autoload.php';
+if (!file_exists($autoloadFile)) {
     throw new RuntimeException('Install dependencies to run test suite.');
 }
-require_once $autoload_file;
+require_once $autoloadFile;
+
+$loader = new \Composer\Autoload\ClassLoader();
+$loader->add('GitWrapper\Test', 'test');
+$loader->register();
