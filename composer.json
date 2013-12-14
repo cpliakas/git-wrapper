@@ -4,7 +4,7 @@
     "description": "A PHP wrapper around the Git command line utility.",
     "keywords": ["git"],
     "homepage": "https://github.com/cpliakas/git-wrapper",
-    "license": "GPL-3.0",
+    "license": "MIT",
     "authors": [
         {
             "name": "Chris Pliakas",
