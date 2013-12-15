@@ -136,17 +136,6 @@ class GitWorkingCopyTest extends GitWrapperTestCase
         $git->badMethod();
     }
 
-    /**
-     * @deprecated since version 1.0.0
-     *
-     * @see GitCommand::escapeFilepattern()
-     */
-    public function testEscapeFilepattern()
-    {
-        $git = $this->getWorkingCopy();
-        $this->assertEquals($git->escapeFilepattern('./test.txt'), './test\.txt');
-    }
-
     public function testIsCloned()
     {
         $git = $this->getWorkingCopy();

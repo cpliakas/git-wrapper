@@ -85,26 +85,6 @@ class GitWorkingCopy
     }
 
     /**
-     * Properly escapes file patterns that are passed as arguments.
-     *
-     * This method only escape paths with files that have extensions. If the
-     * path does not have an extension, there is no need to excape the periods.
-     *
-     * This is most useful for Git "add" and "rm" commands.
-     *
-     * @param string $filepattern
-     *   The file pattern being escaped.
-     *
-     * @deprecated since version 1.0.0
-     *
-     * @see GitCommand::escapeFilepattern()
-     */
-    public function escapeFilepattern($filepattern)
-    {
-        return GitCommand::escapeFilepattern($filepattern);
-    }
-
-    /**
      * Gets the output captured by the last run Git commnd(s).
      *
      * @return string
@@ -337,7 +317,7 @@ class GitWorkingCopy
     {
         $args = array(
             'add',
-            GitCommand::escapeFilepattern($filepattern),
+            $filepattern,
             $options,
         );
         return $this->run($args);
@@ -850,7 +830,7 @@ class GitWorkingCopy
     {
         $args = array(
             'rm',
-            GitCommand::escapeFilepattern($filepattern),
+            $filepattern,
             $options,
         );
         return $this->run($args);
