@@ -15,32 +15,32 @@ class GitEvent extends Event
     /**
      * The GitWrapper object that likely instantiated this class.
      *
-     * @var GitWrapper
+     * @var \GitWrapper\GitWrapper
      */
     protected $wrapper;
 
     /**
      * The Process object being run.
      *
-     * @var Process
+     * @var \Symfony\Component\Process\Process
      */
     protected $process;
 
     /**
      * The GitCommand object being executed.
      *
-     * @var GitCommand
+     * @var \GitWrapper\GitCommand
      */
     protected $command;
 
     /**
      * Constructs a GitEvent object.
      *
-     * @param GitWrapper $wrapper
+     * @param \GitWrapper\GitWrapper $wrapper
      *   The GitWrapper object that likely instantiated this class.
-     * @param Process $process
+     * @param \Symfony\Component\Process\Process $process
      *   The Process object being run.
-     * @param GitCommand $command
+     * @param \GitWrapper\GitCommand $command
      *   The GitCommand object being executed.
      */
     public function __construct(GitWrapper $wrapper, Process $process, GitCommand $command)
@@ -53,7 +53,7 @@ class GitEvent extends Event
     /**
      * Gets the GitWrapper object that likely instantiated this class.
      *
-     * @return GitWrapper
+     * @return \GitWrapper\GitWrapper
      */
     public function getWrapper()
     {
@@ -63,7 +63,7 @@ class GitEvent extends Event
     /**
      * Gets the Process object being run.
      *
-     * @return Process
+     * @return \Symfony\Component\Process\Process
      */
     public function getProcess()
     {
@@ -73,7 +73,7 @@ class GitEvent extends Event
     /**
      * Gets the GitCommand object being executed.
      *
-     * @return GitCommand
+     * @return \GitWrapper\GitCommand
      */
     public function getCommand()
     {

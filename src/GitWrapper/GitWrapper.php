@@ -20,7 +20,7 @@ class GitWrapper
     /**
      * Symfony event dispatcher object used by this library to dispatch events.
      *
-     * @var EventDispatcherInterface
+     * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
      */
     private $dispatcher;
 
@@ -53,40 +53,40 @@ class GitWrapper
     protected $procOptions = array();
 
     /**
-     * @var Event\GitOutputListenerInterface
+     * @var \GitWrapper\Event\GitOutputListenerInterface
      */
     protected $streamListener;
 
     /**
      * Constructs a GitWrapper object.
      *
-     * @param string|null $git_binary
+     * @param string|null $gitBinary
      *   The path to the Git binary. Defaults to null, which uses Symfony's
      *   ExecutableFinder to resolve it automatically.
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      *   Throws an exception if the path to the Git binary couldn't be resolved
      *   by the ExecutableFinder class.
      */
-    public function __construct($git_binary = null)
+    public function __construct($gitBinary = null)
     {
-        if (null === $git_binary) {
+        if (null === $gitBinary) {
             // @codeCoverageIgnoreStart
             $finder = new ExecutableFinder();
-            $git_binary = $finder->find('git');
-            if (!$git_binary) {
+            $gitBinary = $finder->find('git');
+            if (!$gitBinary) {
                 throw new GitException('Unable to find the Git executable.');
             }
             // @codeCoverageIgnoreEnd
         }
 
-        $this->setGitBinary($git_binary);
+        $this->setGitBinary($gitBinary);
     }
 
     /**
      * Gets the dispatcher used by this library to dispatch events.
      *
-     * @return EventDispatcherInterface
+     * @return \Symfony\Component\EventDispatcher\EventDispatcherInterface
      */
     public function getDispatcher()
     {
@@ -99,10 +99,10 @@ class GitWrapper
     /**
      * Sets the dispatcher used by this library to dispatch events.
      *
-     * @param EventDispatcherInterface $dispatcher
+     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher
      *   The Symfony event dispatcher object.
      *
-     * @return GitWrapper
+     * @return \GitWrapper\GitWrapper
      */
     public function setDispatcher(EventDispatcherInterface $dispatcher)
     {
@@ -113,14 +113,14 @@ class GitWrapper
     /**
      * Sets the path to the Git binary.
      *
-     * @param string $git_binary
+     * @param string $gitBinary
      *   Path to the Git binary.
      *
-     * @return GitWrapper
+     * @return \GitWrapper\GitWrapper
      */
-    public function setGitBinary($git_binary)
+    public function setGitBinary($gitBinary)
     {
-        $this->gitBinary = escapeshellcmd($git_binary);
+        $this->gitBinary = escapeshellcmd($gitBinary);
         return $this;
     }
 
@@ -143,7 +143,7 @@ class GitWrapper
      * @param mixed $default
      *   The value of the environment variable is not set, defaults to null.
      *
-     * @return GitWrapper
+     * @return \GitWrapper\GitWrapper
      */
     public function setEnvVar($var, $value)
     {
@@ -158,7 +158,7 @@ class GitWrapper
      * @param string $var
      *   The name of the environment variable, e.g. "HOME", "GIT_SSH".
      *
-     * @return GitWrapper
+     * @return \GitWrapper\GitWrapper
      */
     public function unsetEnvVar($var)
     {
@@ -200,7 +200,7 @@ class GitWrapper
      * @param int $timeout
      *   The timeout in seconds.
      *
-     * @return GitWrapper
+     * @return \GitWrapper\GitWrapper
      */
     public function setTimeout($timeout)
     {
@@ -225,7 +225,7 @@ class GitWrapper
      * @param array $timeout
      *   The options passed to proc_open().
      *
-     * @return GitWrapper
+     * @return \GitWrapper\GitWrapper
      */
     public function setProcOptions(array $options)
     {
@@ -250,7 +250,7 @@ class GitWrapper
      * script included with this library. It also sets the custom GIT_SSH_KEY
      * and GIT_SSH_PORT environment variables that are used by the script.
      *
-     * @param string $private_key
+     * @param string $privateKey
      *   Path to the private key.
      * @param int $port
      *   Port that the SSH server being connected to listens on, defaults to 22.
@@ -258,48 +258,50 @@ class GitWrapper
      *   Path the the GIT_SSH wrapper script, defaults to null which uses the
      *   script included with this library.
      *
-     * @return GitWrapper
+     * @return \GitWrapper\GitWrapper
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      *   Thrown when any of the paths cannot be resolved.
      */
-    public function setPrivateKey($private_key, $port = 22, $wrapper = null)
+    public function setPrivateKey($privateKey, $port = 22, $wrapper = null)
     {
         if (null === $wrapper) {
             $wrapper = __DIR__ . '/../../bin/git-ssh-wrapper.sh';
         }
-        if (!$wrapper_path = realpath($wrapper)) {
+        if (!$wrapperPath = realpath($wrapper)) {
             throw new GitException('Path to GIT_SSH wrapper script could not be resolved: ' . $wrapper);
         }
-        if (!$private_key_path = realpath($private_key)) {
-            throw new GitException('Path private key could not be resolved: ' . $private_key);
+        if (!$privateKeyPath = realpath($privateKey)) {
+            throw new GitException('Path private key could not be resolved: ' . $privateKey);
         }
 
         return $this
-            ->setEnvVar('GIT_SSH', $wrapper_path)
-            ->setEnvVar('GIT_SSH_KEY', $private_key_path)
-            ->setEnvVar('GIT_SSH_PORT', (int) $port);
+            ->setEnvVar('GIT_SSH', $wrapperPath)
+            ->setEnvVar('GIT_SSH_KEY', $privateKeyPath)
+            ->setEnvVar('GIT_SSH_PORT', (int) $port)
+        ;
     }
 
     /**
      * Unsets the private key by removing the appropriate environment variables.
      *
-     * @return GitWrapper
+     * @return \GitWrapper\GitWrapper
      */
     public function unsetPrivateKey()
     {
         return $this
             ->unsetEnvVar('GIT_SSH')
             ->unsetEnvVar('GIT_SSH_KEY')
-            ->unsetEnvVar('GIT_SSH_PORT');
+            ->unsetEnvVar('GIT_SSH_PORT')
+        ;
     }
 
     /**
      * Adds output listener.
      *
-     * @param Event\GitOutputListenerInterface $listener
+     * @param \GitWrapper\Event\GitOutputListenerInterface $listener
      *
-     * @return GitWrapper
+     * @return \GitWrapper\GitWrapper
      */
     public function addOutputListener(Event\GitOutputListenerInterface $listener)
     {
@@ -313,9 +315,9 @@ class GitWrapper
     /**
      * Removes an output listener.
      *
-     * @param Event\GitOutputListenerInterface $listener
+     * @param \GitWrapper\Event\GitOutputListenerInterface $listener
      *
-     * @return GitWrapper
+     * @return \GitWrapper\GitWrapper
      */
     public function removeOutputListener(Event\GitOutputListenerInterface $listener)
     {
@@ -329,18 +331,18 @@ class GitWrapper
     /**
      * Set whether or not to stream real-time output to STDOUT and STDERR.
      *
-     * @param boolean $stream_output
+     * @param boolean $streamOutput
      *
-     * @return GitWrapper
+     * @return \GitWrapper\GitWrapper
      */
-    public function streamOutput($stream_output = true)
+    public function streamOutput($streamOutput = true)
     {
-        if ($stream_output && !isset($this->streamListener)) {
+        if ($streamOutput && !isset($this->streamListener)) {
             $this->streamListener = new Event\GitOutputStreamListener();
             $this->addOutputListener($this->streamListener);
         }
 
-        if (!$stream_output && isset($this->streamListener)) {
+        if (!$streamOutput && isset($this->streamListener)) {
             $this->removeOutputListener($this->streamListener);
             unset($this->streamListener);
         }
@@ -366,7 +368,7 @@ class GitWrapper
      *
      * @return string
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      */
     public function version()
     {
@@ -409,9 +411,9 @@ class GitWrapper
      * @param array $options
      *   (optional) An associative array of command line options.
      *
-     * @return GitWorkingCopy
+     * @return \GitWrapper\GitWorkingCopy
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      *
      * @see GitWorkingCopy::cloneRepository()
      *
@@ -440,9 +442,9 @@ class GitWrapper
      * @param array $options
      *   (optional) An associative array of command line options.
      *
-     * @return GitWorkingCopy
+     * @return \GitWrapper\GitWorkingCopy
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      *
      * @see GitWorkingCopy::cloneRepository()
      *
@@ -468,7 +470,7 @@ class GitWrapper
      *
      * Note that no events are thrown by this method.
      *
-     * @param string $command_line
+     * @param string $commandLine
      *   The raw command containing the Git options and arguments. The Git
      *   binary should not be in the command, for example `git config -l` would
      *   translate to "config -l".
@@ -479,13 +481,13 @@ class GitWrapper
      * @return string
      *   The STDOUT returned by the Git command.
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      *
      * @see GitWrapper::run()
      */
-    public function git($command_line, $cwd = null)
+    public function git($commandLine, $cwd = null)
     {
-        $command = GitCommand::getInstance($command_line);
+        $command = GitCommand::getInstance($commandLine);
         $command->setDirectory($cwd);
         return $this->run($command);
     }
@@ -493,7 +495,7 @@ class GitWrapper
     /**
      * Runs a Git command.
      *
-     * @param GitCommand $command
+     * @param \GitWrapper\GitCommand $command
      *   The Git command being executed.
      * @param string|null $cwd
      *   Explicitly specify the working directory of the Git process. Defaults
@@ -503,7 +505,7 @@ class GitWrapper
      * @return string
      *   The STDOUT returned by the Git command.
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      *
      * @see Process
      */
@@ -522,7 +524,7 @@ class GitWrapper
      * Hackish, allows us to use "clone" as a method name.
      *
      * $throws \BadMethodCallException
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      */
     public function __call($method, $args)
     {

@@ -24,11 +24,11 @@ class GitOutputEvent extends GitEvent
     /**
      * Constructs a GitEvent object.
      *
-     * @param GitWrapper $wrapper
+     * @param \GitWrapper\GitWrapper $wrapper
      *   The GitWrapper object that likely instantiated this class.
-     * @param Process $process
+     * @param \Symfony\Component\Process\Process $process
      *   The Process object being run.
-     * @param GitCommand $command
+     * @param \GitWrapper\GitCommand $command
      *   The GitCommand object being executed.
      */
     public function __construct(GitWrapper $wrapper, Process $process, GitCommand $command, $type, $buffer)

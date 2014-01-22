@@ -13,7 +13,7 @@ class GitWorkingCopy
     /**
      * The GitWrapper object that likely instantiated this class.
      *
-     * @var GitWrapper
+     * @var \GitWrapper\GitWrapper
      */
     protected $wrapper;
 
@@ -44,7 +44,7 @@ class GitWorkingCopy
     /**
      * Constructs a GitWorkingCopy object.
      *
-     * @param GitWrapper $wrapper
+     * @param \GitWrapper\GitWrapper $wrapper
      *   The GitWrapper object that likely instantiated this class.
      * @param string $directory
      *   Path to the directory containing the working copy.
@@ -58,7 +58,7 @@ class GitWorkingCopy
     /**
      * Returns the GitWrapper object that likely instantiated this class.
      *
-     * @return GitWrapper
+     * @return \GitWrapper\GitWrapper
      */
     public function getWrapper()
     {
@@ -90,7 +90,7 @@ class GitWorkingCopy
     /**
      * Clears the stored output captured by the last run Git command(s).
      *
-     * @return GitWorkingCopy
+     * @return \GitWrapper\GitWorkingCopy
      */
     public function clearOutput()
     {
@@ -104,7 +104,7 @@ class GitWorkingCopy
      * @param boolean $cloned
      *   Whether the repository is cloned into the directory or not.
      *
-     * @return GitWorkingCopy
+     * @return \GitWrapper\GitWorkingCopy
      */
     public function setCloned($cloned)
     {
@@ -122,11 +122,11 @@ class GitWorkingCopy
     public function isCloned()
     {
         if (!isset($this->cloned)) {
-            $git_dir = $this->directory;
-            if (is_dir($git_dir . '/.git')) {
-                $git_dir .= '/.git';
+            $gitDir = $this->directory;
+            if (is_dir($gitDir . '/.git')) {
+                $gitDir .= '/.git';
             };
-            $this->cloned = (is_dir($git_dir . '/objects') && is_dir($git_dir . '/refs') && is_file($git_dir . '/HEAD'));
+            $this->cloned = (is_dir($gitDir . '/objects') && is_dir($gitDir . '/refs') && is_file($gitDir . '/HEAD'));
         }
         return $this->cloned;
     }
@@ -136,19 +136,19 @@ class GitWorkingCopy
      *
      * @param array $args
      *   The arguments passed to the command method.
-     * @param boolean $set_directory
+     * @param boolean $setDirectory
      *   Set the working directory, defaults to true.
      *
-     * @return GitWorkingCopy
+     * @return \GitWrapper\GitWorkingCopy
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      *
      * @see GitWrapper::run()
      */
-    public function run($args, $set_directory = true)
+    public function run($args, $setDirectory = true)
     {
         $command = call_user_func_array(array('GitWrapper\GitCommand', 'getInstance'), $args);
-        if ($set_directory) {
+        if ($setDirectory) {
             $command->setDirectory($this->directory);
         }
         $this->output .= $this->wrapper->run($command);
@@ -168,7 +168,7 @@ class GitWorkingCopy
      *
      * @return string
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      */
     public function getStatus()
     {
@@ -180,7 +180,7 @@ class GitWorkingCopy
      *
      * @return bool
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      */
     public function hasChanges()
     {
@@ -300,9 +300,9 @@ class GitWorkingCopy
      * @param array $options
      *   An optional array of command line options.
      *
-     * @return GitWorkingCopy
+     * @return \GitWrapper\GitWorkingCopy
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      */
     public function add($filepattern, array $options = array())
     {
@@ -331,9 +331,9 @@ class GitWorkingCopy
      * @param array $options
      *   (optional) An associative array of command line options.
      *
-     * @return GitWorkingCopy
+     * @return \GitWrapper\GitWorkingCopy
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      */
     public function bisect($sub_command)
     {
@@ -357,9 +357,9 @@ class GitWorkingCopy
      * @param array $options
      *   (optional) An associative array of command line options.
      *
-     * @return GitWorkingCopy
+     * @return \GitWrapper\GitWorkingCopy
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      */
     public function branch()
     {
@@ -382,9 +382,9 @@ class GitWorkingCopy
      * @param array $options
      *   (optional) An associative array of command line options.
      *
-     * @return GitWorkingCopy
+     * @return \GitWrapper\GitWorkingCopy
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      */
     public function checkout()
     {
@@ -411,9 +411,9 @@ class GitWorkingCopy
      * @param string $repository
      *   The URL of the repository being cloned.
      *
-     * @return GitWorkingCopy
+     * @return \GitWrapper\GitWorkingCopy
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      */
     public function cloneRepository($repository, $options = array())
     {
@@ -443,9 +443,9 @@ class GitWorkingCopy
      * @param array $options
      *   (optional) An associative array of command line options.
      *
-     * @return GitWorkingCopy
+     * @return \GitWrapper\GitWorkingCopy
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      */
     public function commit()
     {
@@ -475,9 +475,9 @@ class GitWorkingCopy
      * @param array $options
      *   (optional) An associative array of command line options.
      *
-     * @return GitWorkingCopy
+     * @return \GitWrapper\GitWorkingCopy
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      */
     public function config()
     {
@@ -501,9 +501,9 @@ class GitWorkingCopy
      * @param array $options
      *   (optional) An associative array of command line options.
      *
-     * @return GitWorkingCopy
+     * @return \GitWrapper\GitWorkingCopy
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      */
     public function diff()
     {
@@ -527,9 +527,9 @@ class GitWorkingCopy
      * @param array $options
      *   (optional) An associative array of command line options.
      *
-     * @return GitWorkingCopy
+     * @return \GitWrapper\GitWorkingCopy
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      */
     public function fetch()
     {
@@ -552,9 +552,9 @@ class GitWorkingCopy
      * @param array $options
      *   (optional) An associative array of command line options.
      *
-     * @return GitWorkingCopy
+     * @return \GitWrapper\GitWorkingCopy
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      */
     public function grep()
     {
@@ -575,9 +575,9 @@ class GitWorkingCopy
      * @param array $options
      *   (optional) An associative array of command line options.
      *
-     * @return GitWorkingCopy
+     * @return \GitWrapper\GitWorkingCopy
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      */
     public function init(array $options = array())
     {
@@ -604,9 +604,9 @@ class GitWorkingCopy
      * @param array $options
      *   (optional) An associative array of command line options.
      *
-     * @return GitWorkingCopy
+     * @return \GitWrapper\GitWorkingCopy
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      */
     public function log()
     {
@@ -629,9 +629,9 @@ class GitWorkingCopy
      * @param array $options
      *   (optional) An associative array of command line options.
      *
-     * @return GitWorkingCopy
+     * @return \GitWrapper\GitWorkingCopy
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      */
     public function merge()
     {
@@ -656,9 +656,9 @@ class GitWorkingCopy
      * @param array $options
      *   (optional) An associative array of command line options.
      *
-     * @return GitWorkingCopy
+     * @return \GitWrapper\GitWorkingCopy
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      */
     public function mv($source, $destination, array $options = array())
     {
@@ -685,9 +685,9 @@ class GitWorkingCopy
      * @param array $options
      *   (optional) An associative array of command line options.
      *
-     * @return GitWorkingCopy
+     * @return \GitWrapper\GitWorkingCopy
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      */
     public function pull()
     {
@@ -710,9 +710,9 @@ class GitWorkingCopy
      * @param array $options
      *   (optional) An associative array of command line options.
      *
-     * @return GitWorkingCopy
+     * @return \GitWrapper\GitWorkingCopy
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      */
     public function push()
     {
@@ -735,9 +735,9 @@ class GitWorkingCopy
      * @param array $options
      *   (optional) An associative array of command line options.
      *
-     * @return GitWorkingCopy
+     * @return \GitWrapper\GitWorkingCopy
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      */
     public function rebase()
     {
@@ -760,9 +760,9 @@ class GitWorkingCopy
      * @param array $options
      *   (optional) An associative array of command line options.
      *
-     * @return GitWorkingCopy
+     * @return \GitWrapper\GitWorkingCopy
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      */
     public function remote()
     {
@@ -785,9 +785,9 @@ class GitWorkingCopy
      * @param array $options
      *   (optional) An associative array of command line options.
      *
-     * @return GitWorkingCopy
+     * @return \GitWrapper\GitWorkingCopy
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      */
     public function reset()
     {
@@ -813,9 +813,9 @@ class GitWorkingCopy
      * @param array $options
      *   (optional) An associative array of command line options.
      *
-     * @return GitWorkingCopy
+     * @return \GitWrapper\GitWorkingCopy
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      */
     public function rm($filepattern, array $options = array())
     {
@@ -842,9 +842,9 @@ class GitWorkingCopy
      * @param array $options
      *   (optional) An associative array of command line options.
      *
-     * @return GitWorkingCopy
+     * @return \GitWrapper\GitWorkingCopy
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      */
     public function show($object, array $options = array())
     {
@@ -866,9 +866,9 @@ class GitWorkingCopy
      * @param array $options
      *   (optional) An associative array of command line options.
      *
-     * @return GitWorkingCopy
+     * @return \GitWrapper\GitWorkingCopy
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      */
     public function status()
     {
@@ -891,9 +891,9 @@ class GitWorkingCopy
      * @param array $options
      *   (optional) An associative array of command line options.
      *
-     * @return GitWorkingCopy
+     * @return \GitWrapper\GitWorkingCopy
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      */
     public function tag()
     {
@@ -910,7 +910,7 @@ class GitWorkingCopy
      * Hackish, allows us to use "clone" as a method name.
      *
      * $throws \BadMethodCallException
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      */
     public function __call($method, $args)
     {
