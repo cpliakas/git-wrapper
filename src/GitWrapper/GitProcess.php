@@ -10,20 +10,20 @@ use Symfony\Component\Process\Process;
 class GitProcess extends Process
 {
     /**
-     * @var GitWrapper
+     * @var \GitWrapper\GitWrapper
      */
     protected $git;
 
     /**
-     * @var GitCommand
+     * @var \GitWrapper\GitCommand
      */
     protected $command;
 
     /**
      * Constructs a GitProcess object.
      *
-     * @param GitWrapper $git
-     * @param GitCommand $command
+     * @param \GitWrapper\GitWrapper $git
+     * @param \GitWrapper\GitCommand $command
      * @param string|null $cwd
      */
     public function __construct(GitWrapper $git, GitCommand $command, $cwd = null)
@@ -32,7 +32,7 @@ class GitProcess extends Process
         $this->command = $command;
 
         // Build the command line options, flags, and arguments.
-        $command_line = rtrim($git->getGitBinary() . ' ' . $command->getCommandLine());
+        $commandLine = rtrim($git->getGitBinary() . ' ' . $command->getCommandLine());
 
         // Resolve the working directory of the Git process. Use the directory
         // in the command object if it exists.
@@ -51,7 +51,7 @@ class GitProcess extends Process
             $env = null;
         }
 
-        parent::__construct($command_line, $cwd, $env, null, $git->getTimeout(), $git->getProcOptions());
+        parent::__construct($commandLine, $cwd, $env, null, $git->getTimeout(), $git->getProcOptions());
     }
 
     /**

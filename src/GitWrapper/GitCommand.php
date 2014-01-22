@@ -87,7 +87,7 @@ class GitCommand
      * @param array $options
      *   An optional array of arguments to pass to the command.
      *
-     * @return GitCommand
+     * @return \GitWrapper\GitCommand
      */
     static public function getInstance()
     {
@@ -111,7 +111,7 @@ class GitCommand
      * @param string $directory
      *   The path to the directory containing the working copy.
      *
-     * @return GitCommand
+     * @return \GitWrapper\GitCommand
      */
     public function setDirectory($directory)
     {
@@ -138,7 +138,7 @@ class GitCommand
      *   true for code readability, however the default behavior of this class
      *   is to run the command.
      *
-     * @return GitCommand
+     * @return \GitWrapper\GitCommand
      */
     public function bypass($bypass = true)
     {
@@ -194,7 +194,7 @@ class GitCommand
      * @param string|true $value
      *   The option's value, pass true if the options is a flag.
      *
-     * @reutrn GitCommand
+     * @reutrn \GitWrapper\GitCommand
      */
     public function setOption($option, $value)
     {
@@ -208,7 +208,7 @@ class GitCommand
      * @param array $options
      *   An associative array of command line options.
      *
-     * @reutrn GitCommand
+     * @reutrn \GitWrapper\GitCommand
      */
     public function setOptions(array $options)
     {
@@ -224,9 +224,9 @@ class GitCommand
      * @param string $flag
      *   The flag name, e.g. "q", "a".
      *
-     * @reutrn GitCommand
+     * @reutrn \GitWrapper\GitCommand
      *
-     * @see GitCommand::setOption()
+     * @see \GitWrapper\GitCommand::setOption()
      */
     public function setFlag($option)
     {
@@ -254,7 +254,7 @@ class GitCommand
      * @param string $option
      *   The option name, e.g. "branch", "q".
      *
-     * @return GitCommand
+     * @return \GitWrapper\GitCommand
      */
     public function unsetOption($option)
     {
@@ -268,7 +268,7 @@ class GitCommand
      * @param string $arg
      *   The argument, e.g. the repo URL, directory, etc.
      *
-     * @reutrn GitCommand
+     * @return \GitWrapper\GitCommand
      */
     public function addArgument($arg)
     {
