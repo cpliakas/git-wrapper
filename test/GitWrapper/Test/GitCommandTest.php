@@ -11,32 +11,32 @@ class GitCommandTest extends GitWrapperTestCase
         $command = $this->randomString();
         $argument = $this->randomString();
         $flag = $this->randomString();
-        $option_name = $this->randomString();
-        $option_value = $this->randomString();
+        $optionName = $this->randomString();
+        $optionValue = $this->randomString();
 
         $git = GitCommand::getInstance($command)
             ->addArgument($argument)
             ->setFlag($flag)
-            ->setOption($option_name, $option_value);
+            ->setOption($optionName, $optionValue);
 
-        $expected = "$command --$flag --$option_name='$option_value' '$argument'";
-        $command_line = $git->getCommandLine();
+        $expected = "$command --$flag --$optionName='$optionValue' '$argument'";
+        $commandLine = $git->getCommandLine();
 
-        $this->assertEquals($expected, $command_line);
+        $this->assertEquals($expected, $commandLine);
     }
 
     public function testOption()
     {
-        $option_name = $this->randomString();
-        $option_value = $this->randomString();
+        $optionName = $this->randomString();
+        $optionValue = $this->randomString();
 
         $git = GitCommand::getInstance()
-            ->setOption($option_name, $option_value);
+            ->setOption($optionName, $optionValue);
 
-        $this->assertEquals($option_value, $git->getOption($option_name));
+        $this->assertEquals($optionValue, $git->getOption($optionName));
 
-        $git->unsetOption($option_name);
-        $this->assertNull($git->getOption($option_name));
+        $git->unsetOption($optionName);
+        $this->assertNull($git->getOption($optionName));
     }
 
     /**
@@ -48,8 +48,8 @@ class GitCommandTest extends GitWrapperTestCase
             ->setOption('test-arg', array(true, true));
 
         $expected = 'test-command --test-arg --test-arg';
-        $command_line = $git->getCommandLine();
+        $commandLine = $git->getCommandLine();
 
-        $this->assertEquals($expected, $command_line);
+        $this->assertEquals($expected, $commandLine);
     }
 }

@@ -16,16 +16,16 @@ class GitWrapperTestCase extends \PHPUnit_Framework_TestCase
     const CONFIG_NAME = 'Chris Pliakas';
 
     /**
-     * @var GitWrapper
+     * @var \GitWrapper\GitWrapper
      */
-    protected $_wrapper;
+    protected $wrapper;
 
     /**
      * Overrides PHPUnit_Framework_TestCase::setUp().
      */
     public function setUp() {
       parent::setUp();
-      $this->_wrapper = new GitWrapper();
+      $this->wrapper = new GitWrapper();
     }
 
     /**
@@ -84,11 +84,11 @@ class GitWrapperTestCase extends \PHPUnit_Framework_TestCase
     /**
      * Adds the test listener for all events, returns the listener.
      *
-     * @return TestListener
+     * @return \GitWrapper\Test\Event\TestListener
      */
     public function addListener()
     {
-        $dispatcher = $this->_wrapper->getDispatcher();
+        $dispatcher = $this->wrapper->getDispatcher();
         $listener = new TestListener();
 
         $dispatcher->addListener(GitEvents::GIT_PREPARE, array($listener, 'onPrepare'));
@@ -102,12 +102,12 @@ class GitWrapperTestCase extends \PHPUnit_Framework_TestCase
     /**
      * Adds the bypass listener so that Git commands are not run.
      *
-     * @return TestBypassListener
+     * @return \GitWrapper\Test\Event\TestBypassListener
      */
     public function addBypassListener()
     {
         $listener = new TestBypassListener();
-        $dispatcher = $this->_wrapper->getDispatcher();
+        $dispatcher = $this->wrapper->getDispatcher();
         $dispatcher->addListener(GitEvents::GIT_PREPARE, array($listener, 'onPrepare'), -5);
         return $listener;
     }
@@ -127,16 +127,16 @@ class GitWrapperTestCase extends \PHPUnit_Framework_TestCase
     /**
      * Executes a bad command.
      *
-     * @param bool $catch_exception
+     * @param bool $catchException
      *   Whether to catch the exception to continue script execution, defaults
      *   to false.
      */
-    public function runBadCommand($catch_exception = false)
+    public function runBadCommand($catchException = false)
     {
         try {
-            $this->_wrapper->git('a-bad-command');
+            $this->wrapper->git('a-bad-command');
         } catch (GitException $e) {
-            if (!$catch_exception) {
+            if (!$catchException) {
                 throw $e;
             }
         }
