@@ -8,20 +8,20 @@ use GitWrapper\Event\GitOutputListenerInterface;
 class TestOutputListener implements GitOutputListenerInterface
 {
     /**
-     * @var GitOutputEvent
+     * @var \GitWrapper\Event\GitOutputEvent
      */
-    protected $_event;
+    protected $event;
 
     /**
-     * @return GitOutputEvent
+     * @return GitWrapper\Event\GitOutputEvent
      */
     public function getLastEvent()
     {
-        return $this->_event;
+        return $this->event;
     }
 
     public function handleOutput(GitOutputEvent $event)
     {
-        $this->_event = $event;
+        $this->event = $event;
     }
 }
