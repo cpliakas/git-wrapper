@@ -15,11 +15,11 @@ class GitWorkingCopyTest extends GitWrapperTestCase
         parent::setUp();
 
         // Create the local repository.
-        $this->_wrapper->init(self::REPO_DIR, array('bare' => true));
+        $this->wrapper->init(self::REPO_DIR, array('bare' => true));
 
         // Clone the local repository.
         $directory = 'build/test/wc_init';
-        $git = $this->_wrapper->clone('file://' . realpath(self::REPO_DIR), $directory);
+        $git = $this->wrapper->clone('file://' . realpath(self::REPO_DIR), $directory);
         $git->config('user.email', self::CONFIG_EMAIL);
         $git->config('user.name', self::CONFIG_NAME);
 
@@ -77,11 +77,11 @@ class GitWorkingCopyTest extends GitWrapperTestCase
      *   The directory that the repository is being cloned to, defaults to
      *   "test/wc".
      *
-     * @return GitWorkingCopy
+     * @return \GitWrapper\GitWorkingCopy
      */
     public function getWorkingCopy($directory = self::WORKING_DIR)
     {
-        $git = $this->_wrapper->workingCopy($directory);
+        $git = $this->wrapper->workingCopy($directory);
         $git
             ->cloneRepository('file://' . realpath(self::REPO_DIR))
             ->config('user.email', self::CONFIG_EMAIL)
@@ -148,14 +148,14 @@ class GitWorkingCopyTest extends GitWrapperTestCase
         $this->assertTrue($branches instanceof \GitWrapper\GitBranches);
 
         // Dumb count checks. Is there a better way to do this?
-        $all_branches = 0;
+        $allBranches = 0;
         foreach ($branches as $branch) {
-            $all_branches++;
+            $allBranches++;
         }
-        $this->assertEquals($all_branches, 4);
+        $this->assertEquals($allBranches, 4);
 
-        $remote_branches = $branches->remote();
-        $this->assertEquals(count($remote_branches), 3);
+        $remoteBranches = $branches->remote();
+        $this->assertEquals(count($remoteBranches), 3);
     }
 
     public function testFetchAll()
@@ -196,17 +196,17 @@ class GitWorkingCopyTest extends GitWrapperTestCase
 
     public function testGitBranch()
     {
-        $branch_name = $this->randomString();
+        $branchName = $this->randomString();
 
         // Create the branch.
         $git = $this->getWorkingCopy();
-        $git->branch($branch_name);
+        $git->branch($branchName);
 
         // Get list of local branches.
         $branches = (string) $git->branch();
 
         // Check that our branch is there.
-        $this->assertTrue(strpos($branches, $branch_name) !== false);
+        $this->assertTrue(strpos($branches, $branchName) !== false);
     }
 
     public function testGitLog()
@@ -333,8 +333,8 @@ class GitWorkingCopyTest extends GitWrapperTestCase
         $git->status();
         $event = $listener->getLastEvent();
 
-        $expected_type = Process::OUT;
-        $this->assertEquals($expected_type, $event->getType());
+        $expectedType = Process::OUT;
+        $this->assertEquals($expectedType, $event->getType());
 
         $this->assertTrue(stripos($event->getBuffer(), 'nothing to commit') !== false);
     }
@@ -346,7 +346,7 @@ class GitWorkingCopyTest extends GitWrapperTestCase
         // Capture output written to STDOUT and use echo so we can suppress and
         // capture it using normal output buffering.
         stream_filter_register('suppress', '\GitWrapper\Test\StreamSuppressFilter');
-        $stdout_suppress = stream_filter_append(STDOUT, 'suppress');
+        $stdoutSuppress = stream_filter_append(STDOUT, 'suppress');
 
         $git->getWrapper()->streamOutput(true);
         ob_start();
@@ -365,6 +365,6 @@ class GitWorkingCopyTest extends GitWrapperTestCase
 
         $this->assertEmpty($empty);
 
-        stream_filter_remove($stdout_suppress);
+        stream_filter_remove($stdoutSuppress);
     }
 }

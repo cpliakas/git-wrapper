@@ -11,7 +11,7 @@ class GitListenerTest extends GitWrapperTestCase
     public function testListener()
     {
         $listener = $this->addListener();
-        $this->_wrapper->version();
+        $this->wrapper->version();
 
         $this->assertTrue($listener->methodCalled('onPrepare'));
         $this->assertTrue($listener->methodCalled('onSuccess'));
@@ -35,7 +35,7 @@ class GitListenerTest extends GitWrapperTestCase
         $this->addBypassListener();
         $listener = $this->addListener();
 
-        $output = $this->_wrapper->version();
+        $output = $this->wrapper->version();
 
         $this->assertTrue($listener->methodCalled('onPrepare'));
         $this->assertFalse($listener->methodCalled('onSuccess'));
@@ -49,9 +49,9 @@ class GitListenerTest extends GitWrapperTestCase
     {
         $process = new Process('');
         $command = GitCommand::getInstance();
-        $event = new GitEvent($this->_wrapper, $process, $command);
+        $event = new GitEvent($this->wrapper, $process, $command);
 
-        $this->assertEquals($this->_wrapper, $event->getWrapper());
+        $this->assertEquals($this->wrapper, $event->getWrapper());
         $this->assertEquals($process, $event->getProcess());
         $this->assertEquals($command, $event->getCommand());
     }
