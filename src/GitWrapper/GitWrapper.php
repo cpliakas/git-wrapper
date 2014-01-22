@@ -120,7 +120,7 @@ class GitWrapper
      */
     public function setGitBinary($gitBinary)
     {
-        $this->gitBinary = escapeshellcmd($gitBinary);
+        $this->gitBinary = $gitBinary;
         return $this;
     }
 
