@@ -14,17 +14,17 @@ class GitBranches implements \IteratorAggregate
     /**
      * The working copy that branches are being collected from.
      *
-     * @var GitWorkingCopy
+     * @var \GitWrapper\GitWorkingCopy
      */
     protected $git;
 
     /**
      * Constructs a GitBranches object.
      *
-     * @param GitWorkingCopy $git
+     * @param \GitWrapper\GitWorkingCopy $git
      *   The working copy that branches are being collected from.
      *
-     * @throws GitException
+     * @throws \GitWrapper\GitException
      */
     public function __construct(GitWorkingCopy $git)
     {
@@ -35,16 +35,16 @@ class GitBranches implements \IteratorAggregate
     /**
      * Fetches the branches via the `git branch` command.
      *
-     * @param boolean $only_remote
+     * @param boolean $onlyRemote
      *   Whether to fetch only remote branches, defaults to false which returns
      *   all branches.
      *
      * @return array
      */
-    public function fetchBranches($only_remote = false)
+    public function fetchBranches($onlyRemote = false)
     {
         $this->git->clearOutput();
-        $options = ($only_remote) ? array('r' => true) : array('a' => true);
+        $options = ($onlyRemote) ? array('r' => true) : array('a' => true);
         $output = (string) $this->git->branch($options);
         $branches = preg_split("/\r\n|\n|\r/", rtrim($output));
         return array_map(array($this, 'trimBranch'), $branches);

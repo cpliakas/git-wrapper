@@ -7,7 +7,6 @@ namespace GitWrapper\Event;
  */
 final class GitEvents
 {
-
     /**
      * Event thrown prior to executing a git command.
      *
