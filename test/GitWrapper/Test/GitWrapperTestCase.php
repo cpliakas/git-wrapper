@@ -7,6 +7,7 @@ use GitWrapper\GitException;
 use GitWrapper\GitWrapper;
 use GitWrapper\Test\Event\TestBypassListener;
 use GitWrapper\Test\Event\TestListener;
+use Symfony\Component\Filesystem\Filesystem;
 
 class GitWrapperTestCase extends \PHPUnit_Framework_TestCase
 {
@@ -14,6 +15,11 @@ class GitWrapperTestCase extends \PHPUnit_Framework_TestCase
     const WORKING_DIR = 'build/test/wc';
     const CONFIG_EMAIL = 'opensource@chrispliakas.com';
     const CONFIG_NAME = 'Chris Pliakas';
+
+    /**
+     * @var \Symfony\Component\Filesystem\Filesystem
+     */
+    protected $filesystem;
 
     /**
      * @var \GitWrapper\GitWrapper
@@ -25,6 +31,7 @@ class GitWrapperTestCase extends \PHPUnit_Framework_TestCase
      */
     public function setUp() {
       parent::setUp();
+      $this->filesystem = new Filesystem();
       $this->wrapper = new GitWrapper();
     }
 
@@ -47,38 +54,6 @@ class GitWrapperTestCase extends \PHPUnit_Framework_TestCase
             $str .= chr($values[mt_rand(0, $max)]);
         }
         return $str;
-    }
-
-    /**
-     * Recursive helper function to remove a non-empty directory.
-     *
-     * @param string $dir
-     *   The directory being removed.
-     *
-     * @todo There has to be a more elegant, accepted way to do this.
-     */
-    public static function rmdir($dir)
-    {
-        $subdirs = array();
-        if ($handle = opendir($dir)) {
-            while (false !== ($file = readdir($handle))) {
-                if ('.' != $file && '..' != $file) {
-                    $filepath = $dir . '/' . $file;
-                    if (is_dir($filepath)) {
-                        $subdirs[] = $filepath;
-                    } else {
-                        unlink($filepath);
-                    }
-                }
-            }
-            closedir($handle);
-        }
-
-        foreach ($subdirs as $subdir) {
-            self::rmdir($subdir);
-        }
-
-        rmdir($dir);
     }
 
     /**
