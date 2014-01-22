@@ -2,6 +2,8 @@
 
 namespace GitWrapper;
 
+use Symfony\Component\Process\ProcessUtils;
+
 /**
  * Base class extended by all Git command classes.
  */
@@ -175,7 +177,7 @@ class GitCommand
                 $rendered = $prefix . $option;
                 if ($value !== true) {
                     $rendered .= ('--' == $prefix) ? '=' : ' ';
-                    $rendered .= escapeshellarg($value);
+                    $rendered .= ProcessUtils::escapeArgument($value);
                 }
                 $options[] = $rendered;
             }
@@ -187,7 +189,7 @@ class GitCommand
      * Sets a command line option.
      *
      * Option names are passed as-is to the command line, whereas the values are
-     * sanitized via the escapeshellarg() function.
+     * escaped using \Symfony\Component\Process\ProcessUtils.
      *
      * @param string $option
      *   The option name, e.g. "branch", "q".
@@ -289,7 +291,7 @@ class GitCommand
         $command = array(
             $this->getCommand(),
             $this->buildOptions(),
-            join(' ', array_map('escapeshellarg', $this->args)),
+            join(' ', array_map(array('\Symfony\Component\Process\ProcessUtils', 'escapeArgument'), $this->args)),
         );
         return join(' ', array_filter($command));
     }

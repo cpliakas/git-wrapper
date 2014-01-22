@@ -2,6 +2,8 @@
 
 namespace GitWrapper;
 
+use Symfony\Component\Process\ProcessUtils;
+
 /**
  * Interacts with a working copy.
  *
@@ -338,7 +340,7 @@ class GitWorkingCopy
     public function bisect($sub_command)
     {
         $args = func_get_args();
-        $args[0] = 'bisect ' . escapeshellcmd($sub_command);
+        $args[0] = 'bisect ' . ProcessUtils::escapeArgument($sub_command);
         return $this->run($args);
     }
 

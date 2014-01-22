@@ -3,6 +3,7 @@
 namespace GitWrapper;
 
 use Symfony\Component\Process\Process;
+use Symfony\Component\Process\ProcessUtils;
 
 /**
  * GitProcess runs a Git command in an independent process.
@@ -32,7 +33,8 @@ class GitProcess extends Process
         $this->command = $command;
 
         // Build the command line options, flags, and arguments.
-        $commandLine = rtrim($git->getGitBinary() . ' ' . $command->getCommandLine());
+        $binary = ProcessUtils::escapeArgument($git->getGitBinary());
+        $commandLine = rtrim($binary . ' ' . $command->getCommandLine());
 
         // Resolve the working directory of the Git process. Use the directory
         // in the command object if it exists.
