@@ -2,7 +2,6 @@
 
 namespace GitWrapper\Test;
 
-use GitWrapper\GitWorkingCopy;
 use Symfony\Component\Process\Process;
 
 class GitWorkingCopyTest extends GitWrapperTestCase
@@ -25,9 +24,9 @@ class GitWorkingCopyTest extends GitWrapperTestCase
 
         // Create the initial structure.
         file_put_contents($directory . '/change.me', "unchanged\n");
-        touch($directory . '/move.me');
-        mkdir($directory . '/a.directory', 0755);
-        touch($directory . '/a.directory/remove.me');
+        $this->filesystem->touch($directory . '/move.me');
+        $this->filesystem->mkdir($directory . '/a.directory', 0755);
+        $this->filesystem->touch($directory . '/a.directory/remove.me');
 
         // Initial commit.
         $git
@@ -52,8 +51,7 @@ class GitWorkingCopyTest extends GitWrapperTestCase
             ->pushTags()
         ;
 
-        // Remove the working copy.
-        self::rmdir($directory);
+        $this->filesystem->remove($directory);
     }
 
     /**
@@ -63,10 +61,10 @@ class GitWorkingCopyTest extends GitWrapperTestCase
     {
         parent::setUp();
 
-        self::rmdir(self::REPO_DIR);
+        $this->filesystem->remove(self::REPO_DIR);
 
         if (is_dir(self::WORKING_DIR)) {
-            self::rmdir(self::WORKING_DIR);
+            $this->filesystem->remove(self::WORKING_DIR);
         }
     }
 
@@ -170,7 +168,7 @@ class GitWorkingCopyTest extends GitWrapperTestCase
     public function testGitAdd()
     {
         $git = $this->getWorkingCopy();
-        touch(self::WORKING_DIR . '/add.me');
+        $this->filesystem->touch(self::WORKING_DIR . '/add.me');
 
         $git->add('add.me');
 

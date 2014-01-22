@@ -22,7 +22,8 @@
         "phpmd/phpmd": "~1.0",
         "phpunit/phpunit": "~3.0",
         "satooshi/php-coveralls": "*",
-        "sebastian/phpcpd": "~2.0"
+        "sebastian/phpcpd": "~2.0",
+        "symfony/filesystem": "~2.0"
     },
     "autoload": {
         "psr-0": {
