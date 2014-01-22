@@ -91,7 +91,7 @@ class GitCommand
      *
      * @return \GitWrapper\GitCommand
      */
-    static public function getInstance()
+    public static function getInstance()
     {
         $args = func_get_args();
         return new static($args);
