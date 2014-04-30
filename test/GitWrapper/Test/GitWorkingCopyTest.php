@@ -176,6 +176,26 @@ class GitWorkingCopyTest extends GitWrapperTestCase
         $this->assertTrue($match);
     }
 
+    public function testGitApply()
+    {
+        $git = $this->getWorkingCopy();
+
+        $patch = <<<PATCH
+diff --git a/FileCreatedByPatch.txt b/FileCreatedByPatch.txt
+new file mode 100644
+index 0000000..dfe437b
+--- /dev/null
++++ b/FileCreatedByPatch.txt
+@@ -0,0 +1 @@
++contents
+
+PATCH;
+        file_put_contents(self::WORKING_DIR . '/patch.txt', $patch);
+        $git->apply('patch.txt');
+        $this->assertRegExp('@\?\?\\s+FileCreatedByPatch\\.txt@s', $git->getStatus());
+        $this->assertEquals("contents\n", file_get_contents(self::WORKING_DIR . '/FileCreatedByPatch.txt'));
+    }
+
     public function testGitRm()
     {
         $git = $this->getWorkingCopy();
