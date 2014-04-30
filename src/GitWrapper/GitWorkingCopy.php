@@ -317,6 +317,31 @@ class GitWorkingCopy
     }
 
     /**
+     * Executes a `git apply` command.
+     *
+     * Apply a patch to files and/or to the index
+     *
+     * @code
+     * $git->apply('the/file/to/read/the/patch/from');
+     * @endcode
+     *
+     * @param string ...
+     *   (optional) Additional command line arguments.
+     * @param array $options
+     *   (optional) An associative array of command line options.
+     *
+     * @return GitWorkingCopy
+     *
+     * @throws GitException
+     */
+    public function apply()
+    {
+        $args = func_get_args();
+        array_unshift($args, 'apply');
+        return $this->run($args);
+    }
+
+    /**
      * Executes a `git bisect` command.
      *
      * Find by binary search the change that introduced a bug.
