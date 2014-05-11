@@ -78,6 +78,29 @@ class GitWrapperTest extends GitWrapperTestCase
         $this->assertEquals($sshWrapperExpected, $this->wrapper->getEnvVar('GIT_SSH'));
     }
 
+    /**
+     * Covers case when git-wrapper is running within phar archive
+     * (so git-ssh-wrapper.sh is not reachable from shell) and should be copied in shared environment somewhere (/tmp).
+     */
+    public function testSetPrivateKeyIfSshWrapperRealpathFails()
+    {
+        $path = realpath('test/wrapper-in.phar');
+        $target = 'phar://' . $path . '/git-ssh-wrapper.sh';
+
+
+        // Creates file on failed realpath()
+        $this->wrapper->setPrivateKey('./test/id_rsa', 22, $target);
+        $this->assertCount(1, glob('/tmp/git_ssh_wrapper*'));
+        $glob = glob('/tmp/git_ssh_wrapper*');
+        $filename = $glob[0];
+        $this->assertFileEquals($target, $filename);
+        $this->assertEquals(100755, sprintf('%o', fileperms($filename)));
+
+        // Destroys file on __destruct()
+        unset($this->wrapper);
+        $this->assertFileNotExists($filename);
+    }
+
     public function testSetPrivateKeyPort()
     {
         $port = mt_rand(1024, 10000);

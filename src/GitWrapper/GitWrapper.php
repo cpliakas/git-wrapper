@@ -58,6 +58,13 @@ class GitWrapper
     protected $streamListener;
 
     /**
+     * Path to temporary file used in GIT_SSH env var.
+     *
+     * @var string
+     */
+    private $sshWrapperPath;
+
+    /**
      * Constructs a GitWrapper object.
      *
      * @param string|null $gitBinary
@@ -81,6 +88,14 @@ class GitWrapper
         }
 
         $this->setGitBinary($gitBinary);
+    }
+
+    /**
+     * Destructor.
+     */
+    public function __destruct()
+    {
+        $this->removeTemporarySshWrapper();
     }
 
     /**
@@ -269,7 +284,12 @@ class GitWrapper
             $wrapper = __DIR__ . '/../../bin/git-ssh-wrapper.sh';
         }
         if (!$wrapperPath = realpath($wrapper)) {
-            throw new GitException('Path to GIT_SSH wrapper script could not be resolved: ' . $wrapper);
+            if (file_exists($wrapper)) {
+                // Try to avoid problem with realpath(), copying the shell script into /tmp folder.
+                $wrapperPath = $this->createTemporarySshWrapper($wrapper);
+            } else {
+                throw new GitException('Path to GIT_SSH wrapper script could not be resolved: ' . $wrapper);
+            }
         }
         if (!$privateKeyPath = realpath($privateKey)) {
             throw new GitException('Path private key could not be resolved: ' . $privateKey);
@@ -534,6 +554,30 @@ class GitWrapper
             $class = get_called_class();
             $message = "Call to undefined method $class::$method()";
             throw new \BadMethodCallException($message);
+        }
+    }
+
+    /**
+     * Creates temporary file for ssh wrapper.
+     * @param string $source
+     * @return string
+     */
+    protected function createTemporarySshWrapper($source)
+    {
+        $this->sshWrapperPath = tempnam(sys_get_temp_dir(), 'git_ssh_wrapper');
+        copy($source, $this->sshWrapperPath);
+        chmod($this->sshWrapperPath, 0755);
+        return $this->sshWrapperPath;
+    }
+
+    /**
+     * Removes temporary file created for ssh wrapper before.
+     */
+    protected function removeTemporarySshWrapper()
+    {
+        if (!is_null($this->sshWrapperPath)) {
+            unlink($this->sshWrapperPath);
+            $this->sshWrapperPath = null;
         }
     }
 }
