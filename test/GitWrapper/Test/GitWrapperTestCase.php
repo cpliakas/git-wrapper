@@ -29,10 +29,20 @@ class GitWrapperTestCase extends \PHPUnit_Framework_TestCase
     /**
      * Overrides PHPUnit_Framework_TestCase::setUp().
      */
-    public function setUp() {
-      parent::setUp();
-      $this->filesystem = new Filesystem();
-      $this->wrapper = new GitWrapper();
+    public function setUp()
+    {
+        parent::setUp();
+        $this->filesystem = new Filesystem();
+        $this->wrapper = new GitWrapper();
+        $this->filesystem->mkdir('build/test/');
+    }
+
+    /**
+     * Overrides PHPUnit_Framework_TestCase::tearDown().
+     */
+    public function tearDown()
+    {
+        $this->filesystem->remove('build/test/');
     }
 
     /**

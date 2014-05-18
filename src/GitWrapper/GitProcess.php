@@ -47,11 +47,10 @@ class GitProcess extends Process
         }
 
         // Finalize the environment variables, an empty array is converted
-        // to null which enherits the environment of the PHP process.
+        // to null which inherits the environment of the PHP process.
+        // Also here we "merge" set environment variables with defaults
         $env = $git->getEnvVars();
-        if (!$env) {
-            $env = null;
-        }
+        $env = !empty($env) ? $env + $git->getDefaultEnvVars() : null;
 
         parent::__construct($commandLine, $cwd, $env, null, $git->getTimeout(), $git->getProcOptions());
     }

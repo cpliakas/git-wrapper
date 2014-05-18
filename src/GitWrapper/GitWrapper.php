@@ -58,13 +58,6 @@ class GitWrapper
     protected $streamListener;
 
     /**
-     * Path to temporary file used in GIT_SSH env var.
-     *
-     * @var string
-     */
-    private $sshWrapperPath;
-
-    /**
      * Constructs a GitWrapper object.
      *
      * @param string|null $gitBinary
@@ -86,16 +79,8 @@ class GitWrapper
             }
             // @codeCoverageIgnoreEnd
         }
-
-        $this->setGitBinary($gitBinary);
-    }
-
-    /**
-     * Destructor.
-     */
-    public function __destruct()
-    {
-        $this->removeTemporarySshWrapper();
+        $this
+            ->setGitBinary($gitBinary);
     }
 
     /**
@@ -237,7 +222,7 @@ class GitWrapper
     /**
      * Sets the options passed to proc_open() when executing the Git command.
      *
-     * @param array $timeout
+     * @param array $options
      *   The options passed to proc_open().
      *
      * @return \GitWrapper\GitWrapper
@@ -259,61 +244,78 @@ class GitWrapper
     }
 
     /**
-     * Set an alternate private key used to connect to the repository.
-     *
-     * This method sets the GIT_SSH environment variable to use the wrapper
-     * script included with this library. It also sets the custom GIT_SSH_KEY
-     * and GIT_SSH_PORT environment variables that are used by the script.
-     *
+     * Sets path to SSH private key.
      * @param string $privateKey
-     *   Path to the private key.
-     * @param int $port
-     *   Port that the SSH server being connected to listens on, defaults to 22.
-     * @param string|null $wrapper
-     *   Path the the GIT_SSH wrapper script, defaults to null which uses the
-     *   script included with this library.
-     *
      * @return \GitWrapper\GitWrapper
-     *
-     * @throws \GitWrapper\GitException
-     *   Thrown when any of the paths cannot be resolved.
+     * @throws GitException -- if path to key can not be resolved.
      */
-    public function setPrivateKey($privateKey, $port = 22, $wrapper = null)
+    public function setSshPrivateKey($privateKey)
     {
-        if (null === $wrapper) {
-            $wrapper = __DIR__ . '/../../bin/git-ssh-wrapper.sh';
-        }
-        if (!$wrapperPath = realpath($wrapper)) {
-            if (file_exists($wrapper)) {
-                // Try to avoid problem with realpath(), copying the shell script into /tmp folder.
-                $wrapperPath = $this->createTemporarySshWrapper($wrapper);
-            } else {
-                throw new GitException('Path to GIT_SSH wrapper script could not be resolved: ' . $wrapper);
-            }
-        }
         if (!$privateKeyPath = realpath($privateKey)) {
             throw new GitException('Path private key could not be resolved: ' . $privateKey);
         }
-
-        return $this
-            ->setEnvVar('GIT_SSH', $wrapperPath)
-            ->setEnvVar('GIT_SSH_KEY', $privateKeyPath)
-            ->setEnvVar('GIT_SSH_PORT', (int) $port)
-        ;
+        $this
+            ->setEnvVar('GIT_SSH_KEY', $privateKeyPath);
+        return $this;
     }
 
     /**
-     * Unsets the private key by removing the appropriate environment variables.
+     * Sets path to SSH port.
+     *
+     * @param integer $port
+     * @return \GitWrapper\GitWrapper
+     */
+    public function setSshPort($port)
+    {
+        $this
+            ->setEnvVar('GIT_SSH_PORT', (int) $port);
+        return $this;
+    }
+
+    /**
+     * Sets custom GIT_SSH wrapper.
+     * See `man git` section `Environment variables` for details.
+     *
+     * @param string $wrapper
+     * @return \GitWrapper\GitWrapper
+     * @throws GitException -- if path to wrapper can not be resolved.
+     */
+    public function setSshWrapper($wrapper)
+    {
+        if (!$wrapperPath = realpath($wrapper)) {
+            throw new GitException('Path to GIT_SSH wrapper script could not be resolved: ' . $wrapper);
+        }
+        $this
+            ->setEnvVar('GIT_SSH', $wrapperPath);
+        return $this;
+    }
+
+    /**
+     * Resets SSH settings of git client.
      *
      * @return \GitWrapper\GitWrapper
      */
-    public function unsetPrivateKey()
+    public function resetSshSettings()
     {
         return $this
             ->unsetEnvVar('GIT_SSH')
             ->unsetEnvVar('GIT_SSH_KEY')
             ->unsetEnvVar('GIT_SSH_PORT')
-        ;
+            ;
+    }
+
+    /**
+     * Copies default ssh wrapper to $path location.
+     * @param string $path
+     * @return $this
+     */
+    public function copyDefaultSshWrapperTo($path)
+    {
+        $defaults = $this->getDefaultEnvVars();
+        copy($defaults['GIT_SSH'], $path);
+        chmod($path, fileperms($defaults['GIT_SSH'])); // Set the same permissions to new file.
+        $this->setSshWrapper($path);
+        return $this;
     }
 
     /**
@@ -558,26 +560,59 @@ class GitWrapper
     }
 
     /**
-     * Creates temporary file for ssh wrapper.
-     * @param string $source
-     * @return string
+     * Returns default environment variables values.
+     * @return array
      */
-    protected function createTemporarySshWrapper($source)
+    public function getDefaultEnvVars()
     {
-        $this->sshWrapperPath = tempnam(sys_get_temp_dir(), 'git_ssh_wrapper');
-        copy($source, $this->sshWrapperPath);
-        chmod($this->sshWrapperPath, 0755);
-        return $this->sshWrapperPath;
+        return array(
+            'GIT_SSH' => __DIR__ . '/../../bin/git-ssh-wrapper.sh',
+        );
     }
 
     /**
-     * Removes temporary file created for ssh wrapper before.
+     * Set an alternate private key used to connect to the repository.
+     *
+     * This method sets the GIT_SSH environment variable to use the wrapper
+     * script included with this library. It also sets the custom GIT_SSH_KEY
+     * and GIT_SSH_PORT environment variables that are used by the script.
+     *
+     * @param string $privateKey
+     *   Path to the private key.
+     * @param int $port
+     *   Port that the SSH server being connected to listens on, defaults to 22.
+     * @param string|null $wrapper
+     *   Path the the GIT_SSH wrapper script, defaults to null which uses the
+     *   script included with this library.
+     *
+     * @return \GitWrapper\GitWrapper
+     *
+     * @deprecated
      */
-    protected function removeTemporarySshWrapper()
+    public function setPrivateKey($privateKey, $port = 22, $wrapper = null)
     {
-        if (!is_null($this->sshWrapperPath)) {
-            unlink($this->sshWrapperPath);
-            $this->sshWrapperPath = null;
+        trigger_error(
+            'Method setPrivateKey() is deprecated. '
+            . 'Please use: setSshPrivateKey(), setSshPort() or setSshWrapper() instead',
+            E_USER_DEPRECATED
+        );
+        if (!is_null($wrapper)) {
+            $this->setSshWrapper($wrapper);
         }
+        $this->setSshPrivateKey($privateKey)
+            ->setSshPort($port);
+        return $this;
+    }
+
+    /**
+     * Unsets the private key by removing the appropriate environment variables.
+     *
+     * @return \GitWrapper\GitWrapper
+     * @deprecated
+     */
+    public function unsetPrivateKey()
+    {
+        trigger_error('Method unsetPrivateKey() is deprecated. Please use resetSshSettings() instead.', E_USER_DEPRECATED);
+        return $this->resetSshSettings();
     }
 }

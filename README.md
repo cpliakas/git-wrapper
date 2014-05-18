@@ -152,6 +152,19 @@ not, git commands with fail if a non-default private key is specified.
 
     $> chmod 0755 ./bin/git-ssh-wrapper.sh
 
+### Git wrapper is not working as part of Phar archive
+
+If you see this error:
+
+PHP Fatal error: Uncaught exception 'GitWrapper\GitException' with message 'Path to GIT_SSH wrapper script could not be resolved phar://...'
+
+You can copy wrapper before git execution, using copyDefaultSshWrapperTo():
+
+```
+$git = new \GitWrapper\GitWrapper();
+$git->copyDefaultSshWrapperTo('/tmp/my_ssh_wrapper.sh');
+```
+
 ## For Developers
 
 Refer to [PHP Project Starter's documentation](https://github.com/cpliakas/php-project-starter#using-apache-ant)
