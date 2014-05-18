@@ -156,9 +156,11 @@ not, git commands with fail if a non-default private key is specified.
 
 If you see this error:
 
+```
 PHP Fatal error: Uncaught exception 'GitWrapper\GitException' with message 'Path to GIT_SSH wrapper script could not be resolved phar://...'
+```
 
-You can copy wrapper before git execution, using copyDefaultSshWrapperTo():
+you can copy wrapper before git execution, using copyDefaultSshWrapperTo():
 
 ```
 $git = new \GitWrapper\GitWrapper();
