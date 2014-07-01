@@ -76,7 +76,13 @@ class GitProcess extends Process
                 if ($this->isSuccessful()) {
                     $dispatcher->dispatch(Event\GitEvents::GIT_SUCCESS, $event);
                 } else {
-                    throw new \RuntimeException($this->getErrorOutput());
+                    $output = $this->getErrorOutput();
+
+                    if(trim($output) == '') {
+                        $output == $this->getOutput();
+                    }
+
+                    throw new \RuntimeException($output);
                 }
             } else {
                 $dispatcher->dispatch(Event\GitEvents::GIT_BYPASS, $event);
