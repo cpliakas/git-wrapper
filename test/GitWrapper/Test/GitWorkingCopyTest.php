@@ -255,6 +255,20 @@ PATCH;
         $this->assertTrue(strpos($tags, $tag) !== false);
     }
 
+    public function testGitClean()
+    {
+        $git = $this->getWorkingCopy();
+
+        file_put_contents(self::WORKING_DIR . '/untracked.file', "untracked\n");
+
+        $result = $git
+            ->clean('-d', '-f')
+        ;
+
+        $this->assertSame($git, $result);
+        $this->assertFileNotExists(self::WORKING_DIR . '/untracked.file');
+    }
+
     public function testGitReset()
     {
         $git = $this->getWorkingCopy();
