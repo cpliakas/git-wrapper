@@ -930,6 +930,31 @@ class GitWorkingCopy
     }
 
     /**
+     * Executes a `git clean` command.
+     *
+     * Remove untracked files from the working tree
+
+     * @code
+     * $git->clean('-d', '-f');
+     * @endcode
+     *
+     * @param string ...
+     *   (optional) Additional command line arguments.
+     * @param array $options
+     *   (optional) An associative array of command line options.
+     *
+     * @return \GitWrapper\GitWorkingCopy
+     *
+     * @throws \GitWrapper\GitException
+     */
+    public function clean()
+    {
+        $args = func_get_args();
+        array_unshift($args, 'clean');
+        return $this->run($args);
+    }
+
+    /**
      * @} End of "defgroup command".
      */
 
