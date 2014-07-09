@@ -79,7 +79,7 @@ class GitProcess extends Process
                     $output = $this->getErrorOutput();
 
                     if(trim($output) == '') {
-                        $output == $this->getOutput();
+                        $output = $this->getOutput();
                     }
 
                     throw new \RuntimeException($output);
