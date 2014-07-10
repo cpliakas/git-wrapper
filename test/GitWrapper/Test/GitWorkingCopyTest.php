@@ -60,7 +60,7 @@ class GitWorkingCopyTest extends GitWrapperTestCase
      */
     public function tearDown()
     {
-        parent::setUp();
+        parent::tearDown();
 
         $this->filesystem->remove(self::REPO_DIR);
 

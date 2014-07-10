@@ -313,6 +313,22 @@ class GitWrapper
     }
 
     /**
+     * Adds logger listener listener.
+     *
+     * @param Event\GitLoggerListener $listener
+     *
+     * @return GitWrapper
+     */
+    public function addLoggerListener(Event\GitLoggerListener $listener)
+    {
+        $this
+            ->getDispatcher()
+            ->addSubscriber($listener)
+        ;
+        return $this;
+    }
+
+    /**
      * Removes an output listener.
      *
      * @param \GitWrapper\Event\GitOutputListenerInterface $listener
