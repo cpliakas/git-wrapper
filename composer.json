@@ -21,9 +21,13 @@
         "phploc/phploc": "~2.0",
         "phpmd/phpmd": "~1.0",
         "phpunit/phpunit": "~3.0",
+        "psr/log": "~1.0",
         "satooshi/php-coveralls": "*",
         "sebastian/phpcpd": "~2.0",
         "symfony/filesystem": "~2.0"
+    },
+    "suggest": {
+        "monolog/monolog": "Enables logging of executed git commands"
     },
     "autoload": {
         "psr-0": {
