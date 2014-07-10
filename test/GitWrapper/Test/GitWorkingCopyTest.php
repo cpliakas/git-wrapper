@@ -2,6 +2,8 @@
 
 namespace GitWrapper\Test;
 
+use GitWrapper\GitException;
+use GitWrapper\GitWorkingCopy;
 use Symfony\Component\Process\Process;
 
 class GitWorkingCopyTest extends GitWrapperTestCase
@@ -292,6 +294,25 @@ PATCH;
         $git = $this->getWorkingCopy();
         $output = (string) $git->pull();
         $this->assertEquals("Already up-to-date.\n", $output);
+    }
+
+    /**
+     * This tests an odd case where sometimes even though a command fails and an exception is thrown
+     * the result of Process::getErrorOutput() is empty because the output is sent to STDOUT instead of STDERR. So
+     * there's a code path in GitProcess::run() to check the output from Process::getErrorOutput() and if it's empty use
+     * the result from Process::getOutput() instead
+     */
+    public function testGitPullErrorWithEmptyErrorOutput()
+    {
+        $git = $this->getWorkingCopy();
+
+        try {
+            $git->commit('Nothing to commit so generates an error / not error');
+        } catch(GitException $exception) {
+            $errorOutput = $exception->getMessage();
+        }
+
+        $this->assertEquals("On branch master\nYour branch is up-to-date with 'origin/master'.\n\nnothing to commit, working directory clean\n", $errorOutput);
     }
 
     public function testGitDiff()
