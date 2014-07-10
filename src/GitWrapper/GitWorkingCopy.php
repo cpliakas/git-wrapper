@@ -933,7 +933,7 @@ class GitWorkingCopy
      * Executes a `git clean` command.
      *
      * Remove untracked files from the working tree
-
+     *
      * @code
      * $git->clean('-d', '-f');
      * @endcode
