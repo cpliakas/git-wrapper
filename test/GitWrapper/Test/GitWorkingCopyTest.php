@@ -3,7 +3,6 @@
 namespace GitWrapper\Test;
 
 use GitWrapper\GitException;
-use GitWrapper\GitWorkingCopy;
 use Symfony\Component\Process\Process;
 
 class GitWorkingCopyTest extends GitWrapperTestCase
