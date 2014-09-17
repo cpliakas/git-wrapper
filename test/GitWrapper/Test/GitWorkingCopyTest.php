@@ -311,7 +311,7 @@ PATCH;
             $errorOutput = $exception->getMessage();
         }
 
-        $this->assertEquals("On branch master\nYour branch is up-to-date with 'origin/master'.\n\nnothing to commit, working directory clean\n", $errorOutput);
+        $this->assertTrue(strpos($errorOutput, 'On branch master') === 0);
     }
 
     public function testGitDiff()
