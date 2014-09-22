@@ -1,7 +1,8 @@
 # Overview
 
 [![Build Status](https://travis-ci.org/cpliakas/git-wrapper.svg?branch=master)](https://travis-ci.org/cpliakas/git-wrapper)
-[![Coverage Status](https://img.shields.io/coveralls/cpliakas/git-wrapper.svg)](https://coveralls.io/r/cpliakas/git-wrapper?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/cpliakas/git-wrapper/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/cpliakas/git-wrapper/?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/cpliakas/git-wrapper/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/cpliakas/git-wrapper/?branch=master)
 [![Total Downloads](https://poser.pugx.org/cpliakas/git-wrapper/downloads.png)](https://packagist.org/packages/cpliakas/git-wrapper)
 [![Latest Stable Version](https://poser.pugx.org/cpliakas/git-wrapper/v/stable.png)](https://packagist.org/packages/cpliakas/git-wrapper)
 [![License](https://poser.pugx.org/cpliakas/git-wrapper/license.svg)](https://packagist.org/packages/cpliakas/git-wrapper)
