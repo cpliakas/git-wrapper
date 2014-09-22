@@ -23,6 +23,7 @@
         "phpunit/phpunit": "~3.0",
         "psr/log": "~1.0",
         "satooshi/php-coveralls": "*",
+        "scrutinizer/ocular": "~1.0",
         "sebastian/phpcpd": "~2.0",
         "symfony/filesystem": "~2.0"
     },
