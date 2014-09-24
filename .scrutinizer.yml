@@ -11,6 +11,9 @@ tools:
     php_sim: true
     php_pdepend: true
     php_analyzer: true
+    php_mess_detector:
+        config:
+            ruleset: ./phpmd.xml
     php_cs_fixer:
         config: { level: psr2 }
     external_code_coverage:
