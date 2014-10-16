@@ -92,4 +92,14 @@ class GitBranches implements \IteratorAggregate
     {
         return $this->fetchBranches(true);
     }
+
+    /**
+     * Returns currently active branch (HEAD) of the working copy.
+     *
+     * @return array
+     */
+    public function head()
+    {
+        return (string) $this->git->run(array('rev-parse --abbrev-ref HEAD'));
+    }
 }
