@@ -954,6 +954,31 @@ class GitWorkingCopy
         return $this->run($args);
     }
 
+     /**
+     * Executes a `git archive` command.
+     *
+     * Create an archive of files from a named tree
+     *
+     * @code
+     * $git->archive('HEAD', array('o' => '/path/to/archive'));
+     * @endcode
+     *
+     * @param string ...
+     *   (optional) Additional command line arguments.
+     * @param array $options
+     *   (optional) An associative array of command line options.
+     *
+     * @return \GitWrapper\GitWorkingCopy
+     *
+     * @throws \GitWrapper\GitException
+     */
+    public function archive()
+    {
+        $args = func_get_args();
+        array_unshift($args, 'archive');
+        return $this->run($args);
+    }
+
     /**
      * @} End of "defgroup command".
      */
