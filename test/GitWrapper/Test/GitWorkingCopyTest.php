@@ -295,6 +295,16 @@ PATCH;
         $this->assertEquals("Already up-to-date.\n", $output);
     }
 
+    public function testGitArchive()
+    {
+        $archiveName = uniqid().'.tar';
+        $archivePath = '/tmp/'.$archiveName;
+        $git = $this->getWorkingCopy();
+        $output = (string) $git->archive('HEAD', array('o' => $archivePath));
+        $this->assertEquals("", $output);
+        $this->assertFileExists($archivePath);
+    }
+
     /**
      * This tests an odd case where sometimes even though a command fails and an exception is thrown
      * the result of Process::getErrorOutput() is empty because the output is sent to STDOUT instead of STDERR. So
