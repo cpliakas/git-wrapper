@@ -429,4 +429,25 @@ PATCH;
 
         stream_filter_remove($stdoutSuppress);
     }
+
+    public function testCommitWithAuthor()
+    {
+        $git = $this->getWorkingCopy();
+        file_put_contents(self::WORKING_DIR . '/commit.txt', "created\n");
+
+        $this->assertTrue($git->hasChanges());
+
+        $git
+            ->add('commit.txt')
+            ->commit(array(
+                'm' => 'Committed testing branch.',
+                'a' => true,
+                'author' => 'test <test@lol.com>'
+            ))
+        ;
+
+        $output = (string) $git->log();
+        $this->assertContains('Committed testing branch', $output);
+        $this->assertContains('Author: test <test@lol.com>', $output);
+    }
 }
