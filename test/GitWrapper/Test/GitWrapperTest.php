@@ -66,62 +66,56 @@ class GitWrapperTest extends GitWrapperTestCase
         $this->assertGitVersion($version);
     }
 
-    public function testSetPrivateKey()
+    public function testCopyDefaultSshWrapperTo()
+    {
+        $env = $this->wrapper->getDefaultEnvVars();
+        $result = $this->wrapper->copyDefaultSshWrapperTo('build/test/git-wrapper.sh');
+        $this->assertFileEquals($env['GIT_SSH'], 'build/test/git-wrapper.sh');
+        $this->assertSame($this->wrapper, $result);
+        $this->assertTrue(is_executable('build/test/git-wrapper.sh'), 'Copied GIT wrapper should be executable');
+    }
+
+    public function testSetSshPrivateKey()
     {
         $key = './test/id_rsa';
         $keyExpected = realpath($key);
-        $sshWrapperExpected = realpath(__DIR__ . '/../../../bin/git-ssh-wrapper.sh');
 
-        $this->wrapper->setPrivateKey($key);
+        $result = $this->wrapper->setSshPrivateKey($key);
         $this->assertEquals($keyExpected, $this->wrapper->getEnvVar('GIT_SSH_KEY'));
-        $this->assertEquals(22, $this->wrapper->getEnvVar('GIT_SSH_PORT'));
-        $this->assertEquals($sshWrapperExpected, $this->wrapper->getEnvVar('GIT_SSH'));
+        $this->assertSame($this->wrapper, $result);
     }
 
-    public function testSetPrivateKeyPort()
+    /**
+     * @expectedException \GitWrapper\GitException
+     */
+    public function testSetSshPrivateKeyError()
+    {
+        $badKey = './test/id_rsa_bad';
+        $this->wrapper->setSshPrivateKey($badKey);
+    }
+
+    public function testSetSshPort()
     {
         $port = mt_rand(1024, 10000);
-        $this->wrapper->setPrivateKey('./test/id_rsa', $port);
+        $this->wrapper->setSshPort($port);
         $this->assertEquals($port, $this->wrapper->getEnvVar('GIT_SSH_PORT'));
     }
 
-    public function testSetPrivateKeyWrapper()
+    public function testSetSshWrapper()
     {
         $sshWrapper = './test/dummy-wrapper.sh';
         $sshWrapperExpected = realpath($sshWrapper);
-        $this->wrapper->setPrivateKey('./test/id_rsa', 22, $sshWrapper);
+        $this->wrapper->setSshWrapper($sshWrapper);
         $this->assertEquals($sshWrapperExpected, $this->wrapper->getEnvVar('GIT_SSH'));
     }
 
     /**
      * @expectedException \GitWrapper\GitException
      */
-    public function testSetPrivateKeyError()
-    {
-        $badKey = './test/id_rsa_bad';
-        $this->wrapper->setPrivateKey($badKey);
-    }
-
-    /**
-     * @expectedException \GitWrapper\GitException
-     */
-    public function testSetPrivateKeyWrapperError()
+    public function testSetSshWrapperError()
     {
         $badWrapper = './test/dummy-wrapper-bad.sh';
-        $this->wrapper->setPrivateKey('./test/id_rsa', 22, $badWrapper);
-    }
-
-    public function testUnsetPrivateKey()
-    {
-        // Set and unset the private key.
-        $key = './test/id_rsa';
-        $sshWrapper = './test/dummy-wrapper.sh';
-        $this->wrapper->setPrivateKey($key, 22, $sshWrapper);
-        $this->wrapper->unsetPrivateKey();
-
-        $this->assertNull($this->wrapper->getEnvVar('GIT_SSH_KEY'));
-        $this->assertNull($this->wrapper->getEnvVar('GIT_SSH_PORT'));
-        $this->assertNull($this->wrapper->getEnvVar('GIT_SSH'));
+        $this->wrapper->setSshWrapper($badWrapper);
     }
 
     public function testGitCommand()
@@ -195,5 +189,69 @@ class GitWrapperTest extends GitWrapperTestCase
     {
         $this->addBypassListener();
         $this->wrapper->clone('file:///' . $this->randomString());
+    }
+
+    /**
+     * Tests deprecated method setPrivateKey(). Should be removed then.
+     * @deprecated
+     */
+    public function testSetPrivateKey()
+    {
+        $errorReporting = error_reporting(E_ALL & ~E_USER_DEPRECATED);
+        $key = './test/id_rsa';
+        $keyExpected = realpath($key);
+
+        $this->wrapper->setPrivateKey($key);
+        $this->assertEquals($keyExpected, $this->wrapper->getEnvVar('GIT_SSH_KEY'));
+        error_reporting($errorReporting);
+    }
+
+    /**
+     * Tests deprecated method setPrivateKey(). Should be removed then.
+     * @deprecated
+     */
+    public function testSetPrivateKeyPort()
+    {
+        $errorReporting = error_reporting(E_ALL & ~E_USER_DEPRECATED);
+        $port = mt_rand(1024, 10000);
+        $this->wrapper->setPrivateKey('./test/id_rsa', $port);
+        $this->assertEquals($port, $this->wrapper->getEnvVar('GIT_SSH_PORT'));
+        error_reporting($errorReporting);
+    }
+
+    /**
+     * Tests deprecated method setPrivateKey(). Should be removed then.
+     * @deprecated
+     */
+    public function testSetPrivateKeyWrapper()
+    {
+        $errorReporting = error_reporting(E_ALL & ~E_USER_DEPRECATED);
+        $sshWrapper = './test/dummy-wrapper.sh';
+        $sshWrapperExpected = realpath($sshWrapper);
+        $this->wrapper->setPrivateKey('./test/id_rsa', 22, $sshWrapper);
+        $this->assertEquals($sshWrapperExpected, $this->wrapper->getEnvVar('GIT_SSH'));
+        error_reporting($errorReporting);
+    }
+
+    /**
+     * Tests deprecated method unsetPrivateKey(). Should be removed then.
+     * @deprecated
+     */
+    public function testUnsetPrivateKey()
+    {
+        $errorReporting = error_reporting(E_ALL & ~E_USER_DEPRECATED);
+        // Set and unset the private key.
+        $key = './test/id_rsa';
+        $sshWrapper = './test/dummy-wrapper.sh';
+        $this->wrapper
+            ->setSshWrapper($sshWrapper)
+            ->setSshPrivateKey($key)
+            ->setSshPort(22);
+        $this->wrapper->unsetPrivateKey();
+
+        $this->assertNull($this->wrapper->getEnvVar('GIT_SSH_KEY'));
+        $this->assertNull($this->wrapper->getEnvVar('GIT_SSH_PORT'));
+        $this->assertNull($this->wrapper->getEnvVar('GIT_SSH'));
+        error_reporting($errorReporting);
     }
 }
