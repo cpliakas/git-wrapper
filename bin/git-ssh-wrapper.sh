@@ -1,3 +1,3 @@
 #!/bin/sh
 
-ssh -i $GIT_SSH_KEY -p $GIT_SSH_PORT -o StrictHostKeyChecking=no -o IdentitiesOnly=yes $1 $2
+ssh -i $GIT_SSH_KEY -p $GIT_SSH_PORT -o StrictHostKeyChecking=no -o IdentitiesOnly=yes "$@"
