@@ -4,8 +4,8 @@
 [![Code Coverage](https://scrutinizer-ci.com/g/cpliakas/git-wrapper/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/cpliakas/git-wrapper/?branch=master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/cpliakas/git-wrapper/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/cpliakas/git-wrapper/?branch=master)
 [![Total Downloads](https://poser.pugx.org/cpliakas/git-wrapper/downloads.png)](https://packagist.org/packages/cpliakas/git-wrapper)
-[![Latest Stable Version](https://poser.pugx.org/cpliakas/git-wrapper/v/stable.png)](https://packagist.org/packages/cpliakas/git-wrapper)
-[![License](https://poser.pugx.org/cpliakas/git-wrapper/license.svg)](https://packagist.org/packages/cpliakas/git-wrapper)
+[![Latest Stable Version](https://img.shields.io/packagist/v/cpliakas/git-wrapper.svg)](https://packagist.org/packages/cpliakas/git-wrapper)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/cpliakas/git-wrapper/master/LICENSE)
 
 This library is a PHP wrapper around the Git command line tool.
 
