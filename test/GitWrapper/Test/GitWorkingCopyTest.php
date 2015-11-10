@@ -533,6 +533,7 @@ PATCH;
         $git = $this->getWorkingCopy();
 
         // The default test branch does not need to be merged with the remote.
+        $git->checkout('test-branch');
         $this->assertFalse($git->needsMerge());
 
         // Reset the branch to its parent commit, so that it is 1 commit behind.
