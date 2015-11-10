@@ -191,6 +191,104 @@ class GitWorkingCopy
     }
 
     /**
+     * Returns whether HEAD has a remote tracking branch.
+     *
+     * @return bool
+     */
+    public function isTracking()
+    {
+        try {
+            $this->run(array('rev-parse @{u}'));
+        } catch (GitException $e) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Returns whether HEAD is up-to-date with its remote tracking branch.
+     *
+     * @return bool
+     *
+     * @throws \GitWrapper\GitException
+     *   Thrown when HEAD does not have a remote tracking branch.
+     */
+    public function isUpToDate()
+    {
+        if (!$this->isTracking()) {
+            throw new GitException('Error: HEAD does not have a remote tracking branch. Cannot check if it is up-to-date.');
+        }
+        $this->clearOutput();
+        $merge_base = (string) $this->run(array('merge-base @ @{u}'));
+        $remote_sha = (string) $this->run(array('rev-parse @{u}'));
+        return $merge_base === $remote_sha;
+    }
+
+    /**
+     * Returns whether HEAD is ahead of its remote tracking branch.
+     *
+     * If this returns true it means that commits are present locally which have
+     * not yet been pushed to the remote.
+     *
+     * @return bool
+     *
+     * @throws \GitWrapper\GitException
+     *   Thrown when HEAD does not have a remote tracking branch.
+     */
+    public function isAhead()
+    {
+        if (!$this->isTracking()) {
+            throw new GitException('Error: HEAD does not have a remote tracking branch. Cannot check if it is ahead.');
+        }
+        $this->clearOutput();
+        $merge_base = (string) $this->run(array('merge-base @ @{u}'));
+        $local_sha = (string) $this->run(array('rev-parse @'));
+        $remote_sha = (string) $this->run(array('rev-parse @{u}'));
+        return $merge_base === $remote_sha && $local_sha !== $remote_sha;
+    }
+
+    /**
+     * Returns whether HEAD is behind its remote tracking branch.
+     *
+     * If this returns true it means that a pull is needed to bring the branch
+     * up-to-date with the remote.
+     *
+     * @return bool
+     *
+     * @throws \GitWrapper\GitException
+     *   Thrown when HEAD does not have a remote tracking branch.
+     */
+    public function isBehind()
+    {
+        if (!$this->isTracking()) {
+            throw new GitException('Error: HEAD does not have a remote tracking branch. Cannot check if it is behind.');
+        }
+        $this->clearOutput();
+        $merge_base = (string) $this->run(array('merge-base @ @{u}'));
+        $local_sha = (string) $this->run(array('rev-parse @'));
+        $remote_sha = (string) $this->run(array('rev-parse @{u}'));
+        return $merge_base === $local_sha && $local_sha !== $remote_sha;
+    }
+
+    /**
+     * Returns whether HEAD needs to be merged with its remote tracking branch.
+     *
+     * If this returns true it means that HEAD has diverged from its remote
+     * tracking branch; new commits are present locally as well as on the
+     * remote.
+     *
+     * @return bool
+     *   true if HEAD needs to be merged with the remote, false otherwise.
+     *
+     * @throws \GitWrapper\GitException
+     *   Thrown when HEAD does not have a remote tracking branch.
+     */
+    public function needsMerge()
+    {
+        return $this->isAhead() && $this->isBehind();
+    }
+
+    /**
      * Returns a GitBranches object containing information on the repository's
      * branches.
      *
