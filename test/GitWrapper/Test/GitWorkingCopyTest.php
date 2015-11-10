@@ -450,4 +450,107 @@ PATCH;
         $this->assertContains('Committed testing branch', $output);
         $this->assertContains('Author: test <test@lol.com>', $output);
     }
+
+    public function testIsTracking()
+    {
+        $git = $this->getWorkingCopy();
+
+        // The master branch is a remote tracking branch.
+        $this->assertTrue($git->isTracking());
+
+        // Create a new branch without pushing it, so it does not have a remote.
+        $git->checkoutNewBranch('non-tracking-branch');
+        $this->assertFalse($git->isTracking());
+    }
+
+    public function testIsUpToDate()
+    {
+        $git = $this->getWorkingCopy();
+
+        // The default test branch is up-to-date with its remote.
+        $git->checkout('test-branch');
+        $this->assertTrue($git->isUpToDate());
+
+        // If we create a new commit, we are still up-to-date.
+        file_put_contents(self::WORKING_DIR . '/commit.txt', "created\n");
+        $git
+            ->add('commit.txt')
+            ->commit(array(
+                'm' => '1 commit ahead. Still up-to-date.',
+                'a' => true,
+            ))
+        ;
+        $this->assertTrue($git->isUpToDate());
+
+        // Reset the branch to its first commit, so that it is 1 commit behind.
+        $git->reset(
+            'HEAD~2',
+            array('hard' => true)
+        );
+
+        $this->assertFalse($git->isUpToDate());
+    }
+
+    public function testIsAhead()
+    {
+        $git = $this->getWorkingCopy();
+
+        // The default master branch is not ahead of the remote.
+        $this->assertFalse($git->isAhead());
+
+        // Create a new commit, so that the branch is 1 commit ahead.
+        file_put_contents(self::WORKING_DIR . '/commit.txt', "created\n");
+        $git
+            ->add('commit.txt')
+            ->commit(array(
+                'm' => '1 commit ahead.',
+                'a' => true,
+            ))
+        ;
+
+        $this->assertTrue($git->isAhead());
+    }
+
+    public function testIsBehind()
+    {
+        $git = $this->getWorkingCopy();
+
+        // The default test branch is not behind the remote.
+        $git->checkout('test-branch');
+        $this->assertFalse($git->isBehind());
+
+        // Reset the branch to its parent commit, so that it is 1 commit behind.
+        $git->reset(
+            'HEAD^',
+            array('hard' => true)
+        );
+
+        $this->assertTrue($git->isBehind());
+    }
+
+    public function testNeedsMerge()
+    {
+        $git = $this->getWorkingCopy();
+
+        // The default test branch does not need to be merged with the remote.
+        $this->assertFalse($git->needsMerge());
+
+        // Reset the branch to its parent commit, so that it is 1 commit behind.
+        $git->reset(
+            'HEAD^',
+            array('hard' => true)
+        );
+
+        // Create a new commit, so that the branch is also 1 commit ahead.
+        file_put_contents(self::WORKING_DIR . '/commit.txt', "created\n");
+        $git
+            ->add('commit.txt')
+            ->commit(array(
+                'm' => '1 commit ahead.',
+                'a' => true,
+            ))
+        ;
+
+        $this->assertTrue($git->needsMerge());
+    }
 }
