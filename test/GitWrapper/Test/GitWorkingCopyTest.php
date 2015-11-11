@@ -502,10 +502,7 @@ PATCH;
         file_put_contents(self::WORKING_DIR . '/commit.txt', "created\n");
         $git
             ->add('commit.txt')
-            ->commit(array(
-                'm' => '1 commit ahead.',
-                'a' => true,
-            ))
+            ->commit(array('m' => '1 commit ahead.'))
         ;
 
         $this->assertTrue($git->isAhead());
@@ -546,12 +543,8 @@ PATCH;
         file_put_contents(self::WORKING_DIR . '/commit.txt', "created\n");
         $git
             ->add('commit.txt')
-            ->commit(array(
-                'm' => '1 commit ahead.',
-                'a' => true,
-            ))
+            ->commit(array('m' => '1 commit ahead.'))
         ;
-
         $this->assertTrue($git->needsMerge());
     }
 }
