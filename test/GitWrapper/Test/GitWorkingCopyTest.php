@@ -534,17 +534,25 @@ PATCH;
         $this->assertFalse($git->needsMerge());
 
         // Reset the branch to its parent commit, so that it is 1 commit behind.
+        // This does not require the branches to be merged.
         $git->reset(
             'HEAD^',
             array('hard' => true)
         );
+        $this->assertFalse($git->needsMerge());
 
-        // Create a new commit, so that the branch is also 1 commit ahead.
+        // Create a new commit, so that the branch is also 1 commit ahead. Now a
+        // merge is needed.
         file_put_contents(self::WORKING_DIR . '/commit.txt', "created\n");
         $git
             ->add('commit.txt')
             ->commit(array('m' => '1 commit ahead.'))
         ;
         $this->assertTrue($git->needsMerge());
+
+        // Merge the remote, so that we are no longer behind, but only ahead. A
+        // merge should then no longer be needed.
+        $git->merge('@{u}');
+        $this->assertFalse($git->needsMerge());
     }
 }
