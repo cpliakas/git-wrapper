@@ -292,7 +292,7 @@ class GitWorkingCopy
         $merge_base = (string) $this->run(array('merge-base @ @{u}'));
         $local_sha = (string) $this->run(array('rev-parse @'));
         $remote_sha = (string) $this->run(array('rev-parse @{u}'));
-        return $merge_base !== $local_sha && $local_sha !== $remote_sha;
+        return $merge_base !== $local_sha && $merge_base !== $remote_sha;
     }
 
     /**
