@@ -285,7 +285,14 @@ class GitWorkingCopy
      */
     public function needsMerge()
     {
-        return $this->isAhead() && $this->isBehind();
+        if (!$this->isTracking()) {
+            throw new GitException('Error: HEAD does not have a remote tracking branch. Cannot check if it is behind.');
+        }
+        $this->clearOutput();
+        $merge_base = (string) $this->run(array('merge-base @ @{u}'));
+        $local_sha = (string) $this->run(array('rev-parse @'));
+        $remote_sha = (string) $this->run(array('rev-parse @{u}'));
+        return $merge_base !== $local_sha && $local_sha !== $remote_sha;
     }
 
     /**
