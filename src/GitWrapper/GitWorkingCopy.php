@@ -454,13 +454,13 @@ class GitWorkingCopy
     /**
      * Checks if the given remote exists.
      *
-     * @param string $remote
-     *   The remote to check.
+     * @param string $name
+     *   The name of the remote to check.
      *
      * @return bool
      */
-    public function hasRemote($remote) {
-        return array_key_exists($remote, $this->getRemotes());
+    public function hasRemote($name) {
+        return array_key_exists($name, $this->getRemotes());
     }
 
     /**
