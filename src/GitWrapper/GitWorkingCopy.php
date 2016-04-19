@@ -496,6 +496,8 @@ class GitWorkingCopy
      *   - push: the push URL.
      */
     public function getRemotes() {
+        $this->clearOutput();
+
         $remotes = array();
         foreach (explode("\n", rtrim($this->remote()->getOutput())) as $remote) {
             $remotes[$remote]['fetch'] = rtrim($this->remote('get-url', $remote)->getOutput());
