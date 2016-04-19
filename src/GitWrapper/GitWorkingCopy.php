@@ -378,6 +378,132 @@ class GitWorkingCopy
     }
 
     /**
+     * Adds a remote to the repository.
+     *
+     * @param string $name
+     *   The name of the remote to add.
+     * @param string $url
+     *   The URL of the remote to add.
+     * @param array $options
+     *   An associative array of options, with the following keys:
+     *   - -f: Boolean, set to true to run git fetch immediately after the
+     *     remote is set up. Defaults to false.
+     *   - --tags: Boolean, set to true to import every tag from the remote
+     *     repository when git fetch is run. Defaults to false.
+     *   - --no-tags: Boolean, when set to true, git fetch does not import tags
+     *     from the remote repository. Defaults to false.
+     *   - -t: Optional array of branch names to track. If left empty, all
+     *     branches will be tracked.
+     *   - -m: Optional name of the master branch to track. This will set up a
+     *     symbolic ref 'refs/remotes/<name>/HEAD which points at the specified
+     *     master branch on the remote. When omitted, no symbolic ref will be
+     *     created.
+     *
+     * @return \GitWrapper\GitWorkingCopy
+     *
+     * @throws \GitWrapper\GitException
+     *   Thrown when the name or URL are missing.
+     */
+    public function addRemote($name, $url, $options = array()) {
+        if (empty($name)) {
+            throw new GitException('Cannot add remote without a name.');
+        }
+        if (empty($url)) {
+            throw new GitException('Cannot add remote without a URL.');
+        }
+
+        $args = array('add');
+
+        // Add boolean options.
+        foreach (array('-f', '--tags', '--no-tags') as $option) {
+            if (!empty($options[$option])) {
+                $args[] = $option;
+            }
+        }
+
+        // Add tracking branches.
+        if (!empty($options['-t'])) {
+            foreach ($options['-t'] as $branch) {
+                array_push($args, '-t', $branch);
+            }
+        }
+
+        // Add master branch.
+        if (!empty($options['-m'])) {
+            array_push($args, '-m', $options['-m']);
+        }
+
+        // Add remote name and URL.
+        array_push($args, $name, $url);
+
+        return call_user_func_array(array($this, 'remote'), $args);
+    }
+
+    /**
+     * Removes the given remote.
+     *
+     * @param string $name
+     *   The name of the remote to remove.
+     *
+     * @return \GitWrapper\GitWorkingCopy
+     */
+    public function removeRemote($name) {
+        return $this->remote('rm', $name);
+    }
+
+    /**
+     * Checks if the given remote exists.
+     *
+     * @param string $name
+     *   The name of the remote to check.
+     *
+     * @return bool
+     */
+    public function hasRemote($name) {
+        return array_key_exists($name, $this->getRemotes());
+    }
+
+    /**
+     * Returns the given remote.
+     *
+     * @param string $name
+     *   The name of the remote.
+     *
+     * @return array
+     *   An associative array with the following keys:
+     *   - fetch: the fetch URL.
+     *   - push: the push URL.
+     *
+     * @throws \GitWrapper\GitException
+     *   Thrown when the remote does not exist.
+     */
+    public function getRemote($name) {
+        if (!$this->hasRemote($name)) {
+            throw new GitException('The remote "' . $name . '" does not exist.');
+        }
+        $remotes = $this->getRemotes();
+        return $remotes[$name];
+    }
+
+    /**
+     * Returns all existing remotes.
+     *
+     * @return array
+     *   An associative array, keyed by remote name, containing an associative
+     *   array with the following keys:
+     *   - fetch: the fetch URL.
+     *   - push: the push URL.
+     */
+    public function getRemotes() {
+        $remotes = array();
+        foreach (explode("\n", rtrim($this->remote()->getOutput())) as $remote) {
+            $remotes[$remote]['fetch'] = rtrim($this->remote('get-url', $remote)->getOutput());
+            $remotes[$remote]['push'] = rtrim($this->remote('get-url', '--push', $remote)->getOutput());
+        }
+        return $remotes;
+    }
+
+    /**
      * @} End of "defgroup command_helpers".
      */
 
