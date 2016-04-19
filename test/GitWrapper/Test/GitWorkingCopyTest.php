@@ -585,8 +585,9 @@ PATCH;
             array(
                 array(),
                 array(
-                    'assertNoRemoteBranches' => array(array('remote/master', 'remote/remote-branch', 'remote/HEAD')),
+                    'assertNoRemoteBranches' => array(array('remote/master', 'remote/remote-branch')),
                     'assertNoGitTag' => array('remote-tag'),
+                    'assertNoRemoteMaster' => array(),
                 ),
             ),
             // The fetch option should retrieve the remote branches and tags,
@@ -595,8 +596,8 @@ PATCH;
                 array('-f' => true),
                 array(
                     'assertRemoteBranches' => array(array('remote/master', 'remote/remote-branch')),
-                    'assertNoRemoteBranches' => array(array('remote/HEAD')),
                     'assertGitTag' => array('remote-tag'),
+                    'assertNoRemoteMaster' => array(),
                 ),
             ),
             // The --no-tags options should omit importing tags.
