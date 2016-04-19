@@ -627,7 +627,12 @@ PATCH;
             array(
                 array('-f' => true, '-t' => array('master'), '--tags' => true),
                 array(
-                    'assertRemoteBranches' => array(array('remote/master')),
+                    // @todo Versions prior to git 1.9.0 do not fetch the
+                    //   branches when the `--tags` option is specified.
+                    //   Uncomment this line when Travis CI updates to a more
+                    //   recent version of git.
+                    // @see https://github.com/git/git/blob/master/Documentation/RelNotes/1.9.0.txt
+                    // 'assertRemoteBranches' => array(array('remote/master')),
                     'assertNoRemoteBranches' => array(array('remote/remote-branch')),
                     'assertGitTag' => array('remote-tag'),
                     'assertNoRemoteMaster' => array(),
