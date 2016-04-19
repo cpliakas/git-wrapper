@@ -7,6 +7,7 @@ php:
   - "5.3"
 
 before_script:
+  - git --version
   - composer install --prefer-dist --dev
 
 after_script:
