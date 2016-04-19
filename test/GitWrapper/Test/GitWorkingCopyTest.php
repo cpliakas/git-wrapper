@@ -3,10 +3,13 @@
 namespace GitWrapper\Test;
 
 use GitWrapper\GitException;
+use GitWrapper\GitWorkingCopy;
 use Symfony\Component\Process\Process;
 
 class GitWorkingCopyTest extends GitWrapperTestCase
 {
+    const REMOTE_REPO_DIR = 'build/test/remote';
+
     /**
      * Creates and initializes the local repository used for testing.
      */
@@ -66,6 +69,10 @@ class GitWorkingCopyTest extends GitWrapperTestCase
 
         if (is_dir(self::WORKING_DIR)) {
             $this->filesystem->remove(self::WORKING_DIR);
+        }
+
+        if (is_dir(self::REMOTE_REPO_DIR)) {
+            $this->filesystem->remove(self::REMOTE_REPO_DIR);
         }
     }
 
@@ -554,5 +561,171 @@ PATCH;
         // merge should then no longer be needed.
         $git->merge('@{u}');
         $this->assertFalse($git->needsMerge());
+    }
+
+    /**
+     * @dataProvider addRemoteDataProvider
+     */
+    public function testAddRemote($options, $asserts)
+    {
+        $this->createRemote();
+        $git = $this->getWorkingCopy();
+        $git->addRemote('remote', 'file://' . realpath(self::REMOTE_REPO_DIR), $options);
+        $this->assertTrue($git->hasRemote('remote'));
+        foreach ($asserts as $method => $parameters) {
+            array_unshift($parameters, $git);
+            call_user_func_array(array($this, $method), $parameters);
+        }
+    }
+
+    public function addRemoteDataProvider()
+    {
+        return array(
+            // Test default options: nothing is fetched.
+            array(
+                array(),
+                array(
+                    'assertNoRemoteBranches' => array(array('remote/master', 'remote/remote-branch', 'remote/HEAD')),
+                    'assertNoGitTag' => array('remote-tag'),
+                ),
+            ),
+            // The fetch option should retrieve the remote branches and tags,
+            // but not set up a master branch.
+            array(
+                array('-f' => true),
+                array(
+                    'assertRemoteBranches' => array(array('remote/master', 'remote/remote-branch')),
+                    'assertNoRemoteBranches' => array(array('remote/HEAD')),
+                    'assertGitTag' => array('remote-tag'),
+                ),
+            ),
+            // The --no-tags options should omit importing tags.
+            array(
+                array('-f' => true, '--no-tags' => true),
+                array(
+                    'assertRemoteBranches' => array(array('remote/master', 'remote/remote-branch')),
+                    'assertNoGitTag' => array('remote-tag'),
+                    'assertNoRemoteMaster' => array(),
+                ),
+            ),
+            // The -t option should limit the remote branches that are imported.
+            // By default git fetch only imports the tags of the fetched
+            // branches. No tags were added to the master branch, so the tag
+            // should not be imported.
+            array(
+                array('-f' => true, '-t' => array('master')),
+                array(
+                    'assertRemoteBranches' => array(array('remote/master')),
+                    'assertNoRemoteBranches' => array(array('remote/remote-branch')),
+                    'assertNoGitTag' => array('remote-tag'),
+                    'assertNoRemoteMaster' => array(),
+                ),
+            ),
+            // The -t option in combination with the --tags option should fetch
+            // all tags, so now the tag should be there.
+            array(
+                array('-f' => true, '-t' => array('master'), '--tags' => true),
+                array(
+                    'assertRemoteBranches' => array(array('remote/master')),
+                    'assertNoRemoteBranches' => array(array('remote/remote-branch')),
+                    'assertGitTag' => array('remote-tag'),
+                    'assertNoRemoteMaster' => array(),
+                ),
+            ),
+            // The -m option should set up a remote master branch.
+            array(
+                array('-f' => true, '-m' => 'remote-branch'),
+                array(
+                    'assertRemoteBranches' => array(array('remote/master', 'remote/remote-branch')),
+                    'assertGitTag' => array('remote-tag'),
+                    'assertRemoteMaster' => array(),
+                ),
+            ),
+        );
+    }
+
+    protected function assertGitTag(GitWorkingCopy $repository, $tag)
+    {
+        $repository->run(array('rev-parse ' . $tag));
+    }
+
+    protected function assertNoGitTag(GitWorkingCopy $repository, $tag)
+    {
+        try {
+            $repository->run(array('rev-parse ' . $tag));
+        } catch (GitException $e) {
+            // Expected result. The tag does not exist.
+            return;
+        }
+        throw new \Exception("Expecting that the tag '$tag' doesn't exist, but it does.");
+    }
+
+    protected function assertRemoteMaster(GitWorkingCopy $repository)
+    {
+        $repository->run(array('rev-parse remote/HEAD'));
+    }
+
+    protected function assertNoRemoteMaster(GitWorkingCopy $repository)
+    {
+        try {
+            $repository->run(array('rev-parse remote/HEAD'));
+        } catch (GitException $e) {
+            // Expected result. The remote master does not exist.
+            return;
+        }
+        throw new \Exception("Expecting that the remote master doesn't exist, but it does.");
+    }
+
+    protected function assertRemoteBranches(GitWorkingCopy $repository, $branches)
+    {
+        foreach ($branches as $branch) {
+            $this->assertRemoteBranch($repository, $branch);
+        }
+    }
+
+    protected function assertRemoteBranch(GitWorkingCopy $repository, $branch)
+    {
+        $branches = $repository->getBranches()->remote();
+        $this->assertArrayHasKey($branch, array_flip($branches));
+    }
+
+    protected function assertNoRemoteBranches(GitWorkingCopy $repository, $branches)
+    {
+        foreach ($branches as $branch) {
+            $this->assertNoRemoteBranch($repository, $branch);
+        }
+    }
+
+    protected function assertNoRemoteBranch(GitWorkingCopy $repository, $branch)
+    {
+        $branches = $repository->getBranches()->remote();
+        $this->assertArrayNotHasKey($branch, array_flip($branches));
+    }
+
+    protected function createRemote()
+    {
+        // Create a clone of the working copy that will serve as a remote.
+        $git = $this->wrapper->clone('file://' . realpath(self::REPO_DIR), self::REMOTE_REPO_DIR);
+        $git->config('user.email', self::CONFIG_EMAIL);
+        $git->config('user.name', self::CONFIG_NAME);
+
+        // Make a change to the remote repo.
+        file_put_contents(self::REMOTE_REPO_DIR . '/remote.file', "remote code\n");
+        $git
+            ->add('*')
+            ->commit('Remote change.')
+        ;
+
+        // Create a branch.
+        $branch = 'remote-branch';
+        file_put_contents(self::REMOTE_REPO_DIR . '/remote-branch.txt', "$branch\n");
+        $git
+            ->checkoutNewBranch($branch)
+            ->add('*')
+            ->commit('Commit remote testing branch.')
+        ;
+
+        // Create a tag.
+        $git->tag('remote-tag');
     }
 }
