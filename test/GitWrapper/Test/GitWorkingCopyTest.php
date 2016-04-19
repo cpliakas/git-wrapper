@@ -644,6 +644,62 @@ PATCH;
         );
     }
 
+    public function testRemoveRemote()
+    {
+        $this->createRemote();
+        $git = $this->getWorkingCopy();
+        $git->addRemote('remote', 'file://' . realpath(self::REMOTE_REPO_DIR));
+        $this->assertTrue($git->hasRemote('remote'));
+
+        // The remote should be gone after it is removed.
+        $git->removeRemote('remote');
+        $this->assertFalse($git->hasRemote('remote'));
+    }
+
+    public function testHasRemote()
+    {
+        $this->createRemote();
+        $git = $this->getWorkingCopy();
+        // The remote should be absent before it is added.
+        $this->assertFalse($git->hasRemote('remote'));
+        $git->addRemote('remote', 'file://' . realpath(self::REMOTE_REPO_DIR));
+        // The remote should be present after it is added.
+        $this->assertTrue($git->hasRemote('remote'));
+    }
+
+    public function testGetRemote()
+    {
+        $this->createRemote();
+        $git = $this->getWorkingCopy();
+        $path = 'file://' . realpath(self::REMOTE_REPO_DIR);
+        $git->addRemote('remote', $path);
+
+        // Both the 'fetch' and 'push' URIs should be populated and point to the
+        // correct location.
+        $remote = $git->getRemote('remote');
+        $this->assertEquals($path, $remote['fetch']);
+        $this->assertEquals($path, $remote['push']);
+    }
+
+    public function testGetRemotes()
+    {
+        $this->createRemote();
+        $git = $this->getWorkingCopy();
+
+        // Since our working copy is a clone, the 'origin' remote should be
+        // present by default.
+        $remotes = $git->getRemotes();
+        $this->assertArrayHasKey('origin', $remotes);
+        $this->assertArrayNotHasKey('remote', $remotes);
+
+        // If we add a second remote, both it and the 'origin' remotes should be
+        // present.
+        $git->addRemote('remote', 'file://' . realpath(self::REMOTE_REPO_DIR));
+        $remotes = $git->getRemotes();
+        $this->assertArrayHasKey('origin', $remotes);
+        $this->assertArrayHasKey('remote', $remotes);
+    }
+
     protected function assertGitTag(GitWorkingCopy $repository, $tag)
     {
         $repository->run(array('rev-parse ' . $tag));
