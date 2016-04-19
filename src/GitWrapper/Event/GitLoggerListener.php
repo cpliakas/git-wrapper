@@ -98,46 +98,51 @@ class GitLoggerListener implements EventSubscriberInterface, LoggerAwareInterfac
     }
 
     /**
-     * Adds a logg message using the level defined in the mappings.
+     * Adds a log message using the level defined in the mappings.
      *
      * @param \GitWrapper\Event\GitEvent $event
      * @param string $message
      * @param array $context
+     * @param string $eventName
      *
      * @throws \DomainException
      */
-    public function log(GitEvent $event, $message, array $context = array())
+    public function log(GitEvent $event, $message, array $context = array(), $eventName = NULL)
     {
-        $method = $this->getLogLevelMapping($event->getName());
+        // Provide backwards compatibility with Symfony 2.
+        if (empty($eventName) && method_exists($event, 'getName')) {
+            $eventName = $event->getName();
+        }
+        $method = $this->getLogLevelMapping($eventName);
         if ($method !== false) {
             $context += array('command' => $event->getProcess()->getCommandLine());
             $this->logger->$method($message, $context);
         }
     }
 
-    public function onPrepare(GitEvent $event)
+    public function onPrepare(GitEvent $event, $eventName = NULL)
     {
-        $this->log($event, 'Git command preparing to run');
+        $this->log($event, 'Git command preparing to run', array(), $eventName);
     }
 
-    public function handleOutput(GitOutputEvent $event)
+    public function handleOutput(GitOutputEvent $event, $eventName = NULL)
     {
         $context = array('error' => $event->isError() ? true : false);
-        $this->log($event, $event->getBuffer(), $context);
+        $this->log($event, $event->getBuffer(), $context, $eventName);
     }
 
-    public function onSuccess(GitEvent $event)
+    public function onSuccess(GitEvent $event, $eventName = NULL)
     {
-        $this->log($event, 'Git command successfully run');
+        $this->log($event, 'Git command successfully run', array(), $eventName);
     }
 
-    public function onError(GitEvent $event)
+    public function onError(GitEvent $event, $eventName = NULL)
     {
-        $this->log($event, 'Error running Git command');
+        $this->log($event, 'Error running Git command', array(), $eventName);
     }
 
-    public function onBypass(GitEvent $event)
+    public function onBypass(GitEvent $event, $eventName = NULL)
     {
-        $this->log($event, 'Git command bypassed');
+        $this->log($event, 'Git command bypassed', array(), $eventName);
     }
 }
