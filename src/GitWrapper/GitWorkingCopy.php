@@ -388,8 +388,9 @@ class GitWorkingCopy
      *   An associative array of options, with the following keys:
      *   - -f: Boolean, set to true to run git fetch immediately after the
      *     remote is set up. Defaults to false.
-     *   - --tags: Boolean, set to true to import every tag from the remote
-     *     repository when git fetch is run. Defaults to false.
+     *   - --tags: Boolean. By default only the tags from the fetched branches
+     *     are imported when git fetch is run. Set this to true to import every
+     *     tag from the remote repository. Defaults to false.
      *   - --no-tags: Boolean, when set to true, git fetch does not import tags
      *     from the remote repository. Defaults to false.
      *   - -t: Optional array of branch names to track. If left empty, all
