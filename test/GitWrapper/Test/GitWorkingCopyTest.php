@@ -701,6 +701,26 @@ PATCH;
         $this->assertArrayHasKey('remote', $remotes);
     }
 
+    /**
+     * @dataProvider getRemoteUrlDataProvider
+     */
+    public function testGetRemoteUrl($remote, $operation, $expected)
+    {
+        $this->createRemote();
+        $git = $this->getWorkingCopy();
+        $git->addRemote('remote', 'file://' . realpath(self::REMOTE_REPO_DIR));
+        $this->assertEquals('file://' . realpath($expected), $git->getRemoteUrl($remote, $operation));
+    }
+
+    public function getRemoteUrlDataProvider() {
+        return array(
+            array('origin', 'fetch', self::REPO_DIR),
+            array('origin', 'push', self::REPO_DIR),
+            array('remote', 'fetch', self::REMOTE_REPO_DIR),
+            array('remote', 'push', self::REMOTE_REPO_DIR),
+        );
+    }
+
     protected function assertGitTag(GitWorkingCopy $repository, $tag)
     {
         $repository->run(array('rev-parse ' . $tag));
