@@ -388,8 +388,9 @@ class GitWorkingCopy
      *   An associative array of options, with the following keys:
      *   - -f: Boolean, set to true to run git fetch immediately after the
      *     remote is set up. Defaults to false.
-     *   - --tags: Boolean, set to true to import every tag from the remote
-     *     repository when git fetch is run. Defaults to false.
+     *   - --tags: Boolean. By default only the tags from the fetched branches
+     *     are imported when git fetch is run. Set this to true to import every
+     *     tag from the remote repository. Defaults to false.
      *   - --no-tags: Boolean, when set to true, git fetch does not import tags
      *     from the remote repository. Defaults to false.
      *   - -t: Optional array of branch names to track. If left empty, all
@@ -495,12 +496,46 @@ class GitWorkingCopy
      *   - push: the push URL.
      */
     public function getRemotes() {
+        $this->clearOutput();
+
         $remotes = array();
         foreach (explode("\n", rtrim($this->remote()->getOutput())) as $remote) {
-            $remotes[$remote]['fetch'] = rtrim($this->remote('get-url', $remote)->getOutput());
-            $remotes[$remote]['push'] = rtrim($this->remote('get-url', '--push', $remote)->getOutput());
+            $remotes[$remote]['fetch'] = $this->getRemoteUrl($remote);
+            $remotes[$remote]['push'] = $this->getRemoteUrl($remote, 'push');
         }
         return $remotes;
+    }
+
+    /**
+     * Returns the fetch or push URL of a given remote.
+     *
+     * @param string $remote
+     *   The name of the remote for which to return the fetch or push URL.
+     * @param string $operation
+     *   The operation for which to return the remote. Can be either 'fetch' or
+     *   'push'. Defaults to 'fetch'.
+     *
+     * @return string
+     *   The URL.
+     */
+    public function getRemoteUrl($remote, $operation = 'fetch') {
+        $this->clearOutput();
+
+        $args = $operation === 'push' ? array('get-url', '--push', $remote) : array('get-url', $remote);
+        try {
+            return rtrim(call_user_func_array(array($this, 'remote'), $args)->getOutput());
+        }
+        catch (GitException $e) {
+            // Fall back to parsing 'git remote -v' for older versions of git
+            // that do not support `git remote get-url`.
+            $identifier = " ($operation)";
+            foreach (explode("\n", rtrim($this->remote('-v')->getOutput())) as $line) {
+                if (strpos($line, $remote) === 0 && strrpos($line, $identifier) === strlen($line) - strlen($identifier)) {
+                    preg_match('/^.+\t(.+) \(' . $operation . '\)$/', $line, $matches);
+                    return $matches[1];
+                }
+            }
+        }
     }
 
     /**
