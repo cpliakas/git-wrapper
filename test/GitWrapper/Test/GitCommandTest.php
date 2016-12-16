@@ -38,10 +38,7 @@ class GitCommandTest extends GitWrapperTestCase
         $git->unsetOption($optionName);
         $this->assertNull($git->getOption($optionName));
     }
-
-    /**
-     * @see https://github.com/cpliakas/git-wrapper/issues/50
-     */
+    
     public function testMultiOption()
     {
         $git = GitCommand::getInstance('test-command')
