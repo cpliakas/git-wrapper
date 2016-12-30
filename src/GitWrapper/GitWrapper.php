@@ -529,6 +529,7 @@ class GitWrapper
     {
         $wrapper = $this;
         $process = new GitProcess($this, $command, $cwd);
+        $process->inheritEnvironmentVariables();
         $process->run(function ($type, $buffer) use ($wrapper, $process, $command) {
             $event = new Event\GitOutputEvent($wrapper, $process, $command, $type, $buffer);
             $wrapper->getDispatcher()->dispatch(Event\GitEvents::GIT_OUTPUT, $event);
