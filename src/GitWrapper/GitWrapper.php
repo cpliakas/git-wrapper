@@ -392,6 +392,49 @@ class GitWrapper
     }
 
     /**
+     * Returns a boolean indicating if the version of Git available is
+     * equal to a minimum version or later.  All of the arguments are
+     * optional, and if called with no arguments the method tests for
+     * version 2.0.0 of Git.
+     *
+     * @param int $major (optional)
+     *   The major version number.
+     *
+     * @param int $minor (optional)
+     *   The minor version number.
+     *
+     * @param int $patch (optional)
+     *   The patch version number.
+     *
+     * @return bool
+     *
+     * @throws \GitWrapper\GitException
+     */
+    public function hasMinimumVersion($major = 2, $minor = 0, $patch = 0)
+    {
+        $version_string = $this->version();
+        $version_regex = '/git version (\d+)\.(\d+)\.(\d+)/';
+        $matches = array();
+
+        preg_match($version_regex, $version_string, $matches);
+
+        if ((int) $matches[1] < $major) {
+            return false;
+        }
+        else if ((int) $matches[2] < $minor and
+                 (int) $matches[1] <= $major) {
+            return false;
+        }
+        else if ((int) $matches[3] < $patch and
+                 (int) $matches[2] <= $minor and
+                 (int) $matches[1] <= $major) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Parses name of the repository from the path.
      *
      * For example, passing the "git@github.com:cpliakas/git-wrapper.git"

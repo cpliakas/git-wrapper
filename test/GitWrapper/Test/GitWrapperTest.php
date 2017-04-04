@@ -66,6 +66,25 @@ class GitWrapperTest extends GitWrapperTestCase
         $this->assertGitVersion($version);
     }
 
+    public function testHasMinimumVersion()
+    {
+        // Do we have Git 2.0.0 or later?
+        $this->assertTrue($this->wrapper->hasMinimumVersion());
+
+        // Do we have Git 1.0.0 or later?
+        $this->assertTrue($this->wrapper->hasMinimumVersion(1));
+
+        // Do we have Git 1.8.0 or later?
+        $this->assertTrue($this->wrapper->hasMinimumVersion(1, 8));
+
+        // Do we have Git 1.8.4 or later?
+        $this->assertTrue($this->wrapper->hasMinimumVersion(1, 8, 4));
+
+        // Do we have Git 3.0.0 or later?  We shouldn't, unless we are
+        // a time-traveler from the future.
+        $this->assertFalse($this->wrapper->hasMinimumVersion(3));
+    }
+
     public function testSetPrivateKey()
     {
         $key = './test/id_rsa';
