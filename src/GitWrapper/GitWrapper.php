@@ -46,6 +46,13 @@ class GitWrapper
     protected $timeout = 60;
 
     /**
+     * The idle timeout of the Git command in seconds, defaults to 60.
+     *
+     * @var int
+     */
+    protected $idleTimeout = 60;
+
+    /**
      * An array of options passed to the proc_open() function.
      *
      * @var array
@@ -217,6 +224,31 @@ class GitWrapper
     public function getTimeout()
     {
         return $this->timeout;
+    }
+
+    /**
+     * Sets the timeout of the Git command.
+     *
+     * @param int $timeout
+     *   The timeout in seconds.
+     *
+     * @return \GitWrapper\GitWrapper
+     */
+    public function setIdleTimeout($timeout)
+    {
+        $this->idleTimeout = (int) $timeout;
+        return $this;
+    }
+
+    /**
+     * Gets the idle timeout of the Git command.
+     *
+     * @return int
+     *   The timeout in seconds.
+     */
+    public function getIdleTimeout()
+    {
+        return $this->idleTimeout;
     }
 
     /**
@@ -529,6 +561,7 @@ class GitWrapper
     {
         $wrapper = $this;
         $process = new GitProcess($this, $command, $cwd);
+        $process->setIdleTimeout($this->getIdleTimeout());
         $process->run(function ($type, $buffer) use ($wrapper, $process, $command) {
             $event = new Event\GitOutputEvent($wrapper, $process, $command, $type, $buffer);
             $wrapper->getDispatcher()->dispatch(Event\GitEvents::GIT_OUTPUT, $event);
