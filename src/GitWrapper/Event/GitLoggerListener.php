@@ -115,34 +115,36 @@ class GitLoggerListener implements EventSubscriberInterface, LoggerAwareInterfac
         }
         $method = $this->getLogLevelMapping($eventName);
         if ($method !== false) {
-            $context += array('command' => $event->getProcess()->getCommandLine());
+//            $context += array('command' => $event->getProcess()->getCommandLine());
             $this->logger->$method($message, $context);
         }
     }
 
     public function onPrepare(GitEvent $event, $eventName = NULL)
     {
-        $this->log($event, 'Git command preparing to run', array(), $eventName);
+//        $this->log($event, 'Git command preparing to run', array(), $eventName);
+        $this->log($event, '$ ' . $event->getProcess()->getCommandLine(), array(), $eventName);
     }
 
     public function handleOutput(GitOutputEvent $event, $eventName = NULL)
     {
-        $context = array('error' => $event->isError() ? true : false);
+//        $context = array('error' => $event->isError() ? true : false);
+        $context = [];
         $this->log($event, $event->getBuffer(), $context, $eventName);
     }
 
     public function onSuccess(GitEvent $event, $eventName = NULL)
     {
-        $this->log($event, 'Git command successfully run', array(), $eventName);
+//        $this->log($event, 'Git command successfully run', array(), $eventName);
     }
 
     public function onError(GitEvent $event, $eventName = NULL)
     {
-        $this->log($event, 'Error running Git command', array(), $eventName);
+        $this->log($event, 'Error on command ' . $event->getProcess()->getCommandLine(), array(), $eventName);
     }
 
     public function onBypass(GitEvent $event, $eventName = NULL)
     {
-        $this->log($event, 'Git command bypassed', array(), $eventName);
+        $this->log($event, 'Command bypassed ' . $event->getProcess()->getCommandLine(), array(), $eventName);
     }
 }
