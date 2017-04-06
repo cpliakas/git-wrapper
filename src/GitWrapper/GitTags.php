@@ -29,7 +29,6 @@ class GitTags implements \IteratorAggregate
     public function __construct(GitWorkingCopy $git)
     {
         $this->git = clone $git;
-        $output = (string) $git->tag(array('l' => true));
     }
 
     /**
