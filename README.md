@@ -35,7 +35,7 @@ $wrapper = new GitWrapper();
 $wrapper->setPrivateKey('/path/to/private/key');
 
 // Clone a repo into `/path/to/working/copy`, get a working copy object.
-$git = $wrapper->clone('git://github.com/cpliakas/git-wrapper.git', '/path/to/working/copy');
+$git = $wrapper->cloneRepository('git://github.com/cpliakas/git-wrapper.git', '/path/to/working/copy');
 
 // Create a file in the working copy.
 touch('/path/to/working/copy/text.txt');
@@ -95,7 +95,7 @@ $log->pushHandler(new StreamHandler('git.log', Logger::DEBUG));
 $listener = new GitLoggerListener($log);
 $wrapper->addLoggerListener($listener);
 
-$git = $wrapper->clone('git://github.com/cpliakas/git-wrapper.git', '/path/to/working/copy');
+$git = $wrapper->cloneRepository('git://github.com/cpliakas/git-wrapper.git', '/path/to/working/copy');
 
 // The "git.log" file now has info about the command that was executed above.
 
