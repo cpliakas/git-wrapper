@@ -18,19 +18,20 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^6.4",
-        "symfony/filesystem": "^3.0|^4.0"
+        "symfony/filesystem": "^3.0|^4.0",
+        "psr/log": "1.0"
     },
     "suggest": {
         "monolog/monolog": "Enables logging of executed git commands"
     },
     "autoload": {
         "psr-4": {
-            "GitWrapper\\": "src"
+            "GitWrapper\\": "src/GitWrapper"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "GitWrapper\\Tests\\": "tests"
+            "GitWrapper\\Test\\": "test/GitWrapper/Test"
         }
     }
 }

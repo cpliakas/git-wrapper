@@ -7,9 +7,10 @@ use GitWrapper\GitException;
 use GitWrapper\GitWrapper;
 use GitWrapper\Test\Event\TestBypassListener;
 use GitWrapper\Test\Event\TestListener;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
-class GitWrapperTestCase extends \PHPUnit_Framework_TestCase
+class GitWrapperTestCase extends TestCase
 {
     const REPO_DIR = 'build/test/repo';
     const WORKING_DIR = 'build/test/wc';
@@ -27,7 +28,7 @@ class GitWrapperTestCase extends \PHPUnit_Framework_TestCase
     protected $wrapper;
 
     /**
-     * Overrides PHPUnit_Framework_TestCase::setUp().
+     * Overrides PHPUnit\Framework\TestCase::setUp().
      */
     public function setUp() {
       parent::setUp();
