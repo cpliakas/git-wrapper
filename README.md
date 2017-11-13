@@ -35,7 +35,7 @@ $wrapper = new GitWrapper();
 $wrapper->setPrivateKey('/path/to/private/key');
 
 // Clone a repo into `/path/to/working/copy`, get a working copy object.
-$git = $wrapper->clone('git://github.com/cpliakas/git-wrapper.git', '/path/to/working/copy');
+$git = $wrapper->cloneRepository('git://github.com/cpliakas/git-wrapper.git', '/path/to/working/copy');
 
 // Create a file in the working copy.
 touch('/path/to/working/copy/text.txt');
@@ -95,27 +95,17 @@ $log->pushHandler(new StreamHandler('git.log', Logger::DEBUG));
 $listener = new GitLoggerListener($log);
 $wrapper->addLoggerListener($listener);
 
-$git = $wrapper->clone('git://github.com/cpliakas/git-wrapper.git', '/path/to/working/copy');
+$git = $wrapper->cloneRepository('git://github.com/cpliakas/git-wrapper.git', '/path/to/working/copy');
 
 // The "git.log" file now has info about the command that was executed above.
 
 ```
 
-## Installation
-
-Git Wrapper can be installed with [Composer](http://getcomposer.org) by adding
-the library as a dependency to your composer.json file.
+## Instal via Composer
 
 ```json
-{
-    "require": {
-        "cpliakas/git-wrapper": "~1.0"
-    }
-}
+composer require cpliakas/git-wrapper
 ```
-
-Please refer to [Composer's documentation](https://github.com/composer/composer/blob/master/doc/00-intro.md#introduction)
-for installation and usage instructions.
 
 ## Gotchas
 
@@ -154,8 +144,7 @@ $wrapper->git('config --global user.name "User name"');
 $wrapper->git('config --global user.email user@example.com');
 
 // Set configuration options per repository.
-$git
-    ->config('user.name', 'User name')
+$git->config('user.name', 'User name')
     ->config('user.email', 'user@example.com');
 ```
 
@@ -175,12 +164,12 @@ if ($git->hasChanges()) {
 
 ### Permissions Of The GIT_SSH Wrapper Script
 
-On checkout, the bin/git-ssh-wrapper.sh script should be executable. If it is
-not, git commands with fail if a non-default private key is specified.
+On checkout, the bin/git-ssh-wrapper.sh script should be executable. If it is not, git commands with fail if a non-default private key is specified.
 
-    $> chmod 0755 ./bin/git-ssh-wrapper.sh
+```bash
+$ chmod 0755 ./bin/git-ssh-wrapper.sh
+```
 
 ## For Developers
 
-Refer to [PHP Project Starter's documentation](https://github.com/cpliakas/php-project-starter#using-apache-ant)
-for the Apache Ant targets supported by this project.
+Refer to [PHP Project Starter's documentation](https://github.com/cpliakas/php-project-starter#using-apache-ant) for the Apache Ant targets supported by this project.
