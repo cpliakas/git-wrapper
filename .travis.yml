@@ -4,7 +4,7 @@ php:
   - 7.2
   - 7.1
   - 7.0
-  
+
 matrix:
   allow_failures:
     - php: 7.2
@@ -12,10 +12,11 @@ matrix:
 before_script:
   - git --version
   - composer install --prefer-dist
-  
+
 script:
-  - vendor/bin/phpunit
+  - vendor/bin/phpunit --coverage-clover coverage.xml
 
 after_script:
-  - vendor/bin/ocular code-coverage:upload --format=php-clover build/logs/clover.xml
-
+  # upload coverage
+  - wget https://github.com/satooshi/php-coveralls/releases/download/v1.0.1/coveralls.phar
+  - php coveralls.phar --verbose
