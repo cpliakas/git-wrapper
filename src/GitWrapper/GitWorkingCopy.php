@@ -1277,4 +1277,15 @@ class GitWorkingCopy
     {
         return $this->getOutput();
     }
+
+    /**
+     * Returns a GitTags object containing information on the repository's
+     * tags.
+     *
+     * @return GitTags
+     */
+    public function tags()
+    {
+        return new GitTags($this);
+    }
 }
