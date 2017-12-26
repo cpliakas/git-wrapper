@@ -19,4 +19,3 @@ tools:
     external_code_coverage:
         runs: 4
         timeout: 600
-
