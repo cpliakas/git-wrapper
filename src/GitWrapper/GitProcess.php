@@ -33,8 +33,7 @@ class GitProcess extends Process
         $this->command = $command;
 
         // Build the command line options, flags, and arguments.
-        $binary = ProcessUtils::escapeArgument($git->getGitBinary());
-        $commandLine = rtrim($binary . ' ' . $command->getCommandLine());
+        $commandLine = array_merge([$git->getGitBinary()], $command->getCommandLine());
 
         // Resolve the working directory of the Git process. Use the directory
         // in the command object if it exists.
@@ -59,8 +58,10 @@ class GitProcess extends Process
     /**
      * {@inheritdoc}
      */
-    public function run($callback = null)
+    public function run(callable $callback = null, array $env = array()): int
     {
+        $exitCode = -1;
+
         $event = new Event\GitEvent($this->git, $this, $this->command);
         $dispatcher = $this->git->getDispatcher();
 
@@ -73,7 +74,7 @@ class GitProcess extends Process
             // "git.command.success" event, otherwise do not execute the comamnd
             // and throw the "git.command.bypass" event.
             if ($this->command->notBypassed()) {
-                parent::run($callback);
+                $exitCode = parent::run($callback);
 
                 if ($this->isSuccessful()) {
                     $dispatcher->dispatch(Event\GitEvents::GIT_SUCCESS, $event);
@@ -94,5 +95,7 @@ class GitProcess extends Process
             $dispatcher->dispatch(Event\GitEvents::GIT_ERROR, $event);
             throw new GitException($e->getMessage());
         }
+
+        return $exitCode;
     }
 }

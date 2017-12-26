@@ -166,23 +166,25 @@ class GitCommand
     /**
      * Builds the command line options for use in the Git command.
      *
-     * @return string
+     * @return array
      */
-    public function buildOptions()
+    public function buildOptions(): array
     {
         $options = array();
         foreach ($this->options as $option => $values) {
             foreach ((array) $values as $value) {
+
+                // Render the option.
                 $prefix = (strlen($option) != 1) ? '--' : '-';
-                $rendered = $prefix . $option;
+                $options[] = $prefix . $option;
+
+                // Render apend the value if the option isn't a flag.
                 if ($value !== true) {
-                    $rendered .= ('--' == $prefix) ? '=' : ' ';
-                    $rendered .= ProcessUtils::escapeArgument($value);
+                    $options[] = $value;
                 }
-                $options[] = $rendered;
             }
         }
-        return join(' ', $options);
+        return $options;
     }
 
     /**
@@ -281,18 +283,18 @@ class GitCommand
     /**
      * Renders the arguments and options for the Git command.
      *
-     * @return string
+     * @return array
      *
      * @see GitCommand::getCommand()
      * @see GitCommand::buildOptions()
      */
-    public function getCommandLine()
+    public function getCommandLine(): array
     {
-        $command = array(
-            $this->getCommand(),
+        $command = array_merge(
+            [$this->getCommand()],
             $this->buildOptions(),
-            join(' ', array_map(array('\Symfony\Component\Process\ProcessUtils', 'escapeArgument'), $this->args)),
+            $this->args
         );
-        return join(' ', array_filter($command));
+        return array_filter($command);
     }
 }

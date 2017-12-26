@@ -174,7 +174,7 @@ class GitWorkingCopy
      */
     public function getStatus()
     {
-        return $this->wrapper->git('status -s', $this->directory);
+        return $this->wrapper->git(['status', '-s'], $this->directory);
     }
 
     /**
@@ -631,7 +631,7 @@ class GitWorkingCopy
     public function bisect($sub_command)
     {
         $args = func_get_args();
-        $args[0] = 'bisect ' . ProcessUtils::escapeArgument($sub_command);
+        array_unshift($args, 'bisect');
         return $this->run($args);
     }
 
