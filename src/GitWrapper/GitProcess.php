@@ -74,7 +74,7 @@ class GitProcess extends Process
             // "git.command.success" event, otherwise do not execute the comamnd
             // and throw the "git.command.bypass" event.
             if ($this->command->notBypassed()) {
-                $exitCode = parent::run($callback);
+                $exitCode = parent::run($callback, $env);
 
                 if ($this->isSuccessful()) {
                     $dispatcher->dispatch(Event\GitEvents::GIT_SUCCESS, $event);

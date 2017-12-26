@@ -503,7 +503,7 @@ class GitWrapper
      */
     public function git($commandLine, $cwd = null)
     {
-        $command = GitCommand::getInstance($commandLine);
+        $command = call_user_func_array('GitWrapper\\GitCommand::getInstance', $commandLine);
         $command->setDirectory($cwd);
         return $this->run($command);
     }
