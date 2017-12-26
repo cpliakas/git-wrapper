@@ -299,7 +299,7 @@ PATCH;
     {
         $git = $this->getWorkingCopy();
         $output = (string) $git->pull();
-        $this->assertEquals("Already up-to-date.\n", $output);
+        $this->assertRegExp("/^Already up[- ]to[ -]date\.$/", rtrim($output));
     }
 
     public function testGitArchive()
@@ -328,7 +328,7 @@ PATCH;
             $errorOutput = $exception->getMessage();
         }
 
-        $this->assertTrue(strpos($errorOutput, "Your branch is up-to-date with 'origin/master'.") !== false);
+        $this->assertRegExp("/Your branch is up[- ]to[- ]date with 'origin\\/master'./", $errorOutput);
     }
 
     public function testGitDiff()
