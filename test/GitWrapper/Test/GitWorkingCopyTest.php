@@ -299,7 +299,7 @@ PATCH;
     {
         $git = $this->getWorkingCopy();
         $output = (string) $git->pull();
-        $this->assertEquals("Already up-to-date.\n", $output);
+        $this->assertRegExp("/^Already up[- ]to[ -]date\.$/", rtrim($output));
     }
 
     public function testGitArchive()
@@ -328,7 +328,7 @@ PATCH;
             $errorOutput = $exception->getMessage();
         }
 
-        $this->assertTrue(strpos($errorOutput, "Your branch is up-to-date with 'origin/master'.") !== false);
+        $this->assertRegExp("/Your branch is up[- ]to[- ]date with 'origin\\/master'./", $errorOutput);
     }
 
     public function testGitDiff()
@@ -728,13 +728,13 @@ PATCH;
 
     protected function assertGitTag(GitWorkingCopy $repository, $tag)
     {
-        $repository->run(array('rev-parse ' . $tag));
+        $repository->run(['rev-parse', $tag]);
     }
 
     protected function assertNoGitTag(GitWorkingCopy $repository, $tag)
     {
         try {
-            $repository->run(array('rev-parse ' . $tag));
+            $repository->run(['rev-parse', $tag]);
         } catch (GitException $e) {
             // Expected result. The tag does not exist.
             return;
@@ -744,13 +744,13 @@ PATCH;
 
     protected function assertRemoteMaster(GitWorkingCopy $repository)
     {
-        $repository->run(array('rev-parse remote/HEAD'));
+        $repository->run(['rev-parse', 'remote/HEAD']);
     }
 
     protected function assertNoRemoteMaster(GitWorkingCopy $repository)
     {
         try {
-            $repository->run(array('rev-parse remote/HEAD'));
+            $repository->run(['rev-parse', 'remote/HEAD']);
         } catch (GitException $e) {
             // Expected result. The remote master does not exist.
             return;
