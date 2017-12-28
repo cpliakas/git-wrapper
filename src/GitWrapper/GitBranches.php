@@ -1,9 +1,5 @@
 <?php
 
-/**
- * A PHP wrapper around the Git command line utility.
- */
-
 namespace GitWrapper;
 
 /**
