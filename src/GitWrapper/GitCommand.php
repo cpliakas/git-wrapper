@@ -42,9 +42,18 @@ class GitCommand
     /**
      * Whether command execution should be bypassed.
      *
-     * @var boolean
+     * @var bool
      */
     protected $bypass = false;
+
+    /**
+     * Whether to execute the raw command without escaping it. This is useful
+     * for executing arbitrary commands, e.g. "status -s". If this is true,
+     * any options and arguments are ignored.
+     *
+     * @var bool
+     */
+    protected $executeRaw = false;
 
     /**
      * Constructs a GitCommand object.
@@ -149,6 +158,20 @@ class GitCommand
     }
 
     /**
+     * Set whether to execute the command as-is without escaping it.
+     *
+     * @param boolean $executeRaw
+     *   Whether to execute the command as-is without excaping it.
+     *
+     * @return \GitWrapper\GitCommand
+     */
+    public function executeRaw($executeRaw = true)
+    {
+        $this->executeRaw = $executeRaw;
+        return $this;
+    }
+
+    /**
      * Returns true if the Git command should be run.
      *
      * The return value is the boolean opposite $this->bypass. Although this
@@ -166,23 +189,25 @@ class GitCommand
     /**
      * Builds the command line options for use in the Git command.
      *
-     * @return string
+     * @return array
      */
-    public function buildOptions()
+    public function buildOptions(): array
     {
         $options = array();
         foreach ($this->options as $option => $values) {
             foreach ((array) $values as $value) {
+
+                // Render the option.
                 $prefix = (strlen($option) != 1) ? '--' : '-';
-                $rendered = $prefix . $option;
+                $options[] = $prefix . $option;
+
+                // Render apend the value if the option isn't a flag.
                 if ($value !== true) {
-                    $rendered .= ('--' == $prefix) ? '=' : ' ';
-                    $rendered .= ProcessUtils::escapeArgument($value);
+                    $options[] = $value;
                 }
-                $options[] = $rendered;
             }
         }
-        return join(' ', $options);
+        return $options;
     }
 
     /**
@@ -281,18 +306,23 @@ class GitCommand
     /**
      * Renders the arguments and options for the Git command.
      *
-     * @return string
+     * @return string|array
      *
      * @see GitCommand::getCommand()
      * @see GitCommand::buildOptions()
      */
     public function getCommandLine()
     {
-        $command = array(
-            $this->getCommand(),
+        if ($this->executeRaw) {
+            return $this->getCommand();
+        }
+
+        $command = array_merge(
+            [$this->getCommand()],
             $this->buildOptions(),
-            join(' ', array_map(array('\Symfony\Component\Process\ProcessUtils', 'escapeArgument'), $this->args)),
+            $this->args
         );
-        return join(' ', array_filter($command));
+
+        return array_filter($command);
     }
 }
