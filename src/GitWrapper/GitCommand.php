@@ -42,9 +42,18 @@ class GitCommand
     /**
      * Whether command execution should be bypassed.
      *
-     * @var boolean
+     * @var bool
      */
     protected $bypass = false;
+
+    /**
+     * Whether to execute the raw command without escaping it. This is useful
+     * for executing arbitrary commands, e.g. "status -s". If this is true,
+     * any options and arguments are ignored.
+     *
+     * @var bool
+     */
+    protected $executeRaw = false;
 
     /**
      * Constructs a GitCommand object.
@@ -145,6 +154,20 @@ class GitCommand
     public function bypass($bypass = true)
     {
         $this->bypass = (bool) $bypass;
+        return $this;
+    }
+
+    /**
+     * Set whether to execute the command as-is without escaping it.
+     *
+     * @param boolean $executeRaw
+     *   Whether to execute the command as-is without excaping it.
+     *
+     * @return \GitWrapper\GitCommand
+     */
+    public function executeRaw($executeRaw = true)
+    {
+        $this->executeRaw = $executeRaw;
         return $this;
     }
 
@@ -283,18 +306,23 @@ class GitCommand
     /**
      * Renders the arguments and options for the Git command.
      *
-     * @return array
+     * @return string|array
      *
      * @see GitCommand::getCommand()
      * @see GitCommand::buildOptions()
      */
-    public function getCommandLine(): array
+    public function getCommandLine()
     {
+        if ($this->executeRaw) {
+            return $this->getCommand();
+        }
+
         $command = array_merge(
             [$this->getCommand()],
             $this->buildOptions(),
             $this->args
         );
+
         return array_filter($command);
     }
 }

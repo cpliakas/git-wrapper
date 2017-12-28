@@ -174,7 +174,7 @@ class GitWorkingCopy
      */
     public function getStatus()
     {
-        return $this->wrapper->git(['status', '-s'], $this->directory);
+        return $this->wrapper->git('status -s', $this->directory);
     }
 
     /**
