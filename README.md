@@ -101,7 +101,7 @@ $git = $wrapper->cloneRepository('git://github.com/cpliakas/git-wrapper.git', '/
 
 ```
 
-## Instal via Composer
+## Install via Composer
 
 ```json
 composer require cpliakas/git-wrapper
