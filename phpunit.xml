@@ -2,8 +2,8 @@
 <phpunit
     bootstrap="vendor/autoload.php"
     colors="true"
+    verbose="true"
 >
-
     <testsuite>
          <directory suffix="Test.php">test</directory>
     </testsuite>
