@@ -18,11 +18,7 @@ class GitTags implements IteratorAggregate
     protected $git;
 
     /**
-     * Constructs a GitTags object.
-     *
      * @param \GitWrapper\GitWorkingCopy $git The working copy that Tags are being collected from.
-     *
-     * @throws \GitWrapper\GitException
      */
     public function __construct(GitWorkingCopy $git)
     {
