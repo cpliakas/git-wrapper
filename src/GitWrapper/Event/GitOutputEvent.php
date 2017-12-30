@@ -21,44 +21,30 @@ class GitOutputEvent extends GitEvent
      */
     protected $buffer;
 
-    /**
-     * Constructs a GitEvent object.
-     *
-     * @param \GitWrapper\GitWrapper $wrapper
-     *   The GitWrapper object that likely instantiated this class.
-     * @param \Symfony\Component\Process\Process $process
-     *   The Process object being run.
-     * @param \GitWrapper\GitCommand $command
-     *   The GitCommand object being executed.
-     */
-    public function __construct(GitWrapper $wrapper, Process $process, GitCommand $command, $type, $buffer)
-    {
+    public function __construct(
+        GitWrapper $wrapper,
+        Process $process,
+        GitCommand $command,
+        string $type,
+        string $buffer
+    ) {
         parent::__construct($wrapper, $process, $command);
         $this->type = $type;
         $this->buffer = $buffer;
     }
 
-    /**
-     * @return string
-     */
     public function getType(): string
     {
         return $this->type;
     }
 
-    /**
-     * @return string
-     */
     public function getBuffer(): string
     {
         return $this->buffer;
     }
 
-    /**
-     * Tests wheter the buffer was captured from STDERR.
-     */
-    public function isError()
+    public function isError(): bool
     {
-        return ($this->type === Process::ERR);
+        return $this->type === Process::ERR;
     }
 }
