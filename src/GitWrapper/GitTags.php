@@ -2,10 +2,12 @@
 
 namespace GitWrapper;
 
+use IteratorAggregate;
+use ArrayIterator;
 /**
  * Class that parses and returnes an array of Tags.
  */
-class GitTags implements \IteratorAggregate
+class GitTags implements IteratorAggregate
 {
     /**
      * The working copy that Tags are being collected from.
@@ -64,7 +66,7 @@ class GitTags implements \IteratorAggregate
     public function getIterator()
     {
         $tags = $this->all();
-        return new \ArrayIterator($tags);
+        return new ArrayIterator($tags);
     }
 
     /**

@@ -2,10 +2,12 @@
 
 namespace GitWrapper;
 
+use IteratorAggregate;
+use ArrayIterator;
 /**
  * Class that parses and returnes an array of branches.
  */
-class GitBranches implements \IteratorAggregate
+class GitBranches implements IteratorAggregate
 {
     /**
      * The working copy that branches are being collected from.
@@ -66,7 +68,7 @@ class GitBranches implements \IteratorAggregate
     public function getIterator()
     {
         $branches = $this->all();
-        return new \ArrayIterator($branches);
+        return new ArrayIterator($branches);
     }
 
     /**

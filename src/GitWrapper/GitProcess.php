@@ -2,8 +2,10 @@
 
 namespace GitWrapper;
 
+use GitWrapper\Event\GitEvent;
+use RuntimeException;
+use GitWrapper\Event\GitEvents;
 use Symfony\Component\Process\Process;
-use Symfony\Component\Process\ProcessUtils;
 
 /**
  * GitProcess runs a Git command in an independent process.
@@ -58,7 +60,7 @@ class GitProcess extends Process
             $env = null;
         }
 
-        parent::__construct($commandLine, $cwd, $env, null, $git->getTimeout(), $git->getProcOptions());
+        parent::__construct($commandLine, $cwd, $env, null, $git->getTimeout());
     }
 
     /**
@@ -68,13 +70,13 @@ class GitProcess extends Process
     {
         $exitCode = -1;
 
-        $event = new Event\GitEvent($this->git, $this, $this->command);
+        $event = new GitEvent($this->git, $this, $this->command);
         $dispatcher = $this->git->getDispatcher();
 
         try {
 
             // Throw the "git.command.prepare" event prior to executing.
-            $dispatcher->dispatch(Event\GitEvents::GIT_PREPARE, $event);
+            $dispatcher->dispatch(GitEvents::GIT_PREPARE, $event);
 
             // Execute command if it is not flagged to be bypassed and throw the
             // "git.command.success" event, otherwise do not execute the comamnd
@@ -83,22 +85,22 @@ class GitProcess extends Process
                 $exitCode = parent::run($callback, $env);
 
                 if ($this->isSuccessful()) {
-                    $dispatcher->dispatch(Event\GitEvents::GIT_SUCCESS, $event);
+                    $dispatcher->dispatch(GitEvents::GIT_SUCCESS, $event);
                 } else {
                     $output = $this->getErrorOutput();
 
-                    if(trim($output) == '') {
+                    if(trim($output) === '') {
                         $output = $this->getOutput();
                     }
 
-                    throw new \RuntimeException($output);
+                    throw new RuntimeException($output);
                 }
             } else {
-                $dispatcher->dispatch(Event\GitEvents::GIT_BYPASS, $event);
+                $dispatcher->dispatch(GitEvents::GIT_BYPASS, $event);
             }
 
-        } catch (\RuntimeException $e) {
-            $dispatcher->dispatch(Event\GitEvents::GIT_ERROR, $event);
+        } catch (RuntimeException $e) {
+            $dispatcher->dispatch(GitEvents::GIT_ERROR, $event);
             throw new GitException($e->getMessage());
         }
 

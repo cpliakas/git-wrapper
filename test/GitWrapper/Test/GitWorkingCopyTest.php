@@ -2,6 +2,9 @@
 
 namespace GitWrapper\Test;
 
+use GitWrapper\GitBranches;
+use GitWrapper\Test\Event\TestOutputListener;
+use Exception;
 use GitWrapper\GitException;
 use GitWrapper\GitWorkingCopy;
 use Symfony\Component\Process\Process;
@@ -151,7 +154,7 @@ class GitWorkingCopyTest extends GitWrapperTestCase
         $git = $this->getWorkingCopy();
         $branches = $git->getBranches();
 
-        $this->assertTrue($branches instanceof \GitWrapper\GitBranches);
+        $this->assertTrue($branches instanceof GitBranches);
 
         // Dumb count checks. Is there a better way to do this?
         $allBranches = 0;
@@ -396,7 +399,7 @@ PATCH;
     {
         $git = $this->getWorkingCopy();
 
-        $listener = new Event\TestOutputListener();
+        $listener = new TestOutputListener();
         $git->getWrapper()->addOutputListener($listener);
 
         $git->status();
@@ -739,7 +742,7 @@ PATCH;
             // Expected result. The tag does not exist.
             return;
         }
-        throw new \Exception("Expecting that the tag '$tag' doesn't exist, but it does.");
+        throw new Exception("Expecting that the tag '$tag' doesn't exist, but it does.");
     }
 
     protected function assertRemoteMaster(GitWorkingCopy $repository)
@@ -755,7 +758,7 @@ PATCH;
             // Expected result. The remote master does not exist.
             return;
         }
-        throw new \Exception("Expecting that the remote master doesn't exist, but it does.");
+        throw new Exception("Expecting that the remote master doesn't exist, but it does.");
     }
 
     protected function assertRemoteBranches(GitWorkingCopy $repository, $branches)
