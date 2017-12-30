@@ -11,7 +11,7 @@ class TestListener
      *
      * @var array
      */
-    protected $methods = array();
+    protected $methods = [];
 
     /**
      * The event object passed to the onPrepare method.

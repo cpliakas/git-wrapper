@@ -19,13 +19,13 @@ class GitLoggerListener implements EventSubscriberInterface, LoggerAwareInterfac
      *
      * @var array
      */
-    protected $logLevelMappings = array(
+    protected $logLevelMappings = [
         GitEvents::GIT_PREPARE => LogLevel::INFO,
         GitEvents::GIT_OUTPUT  => LogLevel::DEBUG,
         GitEvents::GIT_SUCCESS => LogLevel::INFO,
         GitEvents::GIT_ERROR   => LogLevel::ERROR,
         GitEvents::GIT_BYPASS  => LogLevel::INFO,
-    );
+    ];
 
     /**
      * @param \Psr\Log\LoggerInterface $logger
@@ -88,13 +88,13 @@ class GitLoggerListener implements EventSubscriberInterface, LoggerAwareInterfac
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            GitEvents::GIT_PREPARE => array('onPrepare', 0),
-            GitEvents::GIT_OUTPUT  => array('handleOutput', 0),
-            GitEvents::GIT_SUCCESS => array('onSuccess', 0),
-            GitEvents::GIT_ERROR   => array('onError', 0),
-            GitEvents::GIT_BYPASS  => array('onBypass', 0),
-        );
+        return [
+            GitEvents::GIT_PREPARE => ['onPrepare', 0],
+            GitEvents::GIT_OUTPUT  => ['handleOutput', 0],
+            GitEvents::GIT_SUCCESS => ['onSuccess', 0],
+            GitEvents::GIT_ERROR   => ['onError', 0],
+            GitEvents::GIT_BYPASS  => ['onBypass', 0],
+        ];
     }
 
     /**
@@ -107,7 +107,7 @@ class GitLoggerListener implements EventSubscriberInterface, LoggerAwareInterfac
      *
      * @throws \DomainException
      */
-    public function log(GitEvent $event, $message, array $context = array(), $eventName = NULL)
+    public function log(GitEvent $event, $message, array $context = [], $eventName = NULL)
     {
         // Provide backwards compatibility with Symfony 2.
         if (empty($eventName) && method_exists($event, 'getName')) {
@@ -115,34 +115,34 @@ class GitLoggerListener implements EventSubscriberInterface, LoggerAwareInterfac
         }
         $method = $this->getLogLevelMapping($eventName);
         if ($method !== false) {
-            $context += array('command' => $event->getProcess()->getCommandLine());
+            $context += ['command' => $event->getProcess()->getCommandLine()];
             $this->logger->$method($message, $context);
         }
     }
 
     public function onPrepare(GitEvent $event, $eventName = NULL)
     {
-        $this->log($event, 'Git command preparing to run', array(), $eventName);
+        $this->log($event, 'Git command preparing to run', [], $eventName);
     }
 
     public function handleOutput(GitOutputEvent $event, $eventName = NULL)
     {
-        $context = array('error' => $event->isError() ? true : false);
+        $context = ['error' => $event->isError() ? true : false];
         $this->log($event, $event->getBuffer(), $context, $eventName);
     }
 
     public function onSuccess(GitEvent $event, $eventName = NULL)
     {
-        $this->log($event, 'Git command successfully run', array(), $eventName);
+        $this->log($event, 'Git command successfully run', [], $eventName);
     }
 
     public function onError(GitEvent $event, $eventName = NULL)
     {
-        $this->log($event, 'Error running Git command', array(), $eventName);
+        $this->log($event, 'Error running Git command', [], $eventName);
     }
 
     public function onBypass(GitEvent $event, $eventName = NULL)
     {
-        $this->log($event, 'Git command bypassed', array(), $eventName);
+        $this->log($event, 'Git command bypassed', [], $eventName);
     }
 }

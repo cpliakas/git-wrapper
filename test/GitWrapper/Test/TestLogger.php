@@ -10,11 +10,11 @@ use Psr\Log\AbstractLogger;
  */
 class TestLogger extends AbstractLogger
 {
-    public $messages = array();
-    public $levels = array();
-    public $contexts = array();
+    public $messages = [];
+    public $levels = [];
+    public $contexts = [];
 
-    public function log($level, $message, array $context = array())
+    public function log($level, $message, array $context = [])
     {
         $this->messages[] = $message;
         $this->levels[] = $level;
@@ -23,6 +23,6 @@ class TestLogger extends AbstractLogger
 
     public function clearMessages()
     {
-        $this->messages = $this->levels = $this->contexts = array();
+        $this->messages = $this->levels = $this->contexts = [];
     }
 }

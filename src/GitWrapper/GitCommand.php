@@ -30,14 +30,14 @@ class GitCommand
      *
      * @var array
      */
-    protected $options = array();
+    protected $options = [];
 
     /**
      * Command line arguments passed to the Git command.
      *
      * @var array
      */
-    protected $args = array();
+    protected $args = [];
 
     /**
      * Whether command execution should be bypassed.
@@ -193,7 +193,7 @@ class GitCommand
      */
     public function buildOptions(): array
     {
-        $options = array();
+        $options = [];
         foreach ($this->options as $option => $values) {
             foreach ((array) $values as $value) {
 

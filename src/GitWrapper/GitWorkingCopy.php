@@ -149,7 +149,7 @@ class GitWorkingCopy
      */
     public function run($args, $setDirectory = true)
     {
-        $command = call_user_func_array(array('GitWrapper\GitCommand', 'getInstance'), $args);
+        $command = call_user_func_array(['GitWrapper\GitCommand', 'getInstance'], $args);
         if ($setDirectory) {
             $command->setDirectory($this->directory);
         }
@@ -321,7 +321,7 @@ class GitWorkingCopy
      *
      * @see GitWorkingCopy::push()
      */
-    public function pushTag($tag, $repository = 'origin', array $options = array())
+    public function pushTag($tag, $repository = 'origin', array $options = [])
     {
         return $this->push($repository, 'tag', $tag, $options);
     }
@@ -339,7 +339,7 @@ class GitWorkingCopy
      *
      * @see GitWorkingCopy::push()
      */
-    public function pushTags($repository = 'origin', array $options = array())
+    public function pushTags($repository = 'origin', array $options = [])
     {
         $options['tags'] = true;
         return $this->push($repository, $options);
@@ -355,7 +355,7 @@ class GitWorkingCopy
      *
      * @see GitWorkingCopy::fetch()
      */
-    public function fetchAll(array $options = array())
+    public function fetchAll(array $options = [])
     {
         $options['all'] = true;
         return $this->fetch($options);
@@ -371,7 +371,7 @@ class GitWorkingCopy
      *
      * @see GitWorkingCopy::checkout()
      */
-    public function checkoutNewBranch($branch, array $options = array())
+    public function checkoutNewBranch($branch, array $options = [])
     {
         $options['b'] = true;
         return $this->checkout($branch, $options);
@@ -405,7 +405,7 @@ class GitWorkingCopy
      * @throws \GitWrapper\GitException
      *   Thrown when the name or URL are missing.
      */
-    public function addRemote($name, $url, $options = array()) {
+    public function addRemote($name, $url, $options = []) {
         if (empty($name)) {
             throw new GitException('Cannot add remote without a name.');
         }
@@ -413,10 +413,10 @@ class GitWorkingCopy
             throw new GitException('Cannot add remote without a URL.');
         }
 
-        $args = array('add');
+        $args = ['add'];
 
         // Add boolean options.
-        foreach (array('-f', '--tags', '--no-tags') as $option) {
+        foreach (['-f', '--tags', '--no-tags'] as $option) {
             if (!empty($options[$option])) {
                 $args[] = $option;
             }
@@ -437,7 +437,7 @@ class GitWorkingCopy
         // Add remote name and URL.
         array_push($args, $name, $url);
 
-        return call_user_func_array(array($this, 'remote'), $args);
+        return call_user_func_array([$this, 'remote'], $args);
     }
 
     /**
@@ -498,7 +498,7 @@ class GitWorkingCopy
     public function getRemotes() {
         $this->clearOutput();
 
-        $remotes = array();
+        $remotes = [];
         foreach (explode("\n", rtrim($this->remote()->getOutput())) as $remote) {
             $remotes[$remote]['fetch'] = $this->getRemoteUrl($remote);
             $remotes[$remote]['push'] = $this->getRemoteUrl($remote, 'push');
@@ -521,9 +521,9 @@ class GitWorkingCopy
     public function getRemoteUrl($remote, $operation = 'fetch') {
         $this->clearOutput();
 
-        $args = $operation === 'push' ? array('get-url', '--push', $remote) : array('get-url', $remote);
+        $args = $operation === 'push' ? ['get-url', '--push', $remote] : ['get-url', $remote];
         try {
-            return rtrim(call_user_func_array(array($this, 'remote'), $args)->getOutput());
+            return rtrim(call_user_func_array([$this, 'remote'], $args)->getOutput());
         }
         catch (GitException $e) {
             // Fall back to parsing 'git remote -v' for older versions of git
@@ -572,13 +572,13 @@ class GitWorkingCopy
      *
      * @throws \GitWrapper\GitException
      */
-    public function add($filepattern, array $options = array())
+    public function add($filepattern, array $options = [])
     {
-        $args = array(
+        $args = [
             'add',
             $filepattern,
             $options,
-        );
+        ];
         return $this->run($args);
     }
 
@@ -708,14 +708,14 @@ class GitWorkingCopy
      *
      * @throws \GitWrapper\GitException
      */
-    public function cloneRepository($repository, $options = array())
+    public function cloneRepository($repository, $options = [])
     {
-        $args = array(
+        $args = [
             'clone',
             $repository,
             $this->directory,
             $options,
-        );
+        ];
         return $this->run($args, false);
     }
 
@@ -744,10 +744,10 @@ class GitWorkingCopy
     {
         $args = func_get_args();
         if (isset($args[0]) && is_string($args[0]) && !isset($args[1])) {
-            $args[0] = array(
+            $args[0] = [
                 'm' => $args[0],
                 'a' => true,
-            );
+            ];
         }
         array_unshift($args, 'commit');
         return $this->run($args);
@@ -872,13 +872,13 @@ class GitWorkingCopy
      *
      * @throws \GitWrapper\GitException
      */
-    public function init(array $options = array())
+    public function init(array $options = [])
     {
-        $args = array(
+        $args = [
             'init',
             $this->directory,
             $options,
-        );
+        ];
         return $this->run($args, false);
     }
 
@@ -953,14 +953,14 @@ class GitWorkingCopy
      *
      * @throws \GitWrapper\GitException
      */
-    public function mv($source, $destination, array $options = array())
+    public function mv($source, $destination, array $options = [])
     {
-        $args = array(
+        $args = [
             'mv',
             $source,
             $destination,
             $options,
-        );
+        ];
         return $this->run($args);
     }
 
@@ -1110,13 +1110,13 @@ class GitWorkingCopy
      *
      * @throws \GitWrapper\GitException
      */
-    public function rm($filepattern, array $options = array())
+    public function rm($filepattern, array $options = [])
     {
-        $args = array(
+        $args = [
             'rm',
             $filepattern,
             $options,
-        );
+        ];
         return $this->run($args);
     }
 
@@ -1139,9 +1139,9 @@ class GitWorkingCopy
      *
      * @throws \GitWrapper\GitException
      */
-    public function show($object, array $options = array())
+    public function show($object, array $options = [])
     {
-        $args = array('show', $object, $options);
+        $args = ['show', $object, $options];
         return $this->run($args);
     }
 
@@ -1258,7 +1258,7 @@ class GitWorkingCopy
     public function __call($method, $args)
     {
         if ('clone' == $method) {
-            return call_user_func_array(array($this, 'cloneRepository'), $args);
+            return call_user_func_array([$this, 'cloneRepository'], $args);
         } else {
             $class = get_called_class();
             $message = "Call to undefined method $class::$method()";

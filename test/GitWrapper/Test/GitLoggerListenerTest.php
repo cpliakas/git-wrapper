@@ -36,7 +36,7 @@ class GitLoggerListenerTest extends GitWrapperTestCase
     {
         $logger = new TestLogger();
         $this->wrapper->addLoggerListener(new GitLoggerListener($logger));
-        $git = $this->wrapper->init(self::REPO_DIR, array('bare' => true));
+        $git = $this->wrapper->init(self::REPO_DIR, ['bare' => true]);
 
         $this->assertEquals('Git command preparing to run', $logger->messages[0]);
         $this->assertEquals('Initialized empty Git repository in ' . realpath(self::REPO_DIR) . "/\n", $logger->messages[1]);
@@ -68,7 +68,7 @@ class GitLoggerListenerTest extends GitWrapperTestCase
         $logger = new TestLogger();
         $this->wrapper->addLoggerListener(new GitLoggerListener($logger));
 
-        $command = GitCommand::getInstance('status', array('s' => true));
+        $command = GitCommand::getInstance('status', ['s' => true]);
         $command->bypass();
 
         $this->wrapper->run($command);
