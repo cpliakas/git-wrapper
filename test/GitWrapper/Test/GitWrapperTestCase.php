@@ -33,10 +33,11 @@ class GitWrapperTestCase extends TestCase
     /**
      * Overrides PHPUnit\Framework\TestCase::setUp().
      */
-    public function setUp() {
-      parent::setUp();
-      $this->filesystem = new Filesystem();
-      $this->wrapper = new GitWrapper();
+    public function setUp()
+    {
+        parent::setUp();
+        $this->filesystem = new Filesystem();
+        $this->wrapper = new GitWrapper();
     }
 
     /**
@@ -57,6 +58,7 @@ class GitWrapperTestCase extends TestCase
         for ($i = 1; $i < $length; ++$i) {
             $str .= chr($values[mt_rand(0, $max)]);
         }
+
         return $str;
     }
 

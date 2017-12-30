@@ -77,6 +77,7 @@ class GitWrapper
         if (! isset($this->dispatcher)) {
             $this->dispatcher = new EventDispatcher();
         }
+
         return $this->dispatcher;
     }
 
@@ -185,9 +186,11 @@ class GitWrapper
         if ($wrapper === null) {
             $wrapper = __DIR__ . '/../../bin/git-ssh-wrapper.sh';
         }
+
         if (! $wrapperPath = realpath($wrapper)) {
             throw new GitException('Path to GIT_SSH wrapper script could not be resolved: ' . $wrapper);
         }
+
         if (! $privateKeyPath = realpath($privateKey)) {
             throw new GitException('Path private key could not be resolved: ' . $privateKey);
         }
@@ -328,6 +331,7 @@ class GitWrapper
         if ($directory === null) {
             $directory = self::parseRepositoryName($repository);
         }
+
         $git = $this->workingCopy($directory);
         $git->cloneRepository($repository, $options);
         $git->setCloned(true);

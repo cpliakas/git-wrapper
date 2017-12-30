@@ -4,6 +4,7 @@ namespace GitWrapper;
 
 use ArrayIterator;
 use IteratorAggregate;
+
 /**
  * Class that parses and returnes an array of branches.
  */
