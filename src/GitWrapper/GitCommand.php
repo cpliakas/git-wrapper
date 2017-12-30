@@ -122,7 +122,6 @@ class GitCommand
     public function setDirectory($directory)
     {
         $this->directory = $directory;
-        return $this;
     }
 
     /**
@@ -149,7 +148,6 @@ class GitCommand
     public function bypass($bypass = true)
     {
         $this->bypass = (bool) $bypass;
-        return $this;
     }
 
     /**
@@ -163,7 +161,6 @@ class GitCommand
     public function executeRaw($executeRaw = true)
     {
         $this->executeRaw = $executeRaw;
-        return $this;
     }
 
     /**
@@ -219,7 +216,6 @@ class GitCommand
     public function setOption($option, $value)
     {
         $this->options[$option] = $value;
-        return $this;
     }
 
     /**
@@ -235,7 +231,6 @@ class GitCommand
         foreach ($options as $option => $value) {
             $this->setOption($option, $value);
         }
-        return $this;
     }
 
     /**
@@ -275,7 +270,6 @@ class GitCommand
     public function unsetOption($option)
     {
         unset($this->options[$option]);
-        return $this;
     }
 
     /**
@@ -289,7 +283,6 @@ class GitCommand
     public function addArgument($arg)
     {
         $this->args[] = $arg;
-        return $this;
     }
 
     /**
