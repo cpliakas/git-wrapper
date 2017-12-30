@@ -3,8 +3,8 @@
 namespace GitWrapper;
 
 use GitWrapper\Event\GitEvent;
-use RuntimeException;
 use GitWrapper\Event\GitEvents;
+use RuntimeException;
 use Symfony\Component\Process\Process;
 
 /**
@@ -25,8 +25,6 @@ class GitProcess extends Process
     /**
      * Constructs a GitProcess object.
      *
-     * @param \GitWrapper\GitWrapper $git
-     * @param \GitWrapper\GitCommand $command
      * @param string|null $cwd
      */
     public function __construct(GitWrapper $git, GitCommand $command, $cwd = null)
@@ -45,9 +43,10 @@ class GitProcess extends Process
 
         // Resolve the working directory of the Git process. Use the directory
         // in the command object if it exists.
-        if (null === $cwd) {
-            if (null !== $directory = $command->getDirectory()) {
-                if (!$cwd = realpath($directory)) {
+        if ($cwd === null) {
+            $directory = $command->getDirectory();
+            if ($directory !== null) {
+                if (! $cwd = realpath($directory)) {
                     throw new GitException('Path to working directory could not be resolved: ' . $directory);
                 }
             }
@@ -56,7 +55,7 @@ class GitProcess extends Process
         // Finalize the environment variables, an empty array is converted
         // to null which enherits the environment of the PHP process.
         $env = $git->getEnvVars();
-        if (!$env) {
+        if (! $env) {
             $env = null;
         }
 
