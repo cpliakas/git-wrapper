@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace GitWrapper\Test;
 
@@ -12,13 +12,13 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class GitWrapperTestCase extends TestCase
 {
-    const REPO_DIR = 'build/test/repo';
+    public const REPO_DIR = 'build/test/repo';
 
-    const WORKING_DIR = 'build/test/wc';
+    public const WORKING_DIR = 'build/test/wc';
 
-    const CONFIG_EMAIL = 'opensource@chrispliakas.com';
+    public const CONFIG_EMAIL = 'opensource@chrispliakas.com';
 
-    const CONFIG_NAME = 'Chris Pliakas';
+    public const CONFIG_NAME = 'Chris Pliakas';
 
     /**
      * @var \Symfony\Component\Filesystem\Filesystem
@@ -33,7 +33,7 @@ class GitWrapperTestCase extends TestCase
     /**
      * Overrides PHPUnit\Framework\TestCase::setUp().
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->filesystem = new Filesystem();
@@ -46,17 +46,16 @@ class GitWrapperTestCase extends TestCase
      * @param type $length
      *   The string length, defaults to 8 characters.
      *
-     * @return string
      *
      * @see http://api.drupal.org/api/drupal/modules%21simpletest%21drupal_web_test_case.php/function/DrupalTestCase%3A%3ArandomName/7
      */
-    public function randomString($length = 8)
+    public function randomString(type $length = 8): string
     {
         $values = array_merge(range(65, 90), range(97, 122), range(48, 57));
         $max = count($values) - 1;
-        $str = chr(mt_rand(97, 122));
+        $str = chr(random_int(97, 122));
         for ($i = 1; $i < $length; ++$i) {
-            $str .= chr($values[mt_rand(0, $max)]);
+            $str .= chr($values[random_int(0, $max)]);
         }
 
         return $str;
@@ -65,9 +64,8 @@ class GitWrapperTestCase extends TestCase
     /**
      * Adds the test listener for all events, returns the listener.
      *
-     * @return \GitWrapper\Test\Event\TestListener
      */
-    public function addListener()
+    public function addListener(): TestListener
     {
         $dispatcher = $this->wrapper->getDispatcher();
         $listener = new TestListener();
@@ -83,9 +81,8 @@ class GitWrapperTestCase extends TestCase
     /**
      * Adds the bypass listener so that Git commands are not run.
      *
-     * @return \GitWrapper\Test\Event\TestBypassListener
      */
-    public function addBypassListener()
+    public function addBypassListener(): TestBypassListener
     {
         $listener = new TestBypassListener();
         $dispatcher = $this->wrapper->getDispatcher();
@@ -99,7 +96,7 @@ class GitWrapperTestCase extends TestCase
      * @param type $version
      *   The version returned by the `git --version` command.
      */
-    public function assertGitVersion($version)
+    public function assertGitVersion(type $version): void
     {
         $match = preg_match('/^git version [.0-9]+/', $version);
         $this->assertNotEmpty($match);
@@ -112,7 +109,7 @@ class GitWrapperTestCase extends TestCase
      *   Whether to catch the exception to continue script execution, defaults
      *   to false.
      */
-    public function runBadCommand($catchException = false)
+    public function runBadCommand(bool $catchException = false): void
     {
         try {
             $this->wrapper->git('a-bad-command');

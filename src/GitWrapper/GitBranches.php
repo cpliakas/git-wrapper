@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace GitWrapper;
 
@@ -37,7 +37,7 @@ class GitBranches implements IteratorAggregate
      *
      * @return array
      */
-    public function fetchBranches($onlyRemote = false)
+    public function fetchBranches(bool $onlyRemote = false): array
     {
         $this->git->clearOutput();
         $options = ($onlyRemote) ? ['r' => true] : ['a' => true];
@@ -55,7 +55,7 @@ class GitBranches implements IteratorAggregate
      * @return string
      *   The processed branch name.
      */
-    public function trimBranch($branch)
+    public function trimBranch(string $branch): string
     {
         return ltrim($branch, ' *');
     }
@@ -74,7 +74,7 @@ class GitBranches implements IteratorAggregate
      *
      * @return array
      */
-    public function all()
+    public function all(): array
     {
         return $this->fetchBranches();
     }
@@ -84,7 +84,7 @@ class GitBranches implements IteratorAggregate
      *
      * @return array
      */
-    public function remote()
+    public function remote(): array
     {
         return $this->fetchBranches(true);
     }
@@ -92,9 +92,8 @@ class GitBranches implements IteratorAggregate
     /**
      * Returns currently active branch (HEAD) of the working copy.
      *
-     * @return string
      */
-    public function head()
+    public function head(): string
     {
         return trim((string) $this->git->run(['rev-parse --abbrev-ref HEAD']));
     }

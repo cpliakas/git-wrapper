@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace GitWrapper\Test;
 
@@ -8,7 +8,7 @@ use Symfony\Component\Process\Process;
 
 class GitListenerTest extends GitWrapperTestCase
 {
-    public function testListener()
+    public function testListener(): void
     {
         $listener = $this->addListener();
         $this->wrapper->version();
@@ -19,7 +19,7 @@ class GitListenerTest extends GitWrapperTestCase
         $this->assertFalse($listener->methodCalled('onBypass'));
     }
 
-    public function testListenerError()
+    public function testListenerError(): void
     {
         $listener = $this->addListener();
         $this->runBadCommand(true);
@@ -30,7 +30,7 @@ class GitListenerTest extends GitWrapperTestCase
         $this->assertFalse($listener->methodCalled('onBypass'));
     }
 
-    public function testGitBypass()
+    public function testGitBypass(): void
     {
         $this->addBypassListener();
         $listener = $this->addListener();
@@ -45,7 +45,7 @@ class GitListenerTest extends GitWrapperTestCase
         $this->assertEmpty($output);
     }
 
-    public function testEvent()
+    public function testEvent(): void
     {
         $process = new Process('');
         $command = GitCommand::getInstance();

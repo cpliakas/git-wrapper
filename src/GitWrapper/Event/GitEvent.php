@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace GitWrapper\Event;
 
@@ -53,9 +53,8 @@ class GitEvent extends Event
     /**
      * Gets the GitWrapper object that likely instantiated this class.
      *
-     * @return \GitWrapper\GitWrapper
      */
-    public function getWrapper()
+    public function getWrapper(): GitWrapper
     {
         return $this->wrapper;
     }
@@ -63,9 +62,8 @@ class GitEvent extends Event
     /**
      * Gets the Process object being run.
      *
-     * @return \Symfony\Component\Process\Process
      */
-    public function getProcess()
+    public function getProcess(): Process
     {
         return $this->process;
     }
@@ -73,9 +71,8 @@ class GitEvent extends Event
     /**
      * Gets the GitCommand object being executed.
      *
-     * @return \GitWrapper\GitCommand
      */
-    public function getCommand()
+    public function getCommand(): GitCommand
     {
         return $this->command;
     }

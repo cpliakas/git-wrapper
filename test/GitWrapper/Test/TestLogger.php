@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace GitWrapper\Test;
 
@@ -10,20 +10,33 @@ use Psr\Log\AbstractLogger;
  */
 class TestLogger extends AbstractLogger
 {
+    /**
+     * @var string[]
+     */
     public $messages = [];
 
+    /**
+     * @var string
+     */
     public $levels = [];
 
+    /**
+     * @var mixed[]
+     */
     public $contexts = [];
 
-    public function log($level, $message, array $context = [])
+    /**
+     * @param string $message
+     * @param mixed[] $context
+     */
+    public function log(string $level, string $message, array $context = []): void
     {
         $this->messages[] = $message;
         $this->levels[] = $level;
         $this->contexts[] = $context;
     }
 
-    public function clearMessages()
+    public function clearMessages(): void
     {
         $this->messages = $this->levels = $this->contexts = [];
     }

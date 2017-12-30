@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace GitWrapper;
 
@@ -32,7 +32,7 @@ class GitTags implements IteratorAggregate
      *
      * @return array
      */
-    public function fetchTags()
+    public function fetchTags(): array
     {
         $this->git->clearOutput();
         $output = (string) $this->git->tag(['l' => true]);
@@ -48,7 +48,7 @@ class GitTags implements IteratorAggregate
      * @return string
      *   The processed branch name.
      */
-    public function trimTags($branch)
+    public function trimTags(string $branch): string
     {
         return ltrim($branch, ' *');
     }
@@ -67,7 +67,7 @@ class GitTags implements IteratorAggregate
      *
      * @return array
      */
-    public function all()
+    public function all(): array
     {
         return $this->fetchTags();
     }

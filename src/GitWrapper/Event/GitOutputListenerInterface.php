@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace GitWrapper\Event;
 
@@ -7,5 +7,5 @@ namespace GitWrapper\Event;
  */
 interface GitOutputListenerInterface
 {
-    public function handleOutput(GitOutputEvent $event);
+    public function handleOutput(GitOutputEvent $event): void;
 }

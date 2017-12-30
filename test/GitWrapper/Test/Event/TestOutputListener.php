@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace GitWrapper\Test\Event;
 
@@ -15,12 +15,12 @@ class TestOutputListener implements GitOutputListenerInterface
     /**
      * @return GitWrapper\Event\GitOutputEvent
      */
-    public function getLastEvent()
+    public function getLastEvent(): GitOutputEvent
     {
         return $this->event;
     }
 
-    public function handleOutput(GitOutputEvent $event)
+    public function handleOutput(GitOutputEvent $event): void
     {
         $this->event = $event;
     }

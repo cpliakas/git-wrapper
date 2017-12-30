@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace GitWrapper\Test;
 
@@ -6,7 +6,7 @@ use GitWrapper\GitCommand;
 
 class GitCommandTest extends GitWrapperTestCase
 {
-    public function testCommand()
+    public function testCommand(): void
     {
         $command = $this->randomString();
         $argument = $this->randomString();
@@ -25,7 +25,7 @@ class GitCommandTest extends GitWrapperTestCase
         $this->assertSame($expected, $commandLine);
     }
 
-    public function testOption()
+    public function testOption(): void
     {
         $optionName = $this->randomString();
         $optionValue = $this->randomString();
@@ -39,7 +39,7 @@ class GitCommandTest extends GitWrapperTestCase
         $this->assertNull($git->getOption($optionName));
     }
 
-    public function testMultiOption()
+    public function testMultiOption(): void
     {
         $git = GitCommand::getInstance('test-command');
         $git->setOption('test-arg', [true, true]);

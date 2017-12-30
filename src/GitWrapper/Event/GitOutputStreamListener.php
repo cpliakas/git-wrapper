@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace GitWrapper\Event;
 
@@ -8,7 +8,7 @@ namespace GitWrapper\Event;
  */
 class GitOutputStreamListener implements GitOutputListenerInterface
 {
-    public function handleOutput(GitOutputEvent $event)
+    public function handleOutput(GitOutputEvent $event): void
     {
         $handler = $event->isError() ? STDERR : STDOUT;
         fputs($handler, $event->getBuffer());
