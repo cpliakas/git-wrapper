@@ -13,8 +13,11 @@ use Symfony\Component\Filesystem\Filesystem;
 class GitWrapperTestCase extends TestCase
 {
     const REPO_DIR = 'build/test/repo';
+
     const WORKING_DIR = 'build/test/wc';
+
     const CONFIG_EMAIL = 'opensource@chrispliakas.com';
+
     const CONFIG_NAME = 'Chris Pliakas';
 
     /**
@@ -51,7 +54,7 @@ class GitWrapperTestCase extends TestCase
         $values = array_merge(range(65, 90), range(97, 122), range(48, 57));
         $max = count($values) - 1;
         $str = chr(mt_rand(97, 122));
-        for ($i = 1; $i < $length; $i++) {
+        for ($i = 1; $i < $length; ++$i) {
             $str .= chr($values[mt_rand(0, $max)]);
         }
         return $str;
@@ -112,7 +115,7 @@ class GitWrapperTestCase extends TestCase
         try {
             $this->wrapper->git('a-bad-command');
         } catch (GitException $e) {
-            if (!$catchException) {
+            if (! $catchException) {
                 throw $e;
             }
         }

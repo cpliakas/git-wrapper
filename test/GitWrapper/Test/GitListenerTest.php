@@ -2,8 +2,8 @@
 
 namespace GitWrapper\Test;
 
-use GitWrapper\GitCommand;
 use GitWrapper\Event\GitEvent;
+use GitWrapper\GitCommand;
 use Symfony\Component\Process\Process;
 
 class GitListenerTest extends GitWrapperTestCase
@@ -51,8 +51,8 @@ class GitListenerTest extends GitWrapperTestCase
         $command = GitCommand::getInstance();
         $event = new GitEvent($this->wrapper, $process, $command);
 
-        $this->assertEquals($this->wrapper, $event->getWrapper());
-        $this->assertEquals($process, $event->getProcess());
-        $this->assertEquals($command, $event->getCommand());
+        $this->assertSame($this->wrapper, $event->getWrapper());
+        $this->assertSame($process, $event->getProcess());
+        $this->assertSame($command, $event->getCommand());
     }
 }
