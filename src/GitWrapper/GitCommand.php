@@ -272,7 +272,7 @@ class GitCommand
      */
     public function getOption($option, $default = null)
     {
-        return (isset($this->options[$option])) ? $this->options[$option] : $default;
+        return $this->options[$option] ?? $default;
     }
 
     /**
