@@ -2,6 +2,7 @@
 
 namespace GitWrapper;
 
+use BadMethodCallException;
 use Symfony\Component\Process\ProcessUtils;
 
 /**
@@ -1262,7 +1263,7 @@ class GitWorkingCopy
         } else {
             $class = get_called_class();
             $message = "Call to undefined method $class::$method()";
-            throw new \BadMethodCallException($message);
+            throw new BadMethodCallException($message);
         }
     }
 

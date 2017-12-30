@@ -2,6 +2,11 @@
 
 namespace GitWrapper;
 
+use GitWrapper\Event\GitOutputListenerInterface;
+use GitWrapper\Event\GitOutputStreamListener;
+use GitWrapper\Event\GitOutputEvent;
+use GitWrapper\Event\GitEvents;
+use BadMethodCallException;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -272,11 +277,11 @@ class GitWrapper
      *
      * @return \GitWrapper\GitWrapper
      */
-    public function addOutputListener(Event\GitOutputListenerInterface $listener)
+    public function addOutputListener(GitOutputListenerInterface $listener)
     {
         $this
             ->getDispatcher()
-            ->addListener(Event\GitEvents::GIT_OUTPUT, [$listener, 'handleOutput'])
+            ->addListener(GitEvents::GIT_OUTPUT, [$listener, 'handleOutput'])
         ;
         return $this;
     }
@@ -304,11 +309,11 @@ class GitWrapper
      *
      * @return \GitWrapper\GitWrapper
      */
-    public function removeOutputListener(Event\GitOutputListenerInterface $listener)
+    public function removeOutputListener(GitOutputListenerInterface $listener)
     {
         $this
             ->getDispatcher()
-            ->removeListener(Event\GitEvents::GIT_OUTPUT, [$listener, 'handleOutput'])
+            ->removeListener(GitEvents::GIT_OUTPUT, [$listener, 'handleOutput'])
         ;
         return $this;
     }
@@ -323,7 +328,7 @@ class GitWrapper
     public function streamOutput($streamOutput = true)
     {
         if ($streamOutput && !isset($this->streamListener)) {
-            $this->streamListener = new Event\GitOutputStreamListener();
+            $this->streamListener = new GitOutputStreamListener();
             $this->addOutputListener($this->streamListener);
         }
 
@@ -500,8 +505,8 @@ class GitWrapper
         $wrapper = $this;
         $process = new GitProcess($this, $command, $cwd);
         $process->run(function ($type, $buffer) use ($wrapper, $process, $command) {
-            $event = new Event\GitOutputEvent($wrapper, $process, $command, $type, $buffer);
-            $wrapper->getDispatcher()->dispatch(Event\GitEvents::GIT_OUTPUT, $event);
+            $event = new GitOutputEvent($wrapper, $process, $command, $type, $buffer);
+            $wrapper->getDispatcher()->dispatch(GitEvents::GIT_OUTPUT, $event);
         });
         return $command->notBypassed() ? $process->getOutput() : '';
     }
@@ -519,7 +524,7 @@ class GitWrapper
         } else {
             $class = get_called_class();
             $message = "Call to undefined method $class::$method()";
-            throw new \BadMethodCallException($message);
+            throw new BadMethodCallException($message);
         }
     }
 }
