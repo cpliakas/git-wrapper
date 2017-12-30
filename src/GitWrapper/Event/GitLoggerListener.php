@@ -69,8 +69,6 @@ class GitLoggerListener implements EventSubscriberInterface, LoggerAwareInterfac
      * @param string $eventName
      *
      * @return string
-     *
-     * @throws \DomainException
      */
     public function getLogLevelMapping($eventName)
     {
@@ -100,7 +98,6 @@ class GitLoggerListener implements EventSubscriberInterface, LoggerAwareInterfac
      *
      * @param string $message
      * @param string $eventName
-     * @throws DomainException
      */
     public function log(GitEvent $event, $message, array $context = [], $eventName = NULL)
     {

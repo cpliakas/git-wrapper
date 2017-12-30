@@ -55,9 +55,6 @@ class GitWorkingCopy
 
     /**
      * Hackish, allows us to use "clone" as a method name.
-     *
-     * @throws \BadMethodCallException
-     * @throws \GitWrapper\GitException
      */
     public function __call($method, $args)
     {
@@ -143,7 +140,6 @@ class GitWorkingCopy
      * @param array $args The arguments passed to the command method.
      * @param boolean $setDirectory Set the working directory, defaults to true.
      *
-     * @throws \GitWrapper\GitException
      *
      * @see GitWrapper::run()
      */
@@ -159,8 +155,6 @@ class GitWorkingCopy
 
     /**
      * Returns the output of a `git status -s` command.
-     *
-     * @throws \GitWrapper\GitException
      */
     public function getStatus(): string
     {
@@ -169,8 +163,6 @@ class GitWorkingCopy
 
     /**
      * Returns true if there are changes to commit.
-     *
-     * @throws \GitWrapper\GitException
      */
     public function hasChanges(): bool
     {
@@ -194,8 +186,6 @@ class GitWorkingCopy
 
     /**
      * Returns whether HEAD is up-to-date with its remote tracking branch.
-     *
-     * @throws \GitWrapper\GitException Thrown when HEAD does not have a remote tracking branch.
      */
     public function isUpToDate(): bool
     {
@@ -213,8 +203,6 @@ class GitWorkingCopy
      *
      * If this returns true it means that commits are present locally which have
      * not yet been pushed to the remote.
-     *
-     * @throws \GitWrapper\GitException Thrown when HEAD does not have a remote tracking branch.
      */
     public function isAhead(): bool
     {
@@ -233,8 +221,6 @@ class GitWorkingCopy
      *
      * If this returns true it means that a pull is needed to bring the branch
      * up-to-date with the remote.
-     *
-     * @throws \GitWrapper\GitException Thrown when HEAD does not have a remote tracking branch.
      */
     public function isBehind(): bool
     {
@@ -254,8 +240,6 @@ class GitWorkingCopy
      * If this returns true it means that HEAD has diverged from its remote
      * tracking branch; new commits are present locally as well as on the
      * remote.
-     *
-     * @throws \GitWrapper\GitException Thrown when HEAD does not have a remote tracking branch.
      */
     public function needsMerge(): bool
     {
@@ -369,7 +353,6 @@ class GitWorkingCopy
      *
      * @return \GitWrapper\GitWorkingCopy
      *
-     * @throws \GitWrapper\GitException
      *   Thrown when the name or URL are missing.
      */
     public function addRemote($name, $url, $options = []) {
@@ -442,7 +425,6 @@ class GitWorkingCopy
      *   - fetch: the fetch URL.
      *   - push: the push URL.
      *
-     * @throws \GitWrapper\GitException
      *   Thrown when the remote does not exist.
      */
     public function getRemote($name) {
@@ -532,8 +514,6 @@ class GitWorkingCopy
      * @param array $options An optional array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
-     *
-     * @throws \GitWrapper\GitException
      */
     public function add($filepattern, array $options = [])
     {
@@ -556,8 +536,6 @@ class GitWorkingCopy
      *
      * @param string ... Additional command line arguments.
      * @param array $options An associative array of command line options.
-     *
-     * @throws GitException
      */
     public function apply(): GitWorkingCopy
     {
@@ -581,8 +559,6 @@ class GitWorkingCopy
      * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
-     *
-     * @throws \GitWrapper\GitException
      */
     public function bisect($sub_command)
     {
@@ -604,8 +580,6 @@ class GitWorkingCopy
      * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
-     *
-     * @throws \GitWrapper\GitException
      */
     public function branch()
     {
@@ -626,8 +600,6 @@ class GitWorkingCopy
      * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
-     *
-     * @throws \GitWrapper\GitException
      */
     public function checkout()
     {
@@ -654,8 +626,6 @@ class GitWorkingCopy
      *   The URL of the repository being cloned.
      *
      * @return \GitWrapper\GitWorkingCopy
-     *
-     * @throws \GitWrapper\GitException
      */
     public function cloneRepository($repository, $options = [])
     {
@@ -683,8 +653,6 @@ class GitWorkingCopy
      * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
-     *
-     * @throws \GitWrapper\GitException
      */
     public function commit()
     {
@@ -712,8 +680,6 @@ class GitWorkingCopy
      * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
-     *
-     * @throws \GitWrapper\GitException
      */
     public function config()
     {
@@ -735,8 +701,6 @@ class GitWorkingCopy
      * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
-     *
-     * @throws \GitWrapper\GitException
      */
     public function diff()
     {
@@ -758,8 +722,6 @@ class GitWorkingCopy
      * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
-     *
-     * @throws \GitWrapper\GitException
      */
     public function fetch()
     {
@@ -780,8 +742,6 @@ class GitWorkingCopy
      * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
-     *
-     * @throws \GitWrapper\GitException
      */
     public function grep()
     {
@@ -802,8 +762,6 @@ class GitWorkingCopy
      * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
-     *
-     * @throws \GitWrapper\GitException
      */
     public function init(array $options = [])
     {
@@ -828,8 +786,6 @@ class GitWorkingCopy
      * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
-     *
-     * @throws \GitWrapper\GitException
      */
     public function log()
     {
@@ -850,8 +806,6 @@ class GitWorkingCopy
      * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
-     *
-     * @throws \GitWrapper\GitException
      */
     public function merge()
     {
@@ -874,8 +828,6 @@ class GitWorkingCopy
      * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
-     *
-     * @throws \GitWrapper\GitException
      */
     public function mv($source, $destination, array $options = [])
     {
@@ -900,8 +852,6 @@ class GitWorkingCopy
      * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
-     *
-     * @throws \GitWrapper\GitException
      */
     public function pull()
     {
@@ -922,8 +872,6 @@ class GitWorkingCopy
      * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
-     *
-     * @throws \GitWrapper\GitException
      */
     public function push()
     {
@@ -944,8 +892,6 @@ class GitWorkingCopy
      * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
-     *
-     * @throws \GitWrapper\GitException
      */
     public function rebase()
     {
@@ -966,8 +912,6 @@ class GitWorkingCopy
      * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
-     *
-     * @throws \GitWrapper\GitException
      */
     public function remote()
     {
@@ -988,8 +932,6 @@ class GitWorkingCopy
      * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
-     *
-     * @throws \GitWrapper\GitException
      */
     public function reset()
     {
@@ -1014,8 +956,6 @@ class GitWorkingCopy
      * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
-     *
-     * @throws \GitWrapper\GitException
      */
     public function rm($filepattern, array $options = [])
     {
@@ -1041,8 +981,6 @@ class GitWorkingCopy
      * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
-     *
-     * @throws \GitWrapper\GitException
      */
     public function show($object, array $options = [])
     {
@@ -1062,8 +1000,6 @@ class GitWorkingCopy
      * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
-     *
-     * @throws \GitWrapper\GitException
      */
     public function status()
     {
@@ -1084,8 +1020,6 @@ class GitWorkingCopy
      * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
-     *
-     * @throws \GitWrapper\GitException
      */
     public function tag()
     {
@@ -1106,8 +1040,6 @@ class GitWorkingCopy
      * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
-     *
-     * @throws \GitWrapper\GitException
      */
     public function clean()
     {
@@ -1128,8 +1060,6 @@ class GitWorkingCopy
      * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
-     *
-     * @throws \GitWrapper\GitException
      */
     public function archive()
     {

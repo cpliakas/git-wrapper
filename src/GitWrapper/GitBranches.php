@@ -19,10 +19,7 @@ class GitBranches implements IteratorAggregate
     /**
      * Constructs a GitBranches object.
      *
-     * @param \GitWrapper\GitWorkingCopy $git
-     *   The working copy that branches are being collected from.
-     *
-     * @throws \GitWrapper\GitException
+     * @param \GitWrapper\GitWorkingCopy $git The working copy that branches are being collected from.
      */
     public function __construct(GitWorkingCopy $git)
     {
