@@ -42,7 +42,7 @@ class GitCommandTest extends GitWrapperTestCase
     public function testMultiOption()
     {
         $git = GitCommand::getInstance('test-command')
-            ->setOption('test-arg', array(true, true));
+            ->setOption('test-arg', [true, true]);
 
         $expected = ['test-command', '--test-arg', '--test-arg'];
         $commandLine = $git->getCommandLine();

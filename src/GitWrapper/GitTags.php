@@ -41,7 +41,7 @@ class GitTags implements \IteratorAggregate
         $this->git->clearOutput();
         $output = (string) $this->git->tag(['l' => true]);
         $tags = preg_split("/\r\n|\n|\r/", rtrim($output));
-        return array_map(array($this, 'trimTags'), $tags);
+        return array_map([$this, 'trimTags'], $tags);
     }
 
     /**

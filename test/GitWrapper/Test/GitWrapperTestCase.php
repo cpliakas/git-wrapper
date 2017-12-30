@@ -67,10 +67,10 @@ class GitWrapperTestCase extends TestCase
         $dispatcher = $this->wrapper->getDispatcher();
         $listener = new TestListener();
 
-        $dispatcher->addListener(GitEvents::GIT_PREPARE, array($listener, 'onPrepare'));
-        $dispatcher->addListener(GitEvents::GIT_SUCCESS, array($listener, 'onSuccess'));
-        $dispatcher->addListener(GitEvents::GIT_ERROR, array($listener, 'onError'));
-        $dispatcher->addListener(GitEvents::GIT_BYPASS, array($listener, 'onBypass'));
+        $dispatcher->addListener(GitEvents::GIT_PREPARE, [$listener, 'onPrepare']);
+        $dispatcher->addListener(GitEvents::GIT_SUCCESS, [$listener, 'onSuccess']);
+        $dispatcher->addListener(GitEvents::GIT_ERROR, [$listener, 'onError']);
+        $dispatcher->addListener(GitEvents::GIT_BYPASS, [$listener, 'onBypass']);
 
         return $listener;
     }
@@ -84,7 +84,7 @@ class GitWrapperTestCase extends TestCase
     {
         $listener = new TestBypassListener();
         $dispatcher = $this->wrapper->getDispatcher();
-        $dispatcher->addListener(GitEvents::GIT_PREPARE, array($listener, 'onPrepare'), -5);
+        $dispatcher->addListener(GitEvents::GIT_PREPARE, [$listener, 'onPrepare'], -5);
         return $listener;
     }
 

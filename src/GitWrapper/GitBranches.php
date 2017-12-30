@@ -25,7 +25,7 @@ class GitBranches implements \IteratorAggregate
     public function __construct(GitWorkingCopy $git)
     {
         $this->git = clone $git;
-        $output = (string) $git->branch(array('a' => true));
+        $output = (string) $git->branch(['a' => true]);
     }
 
     /**
@@ -40,10 +40,10 @@ class GitBranches implements \IteratorAggregate
     public function fetchBranches($onlyRemote = false)
     {
         $this->git->clearOutput();
-        $options = ($onlyRemote) ? array('r' => true) : array('a' => true);
+        $options = ($onlyRemote) ? ['r' => true] : ['a' => true];
         $output = (string) $this->git->branch($options);
         $branches = preg_split("/\r\n|\n|\r/", rtrim($output));
-        return array_map(array($this, 'trimBranch'), $branches);
+        return array_map([$this, 'trimBranch'], $branches);
     }
 
     /**
@@ -96,6 +96,6 @@ class GitBranches implements \IteratorAggregate
      */
     public function head()
     {
-        return trim((string) $this->git->run(array('rev-parse --abbrev-ref HEAD')));
+        return trim((string) $this->git->run(['rev-parse --abbrev-ref HEAD']));
     }
 }

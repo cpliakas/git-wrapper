@@ -18,7 +18,7 @@ class GitWorkingCopyTest extends GitWrapperTestCase
         parent::setUp();
 
         // Create the local repository.
-        $this->wrapper->init(self::REPO_DIR, array('bare' => true));
+        $this->wrapper->init(self::REPO_DIR, ['bare' => true]);
 
         // Clone the local repository.
         $directory = 'build/test/wc_init';
@@ -36,7 +36,7 @@ class GitWorkingCopyTest extends GitWrapperTestCase
         $git
             ->add('*')
             ->commit('Initial commit.')
-            ->push('origin', 'master', array('u' => true))
+            ->push('origin', 'master', ['u' => true])
         ;
 
         // Create a branch, add a file.
@@ -46,7 +46,7 @@ class GitWorkingCopyTest extends GitWrapperTestCase
             ->checkoutNewBranch($branch)
             ->add('branch.txt')
             ->commit('Committed testing branch.')
-            ->push('origin', $branch, array('u' => true))
+            ->push('origin', $branch, ['u' => true])
         ;
 
         // Create a tag of the branch.
@@ -283,7 +283,7 @@ PATCH;
         file_put_contents(self::WORKING_DIR . '/change.me', "changed\n");
 
         $this->assertTrue($git->hasChanges());
-        $git->reset(array('hard' => true));
+        $git->reset(['hard' => true]);
         $this->assertFalse($git->hasChanges());
     }
 
@@ -291,7 +291,7 @@ PATCH;
     {
         $git = $this->getWorkingCopy();
         file_put_contents(self::WORKING_DIR . '/change.me', "changed\n");
-        $output = (string) $git->status(array('s' => true));
+        $output = (string) $git->status(['s' => true]);
         $this->assertEquals(" M change.me\n", $output);
     }
 
@@ -307,7 +307,7 @@ PATCH;
         $archiveName = uniqid().'.tar';
         $archivePath = '/tmp/'.$archiveName;
         $git = $this->getWorkingCopy();
-        $output = (string) $git->archive('HEAD', array('o' => $archivePath));
+        $output = (string) $git->archive('HEAD', ['o' => $archivePath]);
         $this->assertEquals("", $output);
         $this->assertFileExists($archivePath);
     }
@@ -446,11 +446,11 @@ PATCH;
 
         $git
             ->add('commit.txt')
-            ->commit(array(
+            ->commit([
                 'm' => 'Committed testing branch.',
                 'a' => true,
                 'author' => 'test <test@lol.com>'
-            ))
+            ])
         ;
 
         $output = (string) $git->log();
@@ -482,17 +482,17 @@ PATCH;
         file_put_contents(self::WORKING_DIR . '/commit.txt', "created\n");
         $git
             ->add('commit.txt')
-            ->commit(array(
+            ->commit([
                 'm' => '1 commit ahead. Still up-to-date.',
                 'a' => true,
-            ))
+            ])
         ;
         $this->assertTrue($git->isUpToDate());
 
         // Reset the branch to its first commit, so that it is 1 commit behind.
         $git->reset(
             'HEAD~2',
-            array('hard' => true)
+            ['hard' => true]
         );
 
         $this->assertFalse($git->isUpToDate());
@@ -509,7 +509,7 @@ PATCH;
         file_put_contents(self::WORKING_DIR . '/commit.txt', "created\n");
         $git
             ->add('commit.txt')
-            ->commit(array('m' => '1 commit ahead.'))
+            ->commit(['m' => '1 commit ahead.'])
         ;
 
         $this->assertTrue($git->isAhead());
@@ -526,7 +526,7 @@ PATCH;
         // Reset the branch to its parent commit, so that it is 1 commit behind.
         $git->reset(
             'HEAD^',
-            array('hard' => true)
+            ['hard' => true]
         );
 
         $this->assertTrue($git->isBehind());
@@ -544,7 +544,7 @@ PATCH;
         // This does not require the branches to be merged.
         $git->reset(
             'HEAD^',
-            array('hard' => true)
+            ['hard' => true]
         );
         $this->assertFalse($git->needsMerge());
 
@@ -553,7 +553,7 @@ PATCH;
         file_put_contents(self::WORKING_DIR . '/commit.txt', "created\n");
         $git
             ->add('commit.txt')
-            ->commit(array('m' => '1 commit ahead.'))
+            ->commit(['m' => '1 commit ahead.'])
         ;
         $this->assertTrue($git->needsMerge());
 
@@ -574,80 +574,80 @@ PATCH;
         $this->assertTrue($git->hasRemote('remote'));
         foreach ($asserts as $method => $parameters) {
             array_unshift($parameters, $git);
-            call_user_func_array(array($this, $method), $parameters);
+            call_user_func_array([$this, $method], $parameters);
         }
     }
 
     public function addRemoteDataProvider()
     {
-        return array(
+        return [
             // Test default options: nothing is fetched.
-            array(
-                array(),
-                array(
-                    'assertNoRemoteBranches' => array(array('remote/master', 'remote/remote-branch')),
-                    'assertNoGitTag' => array('remote-tag'),
-                    'assertNoRemoteMaster' => array(),
-                ),
-            ),
+            [
+                [],
+                [
+                    'assertNoRemoteBranches' => [['remote/master', 'remote/remote-branch']],
+                    'assertNoGitTag' => ['remote-tag'],
+                    'assertNoRemoteMaster' => [],
+                ],
+            ],
             // The fetch option should retrieve the remote branches and tags,
             // but not set up a master branch.
-            array(
-                array('-f' => true),
-                array(
-                    'assertRemoteBranches' => array(array('remote/master', 'remote/remote-branch')),
-                    'assertGitTag' => array('remote-tag'),
-                    'assertNoRemoteMaster' => array(),
-                ),
-            ),
+            [
+                ['-f' => true],
+                [
+                    'assertRemoteBranches' => [['remote/master', 'remote/remote-branch']],
+                    'assertGitTag' => ['remote-tag'],
+                    'assertNoRemoteMaster' => [],
+                ],
+            ],
             // The --no-tags options should omit importing tags.
-            array(
-                array('-f' => true, '--no-tags' => true),
-                array(
-                    'assertRemoteBranches' => array(array('remote/master', 'remote/remote-branch')),
-                    'assertNoGitTag' => array('remote-tag'),
-                    'assertNoRemoteMaster' => array(),
-                ),
-            ),
+            [
+                ['-f' => true, '--no-tags' => true],
+                [
+                    'assertRemoteBranches' => [['remote/master', 'remote/remote-branch']],
+                    'assertNoGitTag' => ['remote-tag'],
+                    'assertNoRemoteMaster' => [],
+                ],
+            ],
             // The -t option should limit the remote branches that are imported.
             // By default git fetch only imports the tags of the fetched
             // branches. No tags were added to the master branch, so the tag
             // should not be imported.
-            array(
-                array('-f' => true, '-t' => array('master')),
-                array(
-                    'assertRemoteBranches' => array(array('remote/master')),
-                    'assertNoRemoteBranches' => array(array('remote/remote-branch')),
-                    'assertNoGitTag' => array('remote-tag'),
-                    'assertNoRemoteMaster' => array(),
-                ),
-            ),
+            [
+                ['-f' => true, '-t' => ['master']],
+                [
+                    'assertRemoteBranches' => [['remote/master']],
+                    'assertNoRemoteBranches' => [['remote/remote-branch']],
+                    'assertNoGitTag' => ['remote-tag'],
+                    'assertNoRemoteMaster' => [],
+                ],
+            ],
             // The -t option in combination with the --tags option should fetch
             // all tags, so now the tag should be there.
-            array(
-                array('-f' => true, '-t' => array('master'), '--tags' => true),
-                array(
+            [
+                ['-f' => true, '-t' => ['master'], '--tags' => true],
+                [
                     // @todo Versions prior to git 1.9.0 do not fetch the
                     //   branches when the `--tags` option is specified.
                     //   Uncomment this line when Travis CI updates to a more
                     //   recent version of git.
                     // @see https://github.com/git/git/blob/master/Documentation/RelNotes/1.9.0.txt
                     // 'assertRemoteBranches' => array(array('remote/master')),
-                    'assertNoRemoteBranches' => array(array('remote/remote-branch')),
-                    'assertGitTag' => array('remote-tag'),
-                    'assertNoRemoteMaster' => array(),
-                ),
-            ),
+                    'assertNoRemoteBranches' => [['remote/remote-branch']],
+                    'assertGitTag' => ['remote-tag'],
+                    'assertNoRemoteMaster' => [],
+                ],
+            ],
             // The -m option should set up a remote master branch.
-            array(
-                array('-f' => true, '-m' => 'remote-branch'),
-                array(
-                    'assertRemoteBranches' => array(array('remote/master', 'remote/remote-branch')),
-                    'assertGitTag' => array('remote-tag'),
-                    'assertRemoteMaster' => array(),
-                ),
-            ),
-        );
+            [
+                ['-f' => true, '-m' => 'remote-branch'],
+                [
+                    'assertRemoteBranches' => [['remote/master', 'remote/remote-branch']],
+                    'assertGitTag' => ['remote-tag'],
+                    'assertRemoteMaster' => [],
+                ],
+            ],
+        ];
     }
 
     public function testRemoveRemote()
@@ -718,12 +718,12 @@ PATCH;
     }
 
     public function getRemoteUrlDataProvider() {
-        return array(
-            array('origin', 'fetch', self::REPO_DIR),
-            array('origin', 'push', self::REPO_DIR),
-            array('remote', 'fetch', self::REMOTE_REPO_DIR),
-            array('remote', 'push', self::REMOTE_REPO_DIR),
-        );
+        return [
+            ['origin', 'fetch', self::REPO_DIR],
+            ['origin', 'push', self::REPO_DIR],
+            ['remote', 'fetch', self::REMOTE_REPO_DIR],
+            ['remote', 'push', self::REMOTE_REPO_DIR],
+        ];
     }
 
     protected function assertGitTag(GitWorkingCopy $repository, $tag)

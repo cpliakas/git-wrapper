@@ -64,7 +64,7 @@ class GitProcess extends Process
     /**
      * {@inheritdoc}
      */
-    public function run(callable $callback = null, array $env = array()): int
+    public function run(callable $callback = null, array $env = []): int
     {
         $exitCode = -1;
 

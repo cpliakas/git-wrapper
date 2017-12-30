@@ -36,7 +36,7 @@ class GitWrapper
      *
      * @var array
      */
-    protected $env = array();
+    protected $env = [];
 
     /**
      * The timeout of the Git command in seconds, defaults to 60.
@@ -50,7 +50,7 @@ class GitWrapper
      *
      * @var array
      */
-    protected $procOptions = array();
+    protected $procOptions = [];
 
     /**
      * @var \GitWrapper\Event\GitOutputListenerInterface
@@ -307,7 +307,7 @@ class GitWrapper
     {
         $this
             ->getDispatcher()
-            ->addListener(Event\GitEvents::GIT_OUTPUT, array($listener, 'handleOutput'))
+            ->addListener(Event\GitEvents::GIT_OUTPUT, [$listener, 'handleOutput'])
         ;
         return $this;
     }
@@ -339,7 +339,7 @@ class GitWrapper
     {
         $this
             ->getDispatcher()
-            ->removeListener(Event\GitEvents::GIT_OUTPUT, array($listener, 'handleOutput'))
+            ->removeListener(Event\GitEvents::GIT_OUTPUT, [$listener, 'handleOutput'])
         ;
         return $this;
     }
@@ -435,7 +435,7 @@ class GitWrapper
      *
      * @ingroup commands
      */
-    public function init($directory, array $options = array())
+    public function init($directory, array $options = [])
     {
         $git = $this->workingCopy($directory);
         $git->init($options);
@@ -466,7 +466,7 @@ class GitWrapper
      *
      * @ingroup commands
      */
-    public function cloneRepository($repository, $directory = null, array $options = array())
+    public function cloneRepository($repository, $directory = null, array $options = [])
     {
         if (null === $directory) {
             $directory = self::parseRepositoryName($repository);
@@ -546,7 +546,7 @@ class GitWrapper
     public function __call($method, $args)
     {
         if ('clone' == $method) {
-            return call_user_func_array(array($this, 'cloneRepository'), $args);
+            return call_user_func_array([$this, 'cloneRepository'], $args);
         } else {
             $class = get_called_class();
             $message = "Call to undefined method $class::$method()";
