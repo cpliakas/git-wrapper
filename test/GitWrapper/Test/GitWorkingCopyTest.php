@@ -39,8 +39,7 @@ class GitWorkingCopyTest extends GitWrapperTestCase
         $git
             ->add('*')
             ->commit('Initial commit.')
-            ->push('origin', 'master', ['u' => true])
-        ;
+            ->push('origin', 'master', ['u' => true]);
 
         // Create a branch, add a file.
         $branch = 'test-branch';
@@ -49,14 +48,12 @@ class GitWorkingCopyTest extends GitWrapperTestCase
             ->checkoutNewBranch($branch)
             ->add('branch.txt')
             ->commit('Committed testing branch.')
-            ->push('origin', $branch, ['u' => true])
-        ;
+            ->push('origin', $branch, ['u' => true]);
 
         // Create a tag of the branch.
         $git
             ->tag('test-tag')
-            ->pushTags()
-        ;
+            ->pushTags();
 
         $this->filesystem->remove($directory);
     }
@@ -154,6 +151,7 @@ class GitWorkingCopyTest extends GitWrapperTestCase
         foreach ($branches as $branch) {
             ++$allBranches;
         }
+
         $this->assertSame($allBranches, 4);
 
         $remoteBranches = $branches->remote();
@@ -252,8 +250,7 @@ PATCH;
         $git = $this->getWorkingCopy();
         $git
             ->tag($tag)
-            ->pushTag($tag)
-        ;
+            ->pushTag($tag);
 
         $tags = (string) $git->tag();
         $this->assertTrue(strpos($tags, $tag) !== false);
@@ -266,8 +263,7 @@ PATCH;
         file_put_contents(self::WORKING_DIR . '/untracked.file', "untracked\n");
 
         $result = $git
-            ->clean('-d', '-f')
-        ;
+            ->clean('-d', '-f');
 
         $this->assertSame($git, $result);
         $this->assertFileNotExists(self::WORKING_DIR . '/untracked.file');
@@ -320,7 +316,7 @@ PATCH;
 
         try {
             $git->commit('Nothing to commit so generates an error / not error');
-        } catch(GitException $exception) {
+        } catch (GitException $exception) {
             $errorOutput = $exception->getMessage();
         }
 
@@ -368,8 +364,7 @@ PATCH;
         $git = $this->getWorkingCopy();
         $git
             ->checkout('test-branch')
-            ->clearOutput()
-        ;
+            ->clearOutput();
 
         $output = (string) $git->rebase('test-branch', 'master');
         $this->assertTrue(strpos($output, 'First, rewinding head') === 0);
@@ -381,8 +376,7 @@ PATCH;
         $git
             ->checkout('test-branch')
             ->checkout('master')
-            ->clearOutput()
-        ;
+            ->clearOutput();
 
         $output = (string) $git->merge('test-branch');
         $this->assertTrue(strpos($output, 'Updating ') === 0);
@@ -446,8 +440,7 @@ PATCH;
                 'm' => 'Committed testing branch.',
                 'a' => true,
                 'author' => 'test <test@lol.com>',
-            ])
-        ;
+            ]);
 
         $output = (string) $git->log();
         $this->assertContains('Committed testing branch', $output);
@@ -481,8 +474,7 @@ PATCH;
             ->commit([
                 'm' => '1 commit ahead. Still up-to-date.',
                 'a' => true,
-            ])
-        ;
+            ]);
         $this->assertTrue($git->isUpToDate());
 
         // Reset the branch to its first commit, so that it is 1 commit behind.
@@ -505,8 +497,7 @@ PATCH;
         file_put_contents(self::WORKING_DIR . '/commit.txt', "created\n");
         $git
             ->add('commit.txt')
-            ->commit(['m' => '1 commit ahead.'])
-        ;
+            ->commit(['m' => '1 commit ahead.']);
 
         $this->assertTrue($git->isAhead());
     }
@@ -549,8 +540,7 @@ PATCH;
         file_put_contents(self::WORKING_DIR . '/commit.txt', "created\n");
         $git
             ->add('commit.txt')
-            ->commit(['m' => '1 commit ahead.'])
-        ;
+            ->commit(['m' => '1 commit ahead.']);
         $this->assertTrue($git->needsMerge());
 
         // Merge the remote, so that we are no longer behind, but only ahead. A
@@ -708,7 +698,8 @@ PATCH;
         $this->assertSame('file://' . realpath($expected), $git->getRemoteUrl($remote, $operation));
     }
 
-    public function getRemoteUrlDataProvider() {
+    public function getRemoteUrlDataProvider()
+    {
         return [
             ['origin', 'fetch', self::REPO_DIR],
             ['origin', 'push', self::REPO_DIR],
@@ -730,6 +721,7 @@ PATCH;
             // Expected result. The tag does not exist.
             return;
         }
+
         throw new Exception("Expecting that the tag '${tag}' doesn't exist, but it does.");
     }
 
@@ -746,6 +738,7 @@ PATCH;
             // Expected result. The remote master does not exist.
             return;
         }
+
         throw new Exception("Expecting that the remote master doesn't exist, but it does.");
     }
 
@@ -786,8 +779,7 @@ PATCH;
         file_put_contents(self::REMOTE_REPO_DIR . '/remote.file', "remote code\n");
         $git
             ->add('*')
-            ->commit('Remote change.')
-        ;
+            ->commit('Remote change.');
 
         // Create a branch.
         $branch = 'remote-branch';
@@ -795,8 +787,7 @@ PATCH;
         $git
             ->checkoutNewBranch($branch)
             ->add('*')
-            ->commit('Commit remote testing branch.')
-        ;
+            ->commit('Commit remote testing branch.');
 
         // Create a tag.
         $git->tag('remote-tag');

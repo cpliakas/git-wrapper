@@ -64,7 +64,6 @@ class GitCommand
     protected function __construct($args)
     {
         if ($args) {
-
             // The first argument is the command.
             $this->command = array_shift($args);
 
@@ -186,7 +185,6 @@ class GitCommand
         $options = [];
         foreach ($this->options as $option => $values) {
             foreach ((array) $values as $value) {
-
                 // Render the option.
                 $prefix = (strlen($option) !== 1) ? '--' : '-';
                 $options[] = $prefix . $option;
@@ -197,6 +195,7 @@ class GitCommand
                 }
             }
         }
+
         return $options;
     }
 

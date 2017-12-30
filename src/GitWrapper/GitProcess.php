@@ -73,7 +73,6 @@ class GitProcess extends Process
         $dispatcher = $this->git->getDispatcher();
 
         try {
-
             // Throw the "git.command.prepare" event prior to executing.
             $dispatcher->dispatch(GitEvents::GIT_PREPARE, $event);
 
@@ -88,7 +87,7 @@ class GitProcess extends Process
                 } else {
                     $output = $this->getErrorOutput();
 
-                    if(trim($output) === '') {
+                    if (trim($output) === '') {
                         $output = $this->getOutput();
                     }
 
@@ -97,7 +96,6 @@ class GitProcess extends Process
             } else {
                 $dispatcher->dispatch(GitEvents::GIT_BYPASS, $event);
             }
-
         } catch (RuntimeException $e) {
             $dispatcher->dispatch(GitEvents::GIT_ERROR, $event);
             throw new GitException($e->getMessage());

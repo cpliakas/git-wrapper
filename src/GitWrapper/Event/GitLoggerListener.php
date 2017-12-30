@@ -98,12 +98,13 @@ class GitLoggerListener implements EventSubscriberInterface, LoggerAwareInterfac
      * @param string $message
      * @param string $eventName
      */
-    public function log(GitEvent $event, $message, array $context = [], $eventName = NULL)
+    public function log(GitEvent $event, $message, array $context = [], $eventName = null)
     {
         // Provide backwards compatibility with Symfony 2.
         if ($eventName === null && method_exists($event, 'getName')) {
             $eventName = $event->getName();
         }
+
         $method = $this->getLogLevelMapping($eventName);
         if ($method !== false) {
             $context += ['command' => $event->getProcess()->getCommandLine()];
@@ -111,28 +112,28 @@ class GitLoggerListener implements EventSubscriberInterface, LoggerAwareInterfac
         }
     }
 
-    public function onPrepare(GitEvent $event, $eventName = NULL)
+    public function onPrepare(GitEvent $event, $eventName = null)
     {
         $this->log($event, 'Git command preparing to run', [], $eventName);
     }
 
-    public function handleOutput(GitOutputEvent $event, $eventName = NULL)
+    public function handleOutput(GitOutputEvent $event, $eventName = null)
     {
         $context = ['error' => $event->isError() ? true : false];
         $this->log($event, $event->getBuffer(), $context, $eventName);
     }
 
-    public function onSuccess(GitEvent $event, $eventName = NULL)
+    public function onSuccess(GitEvent $event, $eventName = null)
     {
         $this->log($event, 'Git command successfully run', [], $eventName);
     }
 
-    public function onError(GitEvent $event, $eventName = NULL)
+    public function onError(GitEvent $event, $eventName = null)
     {
         $this->log($event, 'Error running Git command', [], $eventName);
     }
 
-    public function onBypass(GitEvent $event, $eventName = NULL)
+    public function onBypass(GitEvent $event, $eventName = null)
     {
         $this->log($event, 'Git command bypassed', [], $eventName);
     }

@@ -112,6 +112,7 @@ class GitWorkingCopy
             };
             $this->cloned = (is_dir($gitDir . '/objects') && is_dir($gitDir . '/refs') && is_file($gitDir . '/HEAD'));
         }
+
         return $this->cloned;
     }
 
@@ -127,6 +128,7 @@ class GitWorkingCopy
         if ($setDirectory) {
             $command->setDirectory($this->directory);
         }
+
         $this->output .= $this->wrapper->run($command);
         return $this;
     }
@@ -170,6 +172,7 @@ class GitWorkingCopy
         if (! $this->isTracking()) {
             throw new GitException('Error: HEAD does not have a remote tracking branch. Cannot check if it is up-to-date.');
         }
+
         $this->clearOutput();
         $merge_base = (string) $this->run(['merge-base', '@', '@{u}']);
         $remote_sha = (string) $this->run(['rev-parse', '@{u}']);
@@ -187,6 +190,7 @@ class GitWorkingCopy
         if (! $this->isTracking()) {
             throw new GitException('Error: HEAD does not have a remote tracking branch. Cannot check if it is ahead.');
         }
+
         $this->clearOutput();
         $merge_base = (string) $this->run(['merge-base', '@', '@{u}']);
         $local_sha = (string) $this->run(['rev-parse', '@']);
@@ -205,6 +209,7 @@ class GitWorkingCopy
         if (! $this->isTracking()) {
             throw new GitException('Error: HEAD does not have a remote tracking branch. Cannot check if it is behind.');
         }
+
         $this->clearOutput();
         $merge_base = (string) $this->run(['merge-base', '@', '@{u}']);
         $local_sha = (string) $this->run(['rev-parse', '@']);
@@ -224,6 +229,7 @@ class GitWorkingCopy
         if (! $this->isTracking()) {
             throw new GitException('Error: HEAD does not have a remote tracking branch. Cannot check if it is behind.');
         }
+
         $this->clearOutput();
         $merge_base = (string) $this->run(['merge-base', '@', '@{u}']);
         $local_sha = (string) $this->run(['rev-parse', '@']);
@@ -324,10 +330,12 @@ class GitWorkingCopy
      *
      *   Thrown when the name or URL are missing.
      */
-    public function addRemote($name, $url, $options = []) {
+    public function addRemote($name, $url, $options = [])
+    {
         if (empty($name)) {
             throw new GitException('Cannot add remote without a name.');
         }
+
         if (empty($url)) {
             throw new GitException('Cannot add remote without a URL.');
         }
@@ -367,7 +375,8 @@ class GitWorkingCopy
      *
      * @return \GitWrapper\GitWorkingCopy
      */
-    public function removeRemote($name) {
+    public function removeRemote($name)
+    {
         return $this->remote('rm', $name);
     }
 
@@ -379,7 +388,8 @@ class GitWorkingCopy
      *
      * @return bool
      */
-    public function hasRemote($name) {
+    public function hasRemote($name)
+    {
         return array_key_exists($name, $this->getRemotes());
     }
 
@@ -396,10 +406,12 @@ class GitWorkingCopy
      *
      *   Thrown when the remote does not exist.
      */
-    public function getRemote($name) {
+    public function getRemote($name)
+    {
         if (! $this->hasRemote($name)) {
             throw new GitException('The remote "' . $name . '" does not exist.');
         }
+
         $remotes = $this->getRemotes();
         return $remotes[$name];
     }
@@ -413,7 +425,8 @@ class GitWorkingCopy
      *   - fetch: the fetch URL.
      *   - push: the push URL.
      */
-    public function getRemotes() {
+    public function getRemotes()
+    {
         $this->clearOutput();
 
         $remotes = [];
@@ -421,6 +434,7 @@ class GitWorkingCopy
             $remotes[$remote]['fetch'] = $this->getRemoteUrl($remote);
             $remotes[$remote]['push'] = $this->getRemoteUrl($remote, 'push');
         }
+
         return $remotes;
     }
 
@@ -436,7 +450,8 @@ class GitWorkingCopy
      * @return string
      *   The URL.
      */
-    public function getRemoteUrl($remote, $operation = 'fetch') {
+    public function getRemoteUrl($remote, $operation = 'fetch')
+    {
         $this->clearOutput();
 
         $args = $operation === 'push' ? ['get-url', '--push', $remote] : ['get-url', $remote];
@@ -626,6 +641,7 @@ class GitWorkingCopy
                 'a' => true,
             ];
         }
+
         array_unshift($args, 'commit');
         return $this->run($args);
     }
