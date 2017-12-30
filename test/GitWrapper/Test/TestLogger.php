@@ -26,9 +26,11 @@ class TestLogger extends AbstractLogger
     public $contexts = [];
 
     /**
+     * @param string $level
+     * @param string $message
      * @param mixed[] $context
      */
-    public function log(string $level, string $message, array $context = []): void
+    public function log($level, $message, array $context = []): void
     {
         $this->messages[] = $message;
         $this->levels[] = $level;

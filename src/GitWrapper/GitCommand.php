@@ -106,7 +106,7 @@ class GitCommand
         return $this->command;
     }
 
-    public function setDirectory(string $directory): void
+    public function setDirectory(?string $directory): void
     {
         $this->directory = $directory;
     }
@@ -195,7 +195,7 @@ class GitCommand
         }
     }
 
-    public function setFlag(string $option): GitCommand
+    public function setFlag(string $option): void
     {
         $this->setOption($option, true);
     }
