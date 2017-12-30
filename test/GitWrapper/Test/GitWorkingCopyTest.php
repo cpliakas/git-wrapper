@@ -623,11 +623,6 @@ PATCH;
             [
                 ['-f' => true, '-t' => ['master'], '--tags' => true],
                 [
-                    // @todo Versions prior to git 1.9.0 do not fetch the
-                    //   branches when the `--tags` option is specified.
-                    //   Uncomment this line when Travis CI updates to a more
-                    //   recent version of git.
-                    // @see https://github.com/git/git/blob/master/Documentation/RelNotes/1.9.0.txt
                     'assertRemoteBranches' => [['remote/master']],
                     'assertNoRemoteBranches' => [['remote/remote-branch']],
                     'assertGitTag' => ['remote-tag'],
