@@ -180,7 +180,7 @@ class GitWrapper
      */
     public function getEnvVar($var, $default = null)
     {
-        return isset($this->env[$var]) ? $this->env[$var] : $default;
+        return $this->env[$var] ?? $default;
     }
 
     /**
