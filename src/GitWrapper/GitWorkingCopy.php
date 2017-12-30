@@ -55,8 +55,6 @@ class GitWorkingCopy
 
     /**
      * Gets the output captured by the last run Git commnd(s).
-     *
-     * @see GitWorkingCopy::getOutput()
      */
     public function __toString(): string
     {
@@ -124,9 +122,6 @@ class GitWorkingCopy
      *
      * @param array $args The arguments passed to the command method.
      * @param boolean $setDirectory Set the working directory, defaults to true.
-     *
-     *
-     * @see GitWrapper::run()
      */
     public function run($args, $setDirectory = true): GitWorkingCopy
     {
@@ -256,8 +251,6 @@ class GitWorkingCopy
      * @param string $repository The destination of the push operation, which is either a URL or name of
      *   the remote. Defaults to "origin".
      * @param array $options An associative array of command line options.
-     *
-     * @see GitWorkingCopy::push()
      */
     public function pushTag($tag, $repository = 'origin', array $options = [])
     {
@@ -273,8 +266,6 @@ class GitWorkingCopy
      *   The destination of the push operation, which is either a URL or name of
      *   the remote. Defaults to "origin".
      * @param array $options An associative array of command line options.
-     *
-     * @see GitWorkingCopy::push()
      */
     public function pushTags($repository = 'origin', array $options = [])
     {
@@ -288,8 +279,6 @@ class GitWorkingCopy
      * This is synonymous with `git fetch --all`.
      *
      * @param array $options An associative array of command line options.
-     *
-     * @see GitWorkingCopy::fetch()
      */
     public function fetchAll(array $options = [])
     {
@@ -302,10 +291,7 @@ class GitWorkingCopy
      *
      * This is synonymous with `git checkout -b`.
      *
-     * @param string $branch
-     *   The new branch being created.
-     *
-     * @see GitWorkingCopy::checkout()
+     * @param string $branch The new branch being created.
      */
     public function checkoutNewBranch($branch, array $options = [])
     {
@@ -595,9 +581,6 @@ class GitWorkingCopy
 
     /**
      * Executes a `git clone` command.
-     *
-     * Clone a repository into a new directory. Use @see GitWorkingCopy::cloneRepository()
-     * instead for more readable code.
      *
      * @code
      * $git->cloneRepository('git://github.com/cpliakas/git-wrapper.git');

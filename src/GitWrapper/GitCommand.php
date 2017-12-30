@@ -243,8 +243,6 @@ class GitCommand
      *
      * @param string $flag The flag name, e.g. "q", "a".
      * @return \GitWrapper\GitCommand
-     *
-     * @see \GitWrapper\GitCommand::setOption()
      */
     public function setFlag($option)
     {
@@ -298,9 +296,6 @@ class GitCommand
      * Renders the arguments and options for the Git command.
      *
      * @return string|array
-     *
-     * @see GitCommand::getCommand()
-     * @see GitCommand::buildOptions()
      */
     public function getCommandLine()
     {

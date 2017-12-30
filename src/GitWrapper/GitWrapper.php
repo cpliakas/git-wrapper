@@ -326,8 +326,6 @@ class GitWrapper
      * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
-     *
-     * @see GitWorkingCopy::cloneRepository()
      */
     public function init($directory, array $options = [])
     {
@@ -350,8 +348,6 @@ class GitWrapper
      * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
-     *
-     * @see GitWorkingCopy::cloneRepository()
      */
     public function cloneRepository($repository, $directory = null, array $options = [])
     {
@@ -378,8 +374,6 @@ class GitWrapper
      *   the current working directory of the PHP process.
      *
      * @return string The STDOUT returned by the Git command.
-     *
-     * @see GitWrapper::run()
      */
     public function git($commandLine, $cwd = null)
     {
@@ -396,8 +390,6 @@ class GitWrapper
      *   command being executed relative to the working copy.
      *
      * @return string The STDOUT returned by the Git command.
-     *
-     * @see Process
      */
     public function run(GitCommand $command, $cwd = null)
     {
