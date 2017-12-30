@@ -11,17 +11,10 @@ use IteratorAggregate;
 class GitBranches implements IteratorAggregate
 {
     /**
-     * The working copy that branches are being collected from.
-     *
-     * @var \GitWrapper\GitWorkingCopy
+     * @var GitWorkingCopy
      */
     protected $git;
 
-    /**
-     * Constructs a GitBranches object.
-     *
-     * @param \GitWrapper\GitWorkingCopy $git The working copy that branches are being collected from.
-     */
     public function __construct(GitWorkingCopy $git)
     {
         $this->git = clone $git;
@@ -31,11 +24,9 @@ class GitBranches implements IteratorAggregate
     /**
      * Fetches the branches via the `git branch` command.
      *
-     * @param boolean $onlyRemote
-     *   Whether to fetch only remote branches, defaults to false which returns
-     *   all branches.
+     * @param bool $onlyRemote Whether to fetch only remote branches, defaults to false which returns all branches.
      *
-     * @return array
+     * @return mixed[]
      */
     public function fetchBranches(bool $onlyRemote = false): array
     {
@@ -46,33 +37,19 @@ class GitBranches implements IteratorAggregate
         return array_map([$this, 'trimBranch'], $branches);
     }
 
-    /**
-     * Strips unwanted characters from the branch.
-     *
-     * @param string $branch
-     *   The raw branch returned in the output of the Git command.
-     *
-     * @return string
-     *   The processed branch name.
-     */
     public function trimBranch(string $branch): string
     {
         return ltrim($branch, ' *');
     }
 
-    /**
-     * Implements \IteratorAggregate::getIterator().
-     */
-    public function getIterator()
+    public function getIterator(): ArrayIterator
     {
         $branches = $this->all();
         return new ArrayIterator($branches);
     }
 
     /**
-     * Returns all branches.
-     *
-     * @return array
+     * @return string[]
      */
     public function all(): array
     {
@@ -80,9 +57,7 @@ class GitBranches implements IteratorAggregate
     }
 
     /**
-     * Returns only remote branches.
-     *
-     * @return array
+     * @return string[]
      */
     public function remote(): array
     {
@@ -91,7 +66,6 @@ class GitBranches implements IteratorAggregate
 
     /**
      * Returns currently active branch (HEAD) of the working copy.
-     *
      */
     public function head(): string
     {

@@ -89,6 +89,9 @@ class GitWrapper
         return $this->gitBinary;
     }
 
+    /**
+     * @param mixed $value
+     */
     public function setEnvVar(string $var, $value): void
     {
         $this->env[$var] = $value;
@@ -115,7 +118,7 @@ class GitWrapper
     }
 
     /**
-     * Returns the associative array of environment variables that are defined only in the scope of the Git command.
+     * @return mixed[]
      */
     public function getEnvVars(): array
     {
@@ -250,8 +253,7 @@ class GitWrapper
      *
      * Create an empty git repository or reinitialize an existing one.
      *
-     * @param string $directory The directory being initialized.
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      */
     public function init(string $directory, array $options = []): GitWorkingCopy
     {
@@ -272,7 +274,7 @@ class GitWrapper
      * @param string $directory The directory that the repository will be cloned into. If null is
      *   passed, the directory will automatically be generated from the URL via
      *   the GitWrapper::parseRepositoryName() method.
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      */
     public function cloneRepository(string $repository, ?string $directory = null, array $options = []): GitWorkingCopy
     {

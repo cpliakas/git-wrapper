@@ -11,15 +11,10 @@ use IteratorAggregate;
 class GitTags implements IteratorAggregate
 {
     /**
-     * The working copy that Tags are being collected from.
-     *
      * @var \GitWrapper\GitWorkingCopy
      */
     protected $git;
 
-    /**
-     * @param \GitWrapper\GitWorkingCopy $git The working copy that Tags are being collected from.
-     */
     public function __construct(GitWorkingCopy $git)
     {
         $this->git = clone $git;
@@ -30,7 +25,7 @@ class GitTags implements IteratorAggregate
      *
      * @param bool $onlyRemote Whether to fetch only remote Tags, defaults to false which returns all Tags.
      *
-     * @return array
+     * @return mixed[]
      */
     public function fetchTags(): array
     {
@@ -41,31 +36,21 @@ class GitTags implements IteratorAggregate
     }
 
     /**
-     * Strips unwanted characters from the branch.
-     *
-     * @param string $branch The raw branch returned in the output of the Git command.
-     *
-     * @return string
-     *   The processed branch name.
+     * Strips unwanted characters from the branch
      */
     public function trimTags(string $branch): string
     {
         return ltrim($branch, ' *');
     }
 
-    /**
-     * Implements \IteratorAggregate::getIterator().
-     */
-    public function getIterator()
+    public function getIterator(): ArrayIterator
     {
         $tags = $this->all();
         return new ArrayIterator($tags);
     }
 
     /**
-     * Returns all Tags.
-     *
-     * @return array
+     * @return mixed[]
      */
     public function all(): array
     {
