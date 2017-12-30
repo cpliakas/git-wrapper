@@ -55,27 +55,14 @@ class GitWrapper
      */
     private $dispatcher;
 
-    /**
-     * Constructs a GitWrapper object.
-     *
-     * @param string|null $gitBinary
-     *   The path to the Git binary. Defaults to null, which uses Symfony's
-     *   ExecutableFinder to resolve it automatically.
-     *
-     * @throws \GitWrapper\GitException
-     *   Throws an exception if the path to the Git binary couldn't be resolved
-     *   by the ExecutableFinder class.
-     */
-    public function __construct($gitBinary = null)
+    public function __construct(?string $gitBinary = null)
     {
         if ($gitBinary === null) {
-            // @codeCoverageIgnoreStart
             $finder = new ExecutableFinder();
             $gitBinary = $finder->find('git');
             if (! $gitBinary) {
                 throw new GitException('Unable to find the Git executable.');
             }
-            // @codeCoverageIgnoreEnd
         }
 
         $this->setGitBinary($gitBinary);
@@ -83,19 +70,17 @@ class GitWrapper
 
     /**
      * Hackish, allows us to use "clone" as a method name.
-     *
-     * $throws \BadMethodCallException
-     * @throws \GitWrapper\GitException
      */
     public function __call($method, $args)
     {
         if ($method === 'clone') {
             return call_user_func_array([$this, 'cloneRepository'], $args);
-        }  
-            $class = get_called_class();
-            $message = "Call to undefined method ${class}::${method}()";
-            throw new BadMethodCallException($message);
+        }
 
+        $class = get_called_class();
+        $message = "Call to undefined method ${class}::${method}()";
+
+        throw new BadMethodCallException($message);
     }
 
     /**
@@ -126,25 +111,15 @@ class GitWrapper
     }
 
     /**
-     * Sets the path to the Git binary.
-     *
-     * @param string $gitBinary
-     *   Path to the Git binary.
-     *
      * @return \GitWrapper\GitWrapper
      */
-    public function setGitBinary($gitBinary)
+    public function setGitBinary(string $gitBinary)
     {
         $this->gitBinary = $gitBinary;
         return $this;
     }
 
-    /**
-     * Returns the path to the Git binary.
-     *
-     * @return string
-     */
-    public function getGitBinary()
+    public function getGitBinary(): string
     {
         return $this->gitBinary;
     }
@@ -154,7 +129,7 @@ class GitWrapper
      * command.
      *
      * @param string $var The name of the environment variable, e.g. "HOME", "GIT_SSH".
-     * @return GitWrapper\GitWrapper
+     * @return \GitWrapper\GitWrapper
      */
     public function setEnvVar($var, $value)
     {
@@ -166,8 +141,7 @@ class GitWrapper
      * Unsets an environment variable that is defined only in the scope of the
      * Git command.
      *
-     * @param string $var
-     *   The name of the environment variable, e.g. "HOME", "GIT_SSH".
+     * @param string $var The name of the environment variable, e.g. "HOME", "GIT_SSH".
      *
      * @return \GitWrapper\GitWrapper
      */
@@ -181,10 +155,8 @@ class GitWrapper
      * Returns an environment variable that is defined only in the scope of the
      * Git command.
      *
-     * @param string $var
-     *   The name of the environment variable, e.g. "HOME", "GIT_SSH".
-     * @param mixed $default
-     *   The value returned if the environment variable is not set, defaults to
+     * @param string $var The name of the environment variable, e.g. "HOME", "GIT_SSH".
+     * @param mixed $default The value returned if the environment variable is not set, defaults to
      *   null.
      *
      * @return mixed
@@ -197,35 +169,22 @@ class GitWrapper
     /**
      * Returns the associative array of environment variables that are defined
      * only in the scope of the Git command.
-     *
-     * @return array
      */
-    public function getEnvVars()
+    public function getEnvVars(): array
     {
         return $this->env;
     }
 
     /**
-     * Sets the timeout of the Git command.
-     *
-     * @param int $timeout
-     *   The timeout in seconds.
-     *
      * @return \GitWrapper\GitWrapper
      */
-    public function setTimeout($timeout)
+    public function setTimeout(int $timeout)
     {
-        $this->timeout = (int) $timeout;
+        $this->timeout = $timeout;
         return $this;
     }
 
-    /**
-     * Gets the timeout of the Git command.
-     *
-     * @return int
-     *   The timeout in seconds.
-     */
-    public function getTimeout()
+    public function getTimeout(): int
     {
         return $this->timeout;
     }
@@ -237,18 +196,12 @@ class GitWrapper
      * script included with this library. It also sets the custom GIT_SSH_KEY
      * and GIT_SSH_PORT environment variables that are used by the script.
      *
-     * @param string $privateKey
-     *   Path to the private key.
-     * @param int $port
-     *   Port that the SSH server being connected to listens on, defaults to 22.
-     * @param string|null $wrapper
-     *   Path the the GIT_SSH wrapper script, defaults to null which uses the
+     * @param string $privateKey Path to the private key.
+     * @param int $port Port that the SSH server being connected to listens on, defaults to 22.
+     * @param string|null $wrapper Path the the GIT_SSH wrapper script, defaults to null which uses the
      *   script included with this library.
      *
      * @return \GitWrapper\GitWrapper
-     *
-     * @throws \GitWrapper\GitException
-     *   Thrown when any of the paths cannot be resolved.
      */
     public function setPrivateKey($privateKey, $port = 22, $wrapper = null)
     {
@@ -262,11 +215,9 @@ class GitWrapper
             throw new GitException('Path private key could not be resolved: ' . $privateKey);
         }
 
-        return $this
-            ->setEnvVar('GIT_SSH', $wrapperPath)
+        return $this->setEnvVar('GIT_SSH', $wrapperPath)
             ->setEnvVar('GIT_SSH_KEY', $privateKeyPath)
-            ->setEnvVar('GIT_SSH_PORT', (int) $port)
-        ;
+            ->setEnvVar('GIT_SSH_PORT', (int) $port);
     }
 
     /**
@@ -276,11 +227,9 @@ class GitWrapper
      */
     public function unsetPrivateKey()
     {
-        return $this
-            ->unsetEnvVar('GIT_SSH')
+        return $this->unsetEnvVar('GIT_SSH')
             ->unsetEnvVar('GIT_SSH_KEY')
-            ->unsetEnvVar('GIT_SSH_PORT')
-        ;
+            ->unsetEnvVar('GIT_SSH_PORT');
     }
 
     /**
@@ -290,45 +239,36 @@ class GitWrapper
      */
     public function addOutputListener(GitOutputListenerInterface $listener)
     {
-        $this
-            ->getDispatcher()
-            ->addListener(GitEvents::GIT_OUTPUT, [$listener, 'handleOutput'])
-        ;
+        $this->getDispatcher()
+            ->addListener(GitEvents::GIT_OUTPUT, [$listener, 'handleOutput']);
         return $this;
     }
 
     /**
-     * Adds logger listener listener.
-     *
      * @return GitWrapper
      */
     public function addLoggerListener(Event\GitLoggerListener $listener)
     {
-        $this
-            ->getDispatcher()
-            ->addSubscriber($listener)
-        ;
+        $this->getDispatcher()
+            ->addSubscriber($listener);
         return $this;
     }
 
     /**
-     * Removes an output listener.
-     *
      * @return GitWrapper\GitWrapper
      */
     public function removeOutputListener(GitOutputListenerInterface $listener)
     {
-        $this
-            ->getDispatcher()
-            ->removeListener(GitEvents::GIT_OUTPUT, [$listener, 'handleOutput'])
-        ;
+        $this->getDispatcher()
+            ->removeListener(GitEvents::GIT_OUTPUT, [$listener, 'handleOutput']);
+
         return $this;
     }
 
     /**
      * Set whether or not to stream real-time output to STDOUT and STDERR.
      *
-     * @param boolean $streamOutput
+     * @param bool $streamOutput
      *
      * @return \GitWrapper\GitWrapper
      */
@@ -350,8 +290,7 @@ class GitWrapper
     /**
      * Returns an object that interacts with a working copy.
      *
-     * @param string $directory
-     *   Path to the directory containing the working copy.
+     * @param string $directory Path to the directory containing the working copy.
      *
      * @return GitWorkingCopy
      */
@@ -364,8 +303,6 @@ class GitWrapper
      * Returns the version of the installed Git client.
      *
      * @return string
-     *
-     * @throws \GitWrapper\GitException
      */
     public function version()
     {
@@ -373,13 +310,10 @@ class GitWrapper
     }
 
     /**
-     * Parses name of the repository from the path.
-     *
      * For example, passing the "git@github.com:cpliakas/git-wrapper.git"
      * repository would return "git-wrapper".
      *
-     * @param string $repository
-     *   The repository URL.
+     * @param string $repository The repository URL.
      *
      * @return string
      */
@@ -403,18 +337,12 @@ class GitWrapper
      *
      * Create an empty git repository or reinitialize an existing one.
      *
-     * @param string $directory
-     *   The directory being initialized.
-     * @param array $options
-     *   (optional) An associative array of command line options.
+     * @param string $directory The directory being initialized.
+     * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
      *
-     * @throws \GitWrapper\GitException
-     *
      * @see GitWorkingCopy::cloneRepository()
-     *
-     * @ingroup commands
      */
     public function init($directory, array $options = [])
     {
@@ -430,22 +358,15 @@ class GitWrapper
      * Clone a repository into a new directory. Use GitWorkingCopy::clone()
      * instead for more readable code.
      *
-     * @param string $repository
-     *   The Git URL of the repository being cloned.
-     * @param string $directory
-     *   The directory that the repository will be cloned into. If null is
+     * @param string $repository The Git URL of the repository being cloned.
+     * @param string $directory The directory that the repository will be cloned into. If null is
      *   passed, the directory will automatically be generated from the URL via
      *   the GitWrapper::parseRepositoryName() method.
-     * @param array $options
-     *   (optional) An associative array of command line options.
+     * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
      *
-     * @throws \GitWrapper\GitException
-     *
      * @see GitWorkingCopy::cloneRepository()
-     *
-     * @ingroup commands
      */
     public function cloneRepository($repository, $directory = null, array $options = [])
     {
@@ -459,26 +380,19 @@ class GitWrapper
     }
 
     /**
-     * Runs an arbitrary Git command.
-     *
      * The command is simply a raw command line entry for everything after the
      * Git binary. For example, a `git config -l` command would be passed as
      * `config -l` via the first argument of this method.
      *
      * Note that no events are thrown by this method.
      *
-     * @param string $commandLine
-     *   The raw command containing the Git options and arguments. The Git
+     * @param string $commandLine The raw command containing the Git options and arguments. The Git
      *   binary should not be in the command, for example `git config -l` would
      *   translate to "config -l".
-     * @param string|null $cwd
-     *   The working directory of the Git process. Defaults to null which uses
+     * @param string|null $cwd The working directory of the Git process. Defaults to null which uses
      *   the current working directory of the PHP process.
      *
-     * @return string
-     *   The STDOUT returned by the Git command.
-     *
-     * @throws \GitWrapper\GitException
+     * @return string The STDOUT returned by the Git command.
      *
      * @see GitWrapper::run()
      */
@@ -491,19 +405,12 @@ class GitWrapper
     }
 
     /**
-     * Runs a Git command.
-     *
-     * @param \GitWrapper\GitCommand $command
-     *   The Git command being executed.
-     * @param string|null $cwd
-     *   Explicitly specify the working directory of the Git process. Defaults
+     * @param \GitWrapper\GitCommand $command The Git command being executed.
+     * @param string|null $cwd Explicitly specify the working directory of the Git process. Defaults
      *   to null which automatically sets the working directory based on the
      *   command being executed relative to the working copy.
      *
-     * @return string
-     *   The STDOUT returned by the Git command.
-     *
-     * @throws \GitWrapper\GitException
+     * @return string The STDOUT returned by the Git command.
      *
      * @see Process
      */
