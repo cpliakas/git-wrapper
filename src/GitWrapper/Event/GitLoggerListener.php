@@ -60,7 +60,6 @@ class GitLoggerListener implements EventSubscriberInterface, LoggerAwareInterfac
     public function setLogLevelMapping($eventName, $logLevel)
     {
         $this->logLevelMappings[$eventName] = $logLevel;
-        return $this;
     }
 
     /**
@@ -102,7 +101,7 @@ class GitLoggerListener implements EventSubscriberInterface, LoggerAwareInterfac
     public function log(GitEvent $event, $message, array $context = [], $eventName = NULL)
     {
         // Provide backwards compatibility with Symfony 2.
-        if (empty($eventName) && method_exists($event, 'getName')) {
+        if ($eventName === null && method_exists($event, 'getName')) {
             $eventName = $event->getName();
         }
         $method = $this->getLogLevelMapping($eventName);

@@ -81,10 +81,9 @@ class GitWorkingCopy
     /**
      * Clears the stored output captured by the last run Git command(s).
      */
-    public function clearOutput(): GitWorkingCopy
+    public function clearOutput(): void
     {
         $this->output = '';
-        return $this;
     }
 
     /**
@@ -97,7 +96,6 @@ class GitWorkingCopy
     public function setCloned($cloned)
     {
         $this->cloned = (bool) $cloned;
-        return $this;
     }
 
     /**
@@ -735,6 +733,7 @@ class GitWorkingCopy
             $this->directory,
             $options,
         ];
+
         return $this->run($args, false);
     }
 
