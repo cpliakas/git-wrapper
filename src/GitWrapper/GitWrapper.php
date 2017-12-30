@@ -69,21 +69,6 @@ class GitWrapper
     }
 
     /**
-     * Hackish, allows us to use "clone" as a method name.
-     */
-    public function __call($method, $args)
-    {
-        if ($method === 'clone') {
-            return call_user_func_array([$this, 'cloneRepository'], $args);
-        }
-
-        $class = get_called_class();
-        $message = "Call to undefined method ${class}::${method}()";
-
-        throw new BadMethodCallException($message);
-    }
-
-    /**
      * Gets the dispatcher used by this library to dispatch events.
      *
      * @return \Symfony\Component\EventDispatcher\EventDispatcherInterface
@@ -355,7 +340,7 @@ class GitWrapper
     /**
      * Executes a `git clone` command and returns a working copy object.
      *
-     * Clone a repository into a new directory. Use GitWorkingCopy::clone()
+     * Clone a repository into a new directory. Use @see GitWorkingCopy::cloneRepository()
      * instead for more readable code.
      *
      * @param string $repository The Git URL of the repository being cloned.
@@ -374,7 +359,7 @@ class GitWrapper
             $directory = self::parseRepositoryName($repository);
         }
         $git = $this->workingCopy($directory);
-        $git->clone($repository, $options);
+        $git->cloneRepository($repository, $options);
         $git->setCloned(true);
         return $git;
     }
