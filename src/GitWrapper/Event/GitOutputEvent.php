@@ -59,6 +59,6 @@ class GitOutputEvent extends GitEvent
      */
     public function isError()
     {
-        return (Process::ERR == $this->type);
+        return ($this->type === Process::ERR);
     }
 }

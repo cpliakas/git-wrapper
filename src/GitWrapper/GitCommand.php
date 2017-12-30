@@ -2,8 +2,6 @@
 
 namespace GitWrapper;
 
-use Symfony\Component\Process\ProcessUtils;
-
 /**
  * Base class extended by all Git command classes.
  */
@@ -91,12 +89,9 @@ class GitCommand
      * the Git command line utility. If the last argument is an array, it is
      * passed as the command options.
      *
-     * @param string $command
-     *   The Git command being run, e.g. "clone", "commit", etc.
-     * @param string ...
-     *   Zero or more arguments passed to the Git command.
-     * @param array $options
-     *   An optional array of arguments to pass to the command.
+     * @param string $command The Git command being run, e.g. "clone", "commit", etc.
+     * @param string ... Zero or more arguments passed to the Git command.
+     * @param array $options An optional array of arguments to pass to the command.
      *
      * @return \GitWrapper\GitCommand
      */
@@ -183,13 +178,11 @@ class GitCommand
      */
     public function notBypassed()
     {
-        return !$this->bypass;
+        return ! $this->bypass;
     }
 
     /**
      * Builds the command line options for use in the Git command.
-     *
-     * @return array
      */
     public function buildOptions(): array
     {
@@ -198,7 +191,7 @@ class GitCommand
             foreach ((array) $values as $value) {
 
                 // Render the option.
-                $prefix = (strlen($option) != 1) ? '--' : '-';
+                $prefix = (strlen($option) !== 1) ? '--' : '-';
                 $options[] = $prefix . $option;
 
                 // Render apend the value if the option isn't a flag.
@@ -248,10 +241,8 @@ class GitCommand
     /**
      * Sets a command line flag.
      *
-     * @param string $flag
-     *   The flag name, e.g. "q", "a".
-     *
-     * @reutrn \GitWrapper\GitCommand
+     * @param string $flag The flag name, e.g. "q", "a".
+     * @return \GitWrapper\GitCommand
      *
      * @see \GitWrapper\GitCommand::setOption()
      */

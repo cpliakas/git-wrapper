@@ -22,15 +22,12 @@ class GitLoggerListener implements EventSubscriberInterface, LoggerAwareInterfac
      */
     protected $logLevelMappings = [
         GitEvents::GIT_PREPARE => LogLevel::INFO,
-        GitEvents::GIT_OUTPUT  => LogLevel::DEBUG,
+        GitEvents::GIT_OUTPUT => LogLevel::DEBUG,
         GitEvents::GIT_SUCCESS => LogLevel::INFO,
-        GitEvents::GIT_ERROR   => LogLevel::ERROR,
-        GitEvents::GIT_BYPASS  => LogLevel::INFO,
+        GitEvents::GIT_ERROR => LogLevel::ERROR,
+        GitEvents::GIT_BYPASS => LogLevel::INFO,
     ];
 
-    /**
-     * @param \Psr\Log\LoggerInterface $logger
-     */
     public function __construct(LoggerInterface $logger)
     {
         $this->setLogger($logger);
@@ -77,7 +74,7 @@ class GitLoggerListener implements EventSubscriberInterface, LoggerAwareInterfac
      */
     public function getLogLevelMapping($eventName)
     {
-        if (!isset($this->logLevelMappings[$eventName])) {
+        if (! isset($this->logLevelMappings[$eventName])) {
             throw new DomainException('Unknown event: ' . $eventName);
         }
 
@@ -91,22 +88,19 @@ class GitLoggerListener implements EventSubscriberInterface, LoggerAwareInterfac
     {
         return [
             GitEvents::GIT_PREPARE => ['onPrepare', 0],
-            GitEvents::GIT_OUTPUT  => ['handleOutput', 0],
+            GitEvents::GIT_OUTPUT => ['handleOutput', 0],
             GitEvents::GIT_SUCCESS => ['onSuccess', 0],
-            GitEvents::GIT_ERROR   => ['onError', 0],
-            GitEvents::GIT_BYPASS  => ['onBypass', 0],
+            GitEvents::GIT_ERROR => ['onError', 0],
+            GitEvents::GIT_BYPASS => ['onBypass', 0],
         ];
     }
 
     /**
      * Adds a log message using the level defined in the mappings.
      *
-     * @param \GitWrapper\Event\GitEvent $event
      * @param string $message
-     * @param array $context
      * @param string $eventName
-     *
-     * @throws \DomainException
+     * @throws DomainException
      */
     public function log(GitEvent $event, $message, array $context = [], $eventName = NULL)
     {
@@ -117,7 +111,7 @@ class GitLoggerListener implements EventSubscriberInterface, LoggerAwareInterfac
         $method = $this->getLogLevelMapping($eventName);
         if ($method !== false) {
             $context += ['command' => $event->getProcess()->getCommandLine()];
-            $this->logger->$method($message, $context);
+            $this->logger->{$method}($message, $context);
         }
     }
 

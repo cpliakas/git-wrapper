@@ -3,7 +3,6 @@
 namespace GitWrapper;
 
 use BadMethodCallException;
-use Symfony\Component\Process\ProcessUtils;
 
 /**
  * Interacts with a working copy.
@@ -45,12 +44,8 @@ class GitWorkingCopy
     protected $cloned;
 
     /**
-     * Constructs a GitWorkingCopy object.
-     *
-     * @param \GitWrapper\GitWrapper $wrapper
-     *   The GitWrapper object that likely instantiated this class.
-     * @param string $directory
-     *   Path to the directory containing the working copy.
+     * @param \GitWrapper\GitWrapper $wrapper The GitWrapper object that likely instantiated this class.
+     * @param string $directory Path to the directory containing the working copy.
      */
     public function __construct(GitWrapper $wrapper, $directory)
     {
@@ -59,31 +54,44 @@ class GitWorkingCopy
     }
 
     /**
-     * Returns the GitWrapper object that likely instantiated this class.
+     * Hackish, allows us to use "clone" as a method name.
      *
-     * @return \GitWrapper\GitWrapper
+     * @throws \BadMethodCallException
+     * @throws \GitWrapper\GitException
      */
-    public function getWrapper()
+    public function __call($method, $args)
     {
-        return $this->wrapper;
-    }
+        if ($method === 'clone') {
+            return call_user_func_array([$this, 'cloneRepository'], $args);
+        }
 
-    /**
-     * Gets the path to the directory containing the working copy.
-     *
-     * @return string
-     */
-    public function getDirectory()
-    {
-        return $this->directory;
+        $class = get_called_class();
+        $message = "Call to undefined method ${class}::${method}()";
+
+        throw new BadMethodCallException($message);
     }
 
     /**
      * Gets the output captured by the last run Git commnd(s).
      *
-     * @return string
+     * @see GitWorkingCopy::getOutput()
      */
-    public function getOutput()
+    public function __toString(): string
+    {
+        return $this->getOutput();
+    }
+
+    public function getWrapper(): GitWrapper
+    {
+        return $this->wrapper;
+    }
+
+    public function getDirectory(): string
+    {
+        return $this->directory;
+    }
+
+    public function getOutput(): string
     {
         $output = $this->output;
         $this->output = '';
@@ -92,10 +100,8 @@ class GitWorkingCopy
 
     /**
      * Clears the stored output captured by the last run Git command(s).
-     *
-     * @return \GitWrapper\GitWorkingCopy
      */
-    public function clearOutput()
+    public function clearOutput(): GitWorkingCopy
     {
         $this->output = '';
         return $this;
@@ -104,8 +110,7 @@ class GitWorkingCopy
     /**
      * Manually sets the cloned flag.
      *
-     * @param boolean $cloned
-     *   Whether the repository is cloned into the directory or not.
+     * @param boolean $cloned Whether the repository is cloned into the directory or not.
      *
      * @return \GitWrapper\GitWorkingCopy
      */
@@ -119,12 +124,10 @@ class GitWorkingCopy
      * Checks whether a repository has already been cloned to this directory.
      *
      * If the flag is not set, test if it looks like we're at a git directory.
-     *
-     * @return boolean
      */
-    public function isCloned()
+    public function isCloned(): bool
     {
-        if (!isset($this->cloned)) {
+        if (! isset($this->cloned)) {
             $gitDir = $this->directory;
             if (is_dir($gitDir . '/.git')) {
                 $gitDir .= '/.git';
@@ -137,18 +140,14 @@ class GitWorkingCopy
     /**
      * Runs a Git command and captures the output.
      *
-     * @param array $args
-     *   The arguments passed to the command method.
-     * @param boolean $setDirectory
-     *   Set the working directory, defaults to true.
-     *
-     * @return \GitWrapper\GitWorkingCopy
+     * @param array $args The arguments passed to the command method.
+     * @param boolean $setDirectory Set the working directory, defaults to true.
      *
      * @throws \GitWrapper\GitException
      *
      * @see GitWrapper::run()
      */
-    public function run($args, $setDirectory = true)
+    public function run($args, $setDirectory = true): GitWorkingCopy
     {
         $command = call_user_func_array(['GitWrapper\GitCommand', 'getInstance'], $args);
         if ($setDirectory) {
@@ -159,21 +158,11 @@ class GitWorkingCopy
     }
 
     /**
-     * @defgroup command_helpers Git Command Helpers
-     *
-     * Helper methods that wrap common Git commands.
-     *
-     * @{
-     */
-
-    /**
      * Returns the output of a `git status -s` command.
-     *
-     * @return string
      *
      * @throws \GitWrapper\GitException
      */
-    public function getStatus()
+    public function getStatus(): string
     {
         return $this->wrapper->git('status -s', $this->directory);
     }
@@ -181,42 +170,36 @@ class GitWorkingCopy
     /**
      * Returns true if there are changes to commit.
      *
-     * @return bool
-     *
      * @throws \GitWrapper\GitException
      */
-    public function hasChanges()
+    public function hasChanges(): bool
     {
         $output = $this->getStatus();
-        return !empty($output);
+        return ! empty($output);
     }
 
     /**
      * Returns whether HEAD has a remote tracking branch.
-     *
-     * @return bool
      */
-    public function isTracking()
+    public function isTracking(): bool
     {
         try {
             $this->run(['rev-parse', '@{u}']);
         } catch (GitException $e) {
             return false;
         }
+
         return true;
     }
 
     /**
      * Returns whether HEAD is up-to-date with its remote tracking branch.
      *
-     * @return bool
-     *
-     * @throws \GitWrapper\GitException
-     *   Thrown when HEAD does not have a remote tracking branch.
+     * @throws \GitWrapper\GitException Thrown when HEAD does not have a remote tracking branch.
      */
-    public function isUpToDate()
+    public function isUpToDate(): bool
     {
-        if (!$this->isTracking()) {
+        if (! $this->isTracking()) {
             throw new GitException('Error: HEAD does not have a remote tracking branch. Cannot check if it is up-to-date.');
         }
         $this->clearOutput();
@@ -231,14 +214,11 @@ class GitWorkingCopy
      * If this returns true it means that commits are present locally which have
      * not yet been pushed to the remote.
      *
-     * @return bool
-     *
-     * @throws \GitWrapper\GitException
-     *   Thrown when HEAD does not have a remote tracking branch.
+     * @throws \GitWrapper\GitException Thrown when HEAD does not have a remote tracking branch.
      */
-    public function isAhead()
+    public function isAhead(): bool
     {
-        if (!$this->isTracking()) {
+        if (! $this->isTracking()) {
             throw new GitException('Error: HEAD does not have a remote tracking branch. Cannot check if it is ahead.');
         }
         $this->clearOutput();
@@ -254,14 +234,11 @@ class GitWorkingCopy
      * If this returns true it means that a pull is needed to bring the branch
      * up-to-date with the remote.
      *
-     * @return bool
-     *
-     * @throws \GitWrapper\GitException
-     *   Thrown when HEAD does not have a remote tracking branch.
+     * @throws \GitWrapper\GitException Thrown when HEAD does not have a remote tracking branch.
      */
-    public function isBehind()
+    public function isBehind(): bool
     {
-        if (!$this->isTracking()) {
+        if (! $this->isTracking()) {
             throw new GitException('Error: HEAD does not have a remote tracking branch. Cannot check if it is behind.');
         }
         $this->clearOutput();
@@ -278,15 +255,11 @@ class GitWorkingCopy
      * tracking branch; new commits are present locally as well as on the
      * remote.
      *
-     * @return bool
-     *   true if HEAD needs to be merged with the remote, false otherwise.
-     *
-     * @throws \GitWrapper\GitException
-     *   Thrown when HEAD does not have a remote tracking branch.
+     * @throws \GitWrapper\GitException Thrown when HEAD does not have a remote tracking branch.
      */
-    public function needsMerge()
+    public function needsMerge(): bool
     {
-        if (!$this->isTracking()) {
+        if (! $this->isTracking()) {
             throw new GitException('Error: HEAD does not have a remote tracking branch. Cannot check if it is behind.');
         }
         $this->clearOutput();
@@ -299,10 +272,8 @@ class GitWorkingCopy
     /**
      * Returns a GitBranches object containing information on the repository's
      * branches.
-     *
-     * @return GitBranches
      */
-    public function getBranches()
+    public function getBranches(): GitBranches
     {
         return new GitBranches($this);
     }
@@ -312,13 +283,10 @@ class GitWorkingCopy
      *
      * This is synonymous with `git push origin tag v1.2.3`.
      *
-     * @param string $tag
-     *   The tag being pushed.
-     * @param string $repository
-     *   The destination of the push operation, which is either a URL or name of
+     * @param string $tag The tag being pushed.
+     * @param string $repository The destination of the push operation, which is either a URL or name of
      *   the remote. Defaults to "origin".
-     * @param array $options
-     *   (optional) An associative array of command line options.
+     * @param array $options An associative array of command line options.
      *
      * @see GitWorkingCopy::push()
      */
@@ -335,8 +303,7 @@ class GitWorkingCopy
      * @param string $repository
      *   The destination of the push operation, which is either a URL or name of
      *   the remote. Defaults to "origin".
-     * @param array $options
-     *   (optional) An associative array of command line options.
+     * @param array $options An associative array of command line options.
      *
      * @see GitWorkingCopy::push()
      */
@@ -351,8 +318,7 @@ class GitWorkingCopy
      *
      * This is synonymous with `git fetch --all`.
      *
-     * @param array $options
-     *   (optional) An associative array of command line options.
+     * @param array $options An associative array of command line options.
      *
      * @see GitWorkingCopy::fetch()
      */
@@ -418,20 +384,20 @@ class GitWorkingCopy
 
         // Add boolean options.
         foreach (['-f', '--tags', '--no-tags'] as $option) {
-            if (!empty($options[$option])) {
+            if (! empty($options[$option])) {
                 $args[] = $option;
             }
         }
 
         // Add tracking branches.
-        if (!empty($options['-t'])) {
+        if (! empty($options['-t'])) {
             foreach ($options['-t'] as $branch) {
                 array_push($args, '-t', $branch);
             }
         }
 
         // Add master branch.
-        if (!empty($options['-m'])) {
+        if (! empty($options['-m'])) {
             array_push($args, '-m', $options['-m']);
         }
 
@@ -480,7 +446,7 @@ class GitWorkingCopy
      *   Thrown when the remote does not exist.
      */
     public function getRemote($name) {
-        if (!$this->hasRemote($name)) {
+        if (! $this->hasRemote($name)) {
             throw new GitException('The remote "' . $name . '" does not exist.');
         }
         $remotes = $this->getRemotes();
@@ -525,11 +491,10 @@ class GitWorkingCopy
         $args = $operation === 'push' ? ['get-url', '--push', $remote] : ['get-url', $remote];
         try {
             return rtrim(call_user_func_array([$this, 'remote'], $args)->getOutput());
-        }
-        catch (GitException $e) {
+        } catch (GitException $e) {
             // Fall back to parsing 'git remote -v' for older versions of git
             // that do not support `git remote get-url`.
-            $identifier = " ($operation)";
+            $identifier = " (${operation})";
             foreach (explode("\n", rtrim($this->remote('-v')->getOutput())) as $line) {
                 if (strpos($line, $remote) === 0 && strrpos($line, $identifier) === strlen($line) - strlen($identifier)) {
                     preg_match('/^.+\t(.+) \(' . $operation . '\)$/', $line, $matches);
@@ -561,13 +526,10 @@ class GitWorkingCopy
      * $git->add('some/file.txt');
      * @endcode
      *
-     * @param string $filepattern
-     *   Files to add content from. Fileglobs (e.g.  *.c) can be given to add
-     *   all matching files. Also a leading directory name (e.g.  dir to add
-     *   dir/file1 and dir/file2) can be given to add all files in the
-     *   directory, recursively.
-     * @param array $options
-     *   An optional array of command line options.
+     * @param string $filepattern Files to add content from. Fileglobs (e.g.  *.c) can be given to add
+     *   all matching files. Also a leading directory name (e.g.  dir to add dir/file1 and dir/file2)
+     *   can be given to add all files in the directory, recursively.
+     * @param array $options An optional array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
      *
@@ -592,16 +554,12 @@ class GitWorkingCopy
      * $git->apply('the/file/to/read/the/patch/from');
      * @endcode
      *
-     * @param string ...
-     *   (optional) Additional command line arguments.
-     * @param array $options
-     *   (optional) An associative array of command line options.
-     *
-     * @return GitWorkingCopy
+     * @param string ... Additional command line arguments.
+     * @param array $options An associative array of command line options.
      *
      * @throws GitException
      */
-    public function apply()
+    public function apply(): GitWorkingCopy
     {
         $args = func_get_args();
         array_unshift($args, 'apply');
@@ -618,12 +576,9 @@ class GitWorkingCopy
      * $git->bisect('view', array('stat' => true));
      * @endcode
      *
-     * @param string $sub_command
-     *   The subcommand passed to `git bisect`.
-     * @param string ...
-     *   (optional) Additional command line arguments.
-     * @param array $options
-     *   (optional) An associative array of command line options.
+     * @param string $sub_command The subcommand passed to `git bisect`.
+     * @param string ... Additional command line arguments.
+     * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
      *
@@ -641,15 +596,12 @@ class GitWorkingCopy
      *
      * List, create, or delete branches.
      *
-     * @code
-     * $git->branch('my2.6.14', 'v2.6.14');
+     * @code $git->branch('my2.6.14', 'v2.6.14');
      * $git->branch('origin/html', 'origin/man', array('d' => true, 'r' => 'origin/todo'));
      * @endcode
      *
-     * @param string ...
-     *   (optional) Additional command line arguments.
-     * @param array $options
-     *   (optional) An associative array of command line options.
+     * @param string ... Additional command line arguments.
+     * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
      *
@@ -667,14 +619,11 @@ class GitWorkingCopy
      *
      * Checkout a branch or paths to the working tree.
      *
-     * @code
-     * $git->checkout('new-branch', array('b' => true));
+     * @code $git->checkout('new-branch', array('b' => true));
      * @endcode
      *
-     * @param string ...
-     *   (optional) Additional command line arguments.
-     * @param array $options
-     *   (optional) An associative array of command line options.
+     * @param string   Additional command line arguments.
+     * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
      *
@@ -699,8 +648,7 @@ class GitWorkingCopy
      *
      * @param string $repository
      *   The Git URL of the repository being cloned.
-     * @param array $options
-     *   (optional) An associative array of command line options.
+     * @param array $options An associative array of command line options.
      *
      * @param string $repository
      *   The URL of the repository being cloned.
@@ -727,15 +675,12 @@ class GitWorkingCopy
      * assumed to be the commit message. Therefore `$git->commit('Message');`
      * yields a `git commit -am "Message"` command.
      *
-     * @code
-     * $git->commit('My commit message');
+     * @code $git->commit('My commit message');
      * $git->commit('Makefile', array('m' => 'My commit message'));
      * @endcode
      *
-     * @param string ...
-     *   (optional) Additional command line arguments.
-     * @param array $options
-     *   (optional) An associative array of command line options.
+     * @param string ... Additional command line arguments.
+     * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
      *
@@ -744,7 +689,7 @@ class GitWorkingCopy
     public function commit()
     {
         $args = func_get_args();
-        if (isset($args[0]) && is_string($args[0]) && !isset($args[1])) {
+        if (isset($args[0]) && is_string($args[0]) && ! isset($args[1])) {
             $args[0] = [
                 'm' => $args[0],
                 'a' => true,
@@ -759,15 +704,12 @@ class GitWorkingCopy
      *
      * Get and set repository options.
      *
-     * @code
-     * $git->config('user.email', 'opensource@chrispliakas.com');
+     * @code $git->config('user.email', 'opensource@chrispliakas.com');
      * $git->config('user.name', 'Chris Pliakas');
      * @endcode
      *
-     * @param string ...
-     *   (optional) Additional command line arguments.
-     * @param array $options
-     *   (optional) An associative array of command line options.
+     * @param string ... Additional command line arguments.
+     * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
      *
@@ -785,15 +727,12 @@ class GitWorkingCopy
      *
      * Show changes between commits, commit and working tree, etc.
      *
-     * @code
-     * $git->diff();
+     * @code $git->diff();
      * $git->diff('topic', 'master');
      * @endcode
      *
-     * @param string ...
-     *   (optional) Additional command line arguments.
-     * @param array $options
-     *   (optional) An associative array of command line options.
+     * @param string ... Additional command line arguments.
+     * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
      *
@@ -811,15 +750,12 @@ class GitWorkingCopy
      *
      * Download objects and refs from another repository.
      *
-     * @code
-     * $git->fetch('origin');
+     * @code $git->fetch('origin');
      * $git->fetch(array('all' => true));
      * @endcode
      *
-     * @param string ...
-     *   (optional) Additional command line arguments.
-     * @param array $options
-     *   (optional) An associative array of command line options.
+     * @param string ... Additional command line arguments.
+     * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
      *
@@ -837,14 +773,11 @@ class GitWorkingCopy
      *
      * Print lines matching a pattern.
      *
-     * @code
-     * $git->grep('time_t', '--', '*.[ch]');
+     * @code $git->grep('time_t', '--', '*.[ch]');
      * @endcode
      *
-     * @param string ...
-     *   (optional) Additional command line arguments.
-     * @param array $options
-     *   (optional) An associative array of command line options.
+     * @param string ... Additional command line arguments.
+     * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
      *
@@ -866,8 +799,7 @@ class GitWorkingCopy
      * $git->init(array('bare' => true));
      * @endcode
      *
-     * @param array $options
-     *   (optional) An associative array of command line options.
+     * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
      *
@@ -888,15 +820,12 @@ class GitWorkingCopy
      *
      * Show commit logs.
      *
-     * @code
-     * $git->log(array('no-merges' => true));
+     * @code $git->log(array('no-merges' => true));
      * $git->log('v2.6.12..', 'include/scsi', 'drivers/scsi');
      * @endcode
      *
-     * @param string ...
-     *   (optional) Additional command line arguments.
-     * @param array $options
-     *   (optional) An associative array of command line options.
+     * @param string ... Additional command line arguments.
+     * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
      *
@@ -914,14 +843,11 @@ class GitWorkingCopy
      *
      * Join two or more development histories together.
      *
-     * @code
-     * $git->merge('fixes', 'enhancements');
+     * @code $git->merge('fixes', 'enhancements');
      * @endcode
      *
-     * @param string ...
-     *   (optional) Additional command line arguments.
-     * @param array $options
-     *   (optional) An associative array of command line options.
+     * @param string ... Additional command line arguments.
+     * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
      *
@@ -943,12 +869,9 @@ class GitWorkingCopy
      * $git->mv('orig.txt', 'dest.txt');
      * @endcode
      *
-     * @param string $source
-     *   The file / directory being moved.
-     * @param string $destination
-     *   The target file / directory that the source is being move to.
-     * @param array $options
-     *   (optional) An associative array of command line options.
+     * @param string $source The file / directory being moved.
+     * @param string $destination The target file / directory that the source is being move to.
+     * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
      *
@@ -970,14 +893,11 @@ class GitWorkingCopy
      *
      * Fetch from and merge with another repository or a local branch.
      *
-     * @code
-     * $git->pull('upstream', 'master');
+     * @code $git->pull('upstream', 'master');
      * @endcode
      *
-     * @param string ...
-     *   (optional) Additional command line arguments.
-     * @param array $options
-     *   (optional) An associative array of command line options.
+     * @param string ... Additional command line arguments.
+     * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
      *
@@ -995,14 +915,11 @@ class GitWorkingCopy
      *
      * Update remote refs along with associated objects.
      *
-     * @code
-     * $git->push('upstream', 'master');
+     * @code $git->push('upstream', 'master');
      * @endcode
      *
-     * @param string ...
-     *   (optional) Additional command line arguments.
-     * @param array $options
-     *   (optional) An associative array of command line options.
+     * @param string ... Additional command line arguments.
+     * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
      *
@@ -1020,14 +937,11 @@ class GitWorkingCopy
      *
      * Forward-port local commits to the updated upstream head.
      *
-     * @code
-     * $git->rebase('subsystem@{1}', array('onto' => 'subsystem'));
+     * @code $git->rebase('subsystem@{1}', array('onto' => 'subsystem'));
      * @endcode
      *
-     * @param string ...
-     *   (optional) Additional command line arguments.
-     * @param array $options
-     *   (optional) An associative array of command line options.
+     * @param string ... Additional command line arguments.
+     * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
      *
@@ -1045,14 +959,11 @@ class GitWorkingCopy
      *
      * Manage the set of repositories ("remotes") whose branches you track.
      *
-     * @code
-     * $git->remote('add', 'upstream', 'git://github.com/cpliakas/git-wrapper.git');
+     * @code $git->remote('add', 'upstream', 'git://github.com/cpliakas/git-wrapper.git');
      * @endcode
      *
-     * @param string ...
-     *   (optional) Additional command line arguments.
-     * @param array $options
-     *   (optional) An associative array of command line options.
+     * @param string ... Additional command line arguments.
+     * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
      *
@@ -1070,14 +981,11 @@ class GitWorkingCopy
      *
      * Reset current HEAD to the specified state.
      *
-     * @code
-     * $git->reset(array('hard' => true));
+     * @code $git->reset(array('hard' => true));
      * @endcode
      *
-     * @param string ...
-     *   (optional) Additional command line arguments.
-     * @param array $options
-     *   (optional) An associative array of command line options.
+     * @param string ... Additional command line arguments.
+     * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
      *
@@ -1099,13 +1007,11 @@ class GitWorkingCopy
      * $git->rm('oldfile.txt');
      * @endcode
      *
-     * @param string $filepattern
-     *   Files to remove from version control. Fileglobs (e.g.  *.c) can be
+     * @param string $filepattern Files to remove from version control. Fileglobs (e.g.  *.c) can be
      *   given to add all matching files. Also a leading directory name (e.g.
      *   dir to add dir/file1 and dir/file2) can be given to add all files in
      *   the directory, recursively.
-     * @param array $options
-     *   (optional) An associative array of command line options.
+     * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
      *
@@ -1130,11 +1036,9 @@ class GitWorkingCopy
      * $git->show('v1.0.0');
      * @endcode
      *
-     * @param string $object
-     *   The names of objects to show. For a more complete list of ways to spell
+     * @param string $object The names of objects to show. For a more complete list of ways to spell
      *   object names, see "SPECIFYING REVISIONS" section in gitrevisions(7).
-     * @param array $options
-     *   (optional) An associative array of command line options.
+     * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
      *
@@ -1151,14 +1055,11 @@ class GitWorkingCopy
      *
      * Show the working tree status.
      *
-     * @code
-     * $git->status(array('s' => true));
+     * @code $git->status(array('s' => true));
      * @endcode
      *
-     * @param string ...
-     *   (optional) Additional command line arguments.
-     * @param array $options
-     *   (optional) An associative array of command line options.
+     * @param string ... Additional command line arguments.
+     * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
      *
@@ -1175,15 +1076,12 @@ class GitWorkingCopy
      * Executes a `git tag` command.
      *
      * Create, list, delete or verify a tag object signed with GPG.
-
-     * @code
-     * $git->tag('v1.0.0');
+     *
+     * @code $git->tag('v1.0.0');
      * @endcode
      *
-     * @param string ...
-     *   (optional) Additional command line arguments.
-     * @param array $options
-     *   (optional) An associative array of command line options.
+     * @param string ... Additional command line arguments.
+     * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
      *
@@ -1201,14 +1099,11 @@ class GitWorkingCopy
      *
      * Remove untracked files from the working tree
      *
-     * @code
-     * $git->clean('-d', '-f');
+     * @code $git->clean('-d', '-f');
      * @endcode
      *
-     * @param string ...
-     *   (optional) Additional command line arguments.
-     * @param array $options
-     *   (optional) An associative array of command line options.
+     * @param string ... Additional command line arguments.
+     * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
      *
@@ -1221,19 +1116,16 @@ class GitWorkingCopy
         return $this->run($args);
     }
 
-     /**
+    /**
      * Executes a `git archive` command.
      *
      * Create an archive of files from a named tree
      *
-     * @code
-     * $git->archive('HEAD', array('o' => '/path/to/archive'));
+     * @code $git->archive('HEAD', array('o' => '/path/to/archive'));
      * @endcode
      *
-     * @param string ...
-     *   (optional) Additional command line arguments.
-     * @param array $options
-     *   (optional) An associative array of command line options.
+     * @param string ... Additional command line arguments.
+     * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
      *
@@ -1247,45 +1139,9 @@ class GitWorkingCopy
     }
 
     /**
-     * @} End of "defgroup command".
+     * Returns a GitTags object containing  information on the repository's tags.
      */
-
-    /**
-     * Hackish, allows us to use "clone" as a method name.
-     *
-     * $throws \BadMethodCallException
-     * @throws \GitWrapper\GitException
-     */
-    public function __call($method, $args)
-    {
-        if ('clone' == $method) {
-            return call_user_func_array([$this, 'cloneRepository'], $args);
-        } else {
-            $class = get_called_class();
-            $message = "Call to undefined method $class::$method()";
-            throw new BadMethodCallException($message);
-        }
-    }
-
-    /**
-     * Gets the output captured by the last run Git commnd(s).
-     *
-     * @return string
-     *
-     * @see GitWorkingCopy::getOutput()
-     */
-    public function __toString()
-    {
-        return $this->getOutput();
-    }
-
-    /**
-     * Returns a GitTags object containing information on the repository's
-     * tags.
-     *
-     * @return GitTags
-     */
-    public function tags()
+    public function tags(): GitTags
     {
         return new GitTags($this);
     }
