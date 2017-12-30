@@ -150,7 +150,7 @@ class GitWorkingCopy
     {
         try {
             $this->run(['rev-parse', '@{u}']);
-        } catch (GitException $e) {
+        } catch (GitException $gitException) {
             return false;
         }
 
@@ -428,7 +428,7 @@ class GitWorkingCopy
         $args = $operation === 'push' ? ['get-url', '--push', $remote] : ['get-url', $remote];
         try {
             return rtrim(call_user_func_array([$this, 'remote'], $args)->getOutput());
-        } catch (GitException $e) {
+        } catch (GitException $gitException) {
             // Fall back to parsing 'git remote -v' for older versions of git
             // that do not support `git remote get-url`.
             $identifier = " (${operation})";
