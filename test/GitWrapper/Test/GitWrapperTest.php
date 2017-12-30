@@ -52,14 +52,6 @@ class GitWrapperTest extends GitWrapperTestCase
         $this->assertEquals($default, $this->wrapper->getEnvVar($var, $default));
     }
 
-    public function testProcOptions()
-    {
-        $value = (bool) mt_rand(0, 1);
-        $options = ['suppress_errors' => $value];
-        $this->wrapper->setProcOptions($options);
-        $this->assertEquals($options, $this->wrapper->getProcOptions());
-    }
-
     public function testGitVersion()
     {
         $version = $this->wrapper->version();
