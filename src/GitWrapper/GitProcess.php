@@ -13,19 +13,15 @@ use Symfony\Component\Process\Process;
 class GitProcess extends Process
 {
     /**
-     * @var \GitWrapper\GitWrapper
+     * @var GitWrapper
      */
     protected $git;
 
     /**
-     * @var \GitWrapper\GitCommand
+     * @var GitCommand
      */
     protected $command;
 
-    /**
-     * Constructs a GitProcess object.
-     *
-     */
     public function __construct(GitWrapper $git, GitCommand $command, ?string $cwd = null)
     {
         $this->git = $git;
@@ -37,7 +33,7 @@ class GitProcess extends Process
 
         // Support for executing an arbitrary git command.
         if (is_string($gitCommand)) {
-            $commandLine = join(' ', $commandLine);
+            $commandLine = implode(' ', $commandLine);
         }
 
         // Resolve the working directory of the Git process. Use the directory

@@ -11,7 +11,7 @@ use IteratorAggregate;
 class GitTags implements IteratorAggregate
 {
     /**
-     * @var \GitWrapper\GitWorkingCopy
+     * @var GitWorkingCopy
      */
     protected $git;
 

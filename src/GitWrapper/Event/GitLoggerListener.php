@@ -62,8 +62,6 @@ class GitLoggerListener implements EventSubscriberInterface, LoggerAwareInterfac
 
     /**
      * Returns the log level mapping for an event.
-     *
-     *
      */
     public function getLogLevelMapping(string $eventName): string
     {
