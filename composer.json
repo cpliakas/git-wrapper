@@ -33,5 +33,9 @@
         "psr-4": {
             "GitWrapper\\Test\\": "test/GitWrapper/Test"
         }
+    },
+    "scripts": {
+        "check-cs": "vendor/bin/ecs check src test",
+        "fix-cs": "vendor/bin/ecs check src test --fix"
     }
 }
