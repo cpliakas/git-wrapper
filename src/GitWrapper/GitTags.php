@@ -2,8 +2,9 @@
 
 namespace GitWrapper;
 
-use IteratorAggregate;
 use ArrayIterator;
+use IteratorAggregate;
+
 /**
  * Class that parses and returnes an array of Tags.
  */
@@ -19,8 +20,7 @@ class GitTags implements IteratorAggregate
     /**
      * Constructs a GitTags object.
      *
-     * @param \GitWrapper\GitWorkingCopy $git
-     *   The working copy that Tags are being collected from.
+     * @param \GitWrapper\GitWorkingCopy $git The working copy that Tags are being collected from.
      *
      * @throws \GitWrapper\GitException
      */
@@ -32,9 +32,7 @@ class GitTags implements IteratorAggregate
     /**
      * Fetches the Tags via the `git branch` command.
      *
-     * @param boolean $onlyRemote
-     *   Whether to fetch only remote Tags, defaults to false which returns
-     *   all Tags.
+     * @param bool $onlyRemote Whether to fetch only remote Tags, defaults to false which returns all Tags.
      *
      * @return array
      */
@@ -49,8 +47,7 @@ class GitTags implements IteratorAggregate
     /**
      * Strips unwanted characters from the branch.
      *
-     * @param string $branch
-     *   The raw branch returned in the output of the Git command.
+     * @param string $branch The raw branch returned in the output of the Git command.
      *
      * @return string
      *   The processed branch name.
@@ -78,5 +75,4 @@ class GitTags implements IteratorAggregate
     {
         return $this->fetchTags();
     }
-
 }

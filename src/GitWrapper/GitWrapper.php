@@ -2,15 +2,15 @@
 
 namespace GitWrapper;
 
+use BadMethodCallException;
+use GitWrapper\Event\GitEvents;
+use GitWrapper\Event\GitOutputEvent;
 use GitWrapper\Event\GitOutputListenerInterface;
 use GitWrapper\Event\GitOutputStreamListener;
-use GitWrapper\Event\GitOutputEvent;
-use GitWrapper\Event\GitEvents;
-use BadMethodCallException;
-use Symfony\Component\Process\Process;
-use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Process\ExecutableFinder;
+use Symfony\Component\Process\Process;
 
 /**
  * A wrapper class around the Git binary.
@@ -22,13 +22,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class GitWrapper
 {
-    /**
-     * Symfony event dispatcher object used by this library to dispatch events.
-     *
-     * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
-     */
-    private $dispatcher;
-
     /**
      * Path to the Git binary.
      *
@@ -56,6 +49,13 @@ class GitWrapper
     protected $streamListener;
 
     /**
+     * Symfony event dispatcher object used by this library to dispatch events.
+     *
+     * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+     */
+    private $dispatcher;
+
+    /**
      * Constructs a GitWrapper object.
      *
      * @param string|null $gitBinary
@@ -68,11 +68,11 @@ class GitWrapper
      */
     public function __construct($gitBinary = null)
     {
-        if (null === $gitBinary) {
+        if ($gitBinary === null) {
             // @codeCoverageIgnoreStart
             $finder = new ExecutableFinder();
             $gitBinary = $finder->find('git');
-            if (!$gitBinary) {
+            if (! $gitBinary) {
                 throw new GitException('Unable to find the Git executable.');
             }
             // @codeCoverageIgnoreEnd
@@ -82,13 +82,30 @@ class GitWrapper
     }
 
     /**
+     * Hackish, allows us to use "clone" as a method name.
+     *
+     * $throws \BadMethodCallException
+     * @throws \GitWrapper\GitException
+     */
+    public function __call($method, $args)
+    {
+        if ($method === 'clone') {
+            return call_user_func_array([$this, 'cloneRepository'], $args);
+        }  
+            $class = get_called_class();
+            $message = "Call to undefined method ${class}::${method}()";
+            throw new BadMethodCallException($message);
+
+    }
+
+    /**
      * Gets the dispatcher used by this library to dispatch events.
      *
      * @return \Symfony\Component\EventDispatcher\EventDispatcherInterface
      */
     public function getDispatcher()
     {
-        if (!isset($this->dispatcher)) {
+        if (! isset($this->dispatcher)) {
             $this->dispatcher = new EventDispatcher();
         }
         return $this->dispatcher;
@@ -136,12 +153,8 @@ class GitWrapper
      * Sets an environment variable that is defined only in the scope of the Git
      * command.
      *
-     * @param string $var
-     *   The name of the environment variable, e.g. "HOME", "GIT_SSH".
-     * @param mixed $default
-     *   The value of the environment variable is not set, defaults to null.
-     *
-     * @return \GitWrapper\GitWrapper
+     * @param string $var The name of the environment variable, e.g. "HOME", "GIT_SSH".
+     * @return GitWrapper\GitWrapper
      */
     public function setEnvVar($var, $value)
     {
@@ -239,13 +252,13 @@ class GitWrapper
      */
     public function setPrivateKey($privateKey, $port = 22, $wrapper = null)
     {
-        if (null === $wrapper) {
+        if ($wrapper === null) {
             $wrapper = __DIR__ . '/../../bin/git-ssh-wrapper.sh';
         }
-        if (!$wrapperPath = realpath($wrapper)) {
+        if (! $wrapperPath = realpath($wrapper)) {
             throw new GitException('Path to GIT_SSH wrapper script could not be resolved: ' . $wrapper);
         }
-        if (!$privateKeyPath = realpath($privateKey)) {
+        if (! $privateKeyPath = realpath($privateKey)) {
             throw new GitException('Path private key could not be resolved: ' . $privateKey);
         }
 
@@ -273,9 +286,7 @@ class GitWrapper
     /**
      * Adds output listener.
      *
-     * @param \GitWrapper\Event\GitOutputListenerInterface $listener
-     *
-     * @return \GitWrapper\GitWrapper
+     * @return GitWrapper\GitWrapper
      */
     public function addOutputListener(GitOutputListenerInterface $listener)
     {
@@ -288,8 +299,6 @@ class GitWrapper
 
     /**
      * Adds logger listener listener.
-     *
-     * @param Event\GitLoggerListener $listener
      *
      * @return GitWrapper
      */
@@ -305,9 +314,7 @@ class GitWrapper
     /**
      * Removes an output listener.
      *
-     * @param \GitWrapper\Event\GitOutputListenerInterface $listener
-     *
-     * @return \GitWrapper\GitWrapper
+     * @return GitWrapper\GitWrapper
      */
     public function removeOutputListener(GitOutputListenerInterface $listener)
     {
@@ -327,12 +334,12 @@ class GitWrapper
      */
     public function streamOutput($streamOutput = true)
     {
-        if ($streamOutput && !isset($this->streamListener)) {
+        if ($streamOutput && ! isset($this->streamListener)) {
             $this->streamListener = new GitOutputStreamListener();
             $this->addOutputListener($this->streamListener);
         }
 
-        if (!$streamOutput && isset($this->streamListener)) {
+        if (! $streamOutput && isset($this->streamListener)) {
             $this->removeOutputListener($this->streamListener);
             unset($this->streamListener);
         }
@@ -380,7 +387,7 @@ class GitWrapper
     {
         $scheme = parse_url($repository, PHP_URL_SCHEME);
 
-        if (null === $scheme) {
+        if ($scheme === null) {
             $parts = explode('/', $repository);
             $path = end($parts);
         } else {
@@ -442,7 +449,7 @@ class GitWrapper
      */
     public function cloneRepository($repository, $directory = null, array $options = [])
     {
-        if (null === $directory) {
+        if ($directory === null) {
             $directory = self::parseRepositoryName($repository);
         }
         $git = $this->workingCopy($directory);
@@ -509,22 +516,5 @@ class GitWrapper
             $wrapper->getDispatcher()->dispatch(GitEvents::GIT_OUTPUT, $event);
         });
         return $command->notBypassed() ? $process->getOutput() : '';
-    }
-
-    /**
-     * Hackish, allows us to use "clone" as a method name.
-     *
-     * $throws \BadMethodCallException
-     * @throws \GitWrapper\GitException
-     */
-    public function __call($method, $args)
-    {
-        if ('clone' == $method) {
-            return call_user_func_array([$this, 'cloneRepository'], $args);
-        } else {
-            $class = get_called_class();
-            $message = "Call to undefined method $class::$method()";
-            throw new BadMethodCallException($message);
-        }
     }
 }
