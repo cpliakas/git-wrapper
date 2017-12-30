@@ -2,11 +2,12 @@
 
 namespace GitWrapper\Test;
 
+use php_user_filter;
 /**
  * Intercepts data sent to STDOUT and STDERR and uses the echo construct to
  * output the data so we can capture it using normal output buffering.
  */
-class StreamSuppressFilter extends \php_user_filter {
+class StreamSuppressFilter extends php_user_filter {
 
   public function filter($in, $out, &$consumed, $closing)
   {

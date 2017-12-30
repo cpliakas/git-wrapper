@@ -2,6 +2,7 @@
 
 namespace GitWrapper\Event;
 
+use DomainException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
@@ -77,7 +78,7 @@ class GitLoggerListener implements EventSubscriberInterface, LoggerAwareInterfac
     public function getLogLevelMapping($eventName)
     {
         if (!isset($this->logLevelMappings[$eventName])) {
-            throw new \DomainException('Unknown event: ' . $eventName);
+            throw new DomainException('Unknown event: ' . $eventName);
         }
 
         return $this->logLevelMappings[$eventName];
