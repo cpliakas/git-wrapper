@@ -172,7 +172,7 @@ class GitCommand
     }
 
     /**
-     * @param string|true $value The option's value, pass true if the options is a flag.
+     * @param mixed[]|string|true $value The option's value, pass true if the options is a flag.
      */
     public function setOption(string $option, $value): void
     {
