@@ -25,7 +25,7 @@ class GitWorkingCopyTest extends GitWrapperTestCase
 
         // Clone the local repository.
         $directory = 'build/test/wc_init';
-        $git = $this->wrapper->clone('file://' . realpath(self::REPO_DIR), $directory);
+        $git = $this->wrapper->cloneRepository('file://' . realpath(self::REPO_DIR), $directory);
         $git->config('user.email', self::CONFIG_EMAIL);
         $git->config('user.name', self::CONFIG_NAME);
 
@@ -64,11 +64,15 @@ class GitWorkingCopyTest extends GitWrapperTestCase
     /**
      * Removes the local repository.
      */
-    public function tearDown()
+    protected function tearDown()
     {
         parent::tearDown();
 
         $this->filesystem->remove(self::REPO_DIR);
+
+        if (is_dir('build/test/wc_init')) {
+            $this->filesystem->remove('build/test/wc_init');
+        }
 
         if (is_dir(self::WORKING_DIR)) {
             $this->filesystem->remove(self::WORKING_DIR);
@@ -91,22 +95,11 @@ class GitWorkingCopyTest extends GitWrapperTestCase
     public function getWorkingCopy($directory = self::WORKING_DIR)
     {
         $git = $this->wrapper->workingCopy($directory);
-        $git
-            ->cloneRepository('file://' . realpath(self::REPO_DIR))
+        $git->cloneRepository('file://' . realpath(self::REPO_DIR))
             ->config('user.email', self::CONFIG_EMAIL)
             ->config('user.name', self::CONFIG_NAME)
-            ->clearOutput()
-        ;
+            ->clearOutput();
         return $git;
-    }
-
-    /**
-     * @expectedException \BadMethodCallException
-     */
-    public function testCallError()
-    {
-        $git = $this->getWorkingCopy();
-        $git->badMethod();
     }
 
     public function testIsCloned()
@@ -242,7 +235,7 @@ PATCH;
     {
         $git = $this->getWorkingCopy();
         $output = (string) $git->log();
-        return $this->assertTrue(strpos($output, 'Initial commit.') !== false);
+        $this->assertTrue(strpos($output, 'Initial commit.') !== false);
     }
 
     public function testGitConfig()
@@ -635,7 +628,7 @@ PATCH;
                     //   Uncomment this line when Travis CI updates to a more
                     //   recent version of git.
                     // @see https://github.com/git/git/blob/master/Documentation/RelNotes/1.9.0.txt
-                    // 'assertRemoteBranches' => array(array('remote/master')),
+                    'assertRemoteBranches' => [['remote/master']],
                     'assertNoRemoteBranches' => [['remote/remote-branch']],
                     'assertGitTag' => ['remote-tag'],
                     'assertNoRemoteMaster' => [],
@@ -790,7 +783,7 @@ PATCH;
     protected function createRemote()
     {
         // Create a clone of the working copy that will serve as a remote.
-        $git = $this->wrapper->clone('file://' . realpath(self::REPO_DIR), self::REMOTE_REPO_DIR);
+        $git = $this->wrapper->cloneRepository('file://' . realpath(self::REPO_DIR), self::REMOTE_REPO_DIR);
         $git->config('user.email', self::CONFIG_EMAIL);
         $git->config('user.name', self::CONFIG_NAME);
 
