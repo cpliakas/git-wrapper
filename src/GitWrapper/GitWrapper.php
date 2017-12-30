@@ -46,13 +46,6 @@ class GitWrapper
     protected $timeout = 60;
 
     /**
-     * An array of options passed to the proc_open() function.
-     *
-     * @var array
-     */
-    protected $procOptions = [];
-
-    /**
      * @var \GitWrapper\Event\GitOutputListenerInterface
      */
     protected $streamListener;
@@ -217,30 +210,6 @@ class GitWrapper
     public function getTimeout()
     {
         return $this->timeout;
-    }
-
-    /**
-     * Sets the options passed to proc_open() when executing the Git command.
-     *
-     * @param array $timeout
-     *   The options passed to proc_open().
-     *
-     * @return \GitWrapper\GitWrapper
-     */
-    public function setProcOptions(array $options)
-    {
-        $this->procOptions = $options;
-        return $this;
-    }
-
-    /**
-     * Gets the options passed to proc_open() when executing the Git command.
-     *
-     * @return array
-     */
-    public function getProcOptions()
-    {
-        return $this->procOptions;
     }
 
     /**
