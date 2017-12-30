@@ -7,6 +7,7 @@ use GitWrapper\GitException;
 use GitWrapper\GitWrapper;
 use GitWrapper\Test\Event\TestBypassListener;
 use GitWrapper\Test\Event\TestListener;
+use Nette\Utils\Random;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -40,30 +41,13 @@ class GitWrapperTestCase extends TestCase
         $this->wrapper = new GitWrapper();
     }
 
-    /**
-     * Generates a random string.
-     *
-     * @param type $length
-     *   The string length, defaults to 8 characters.
-     *
-     *
-     * @see http://api.drupal.org/api/drupal/modules%21simpletest%21drupal_web_test_case.php/function/DrupalTestCase%3A%3ArandomName/7
-     */
-    public function randomString(type $length = 8): string
+    public function randomString(): string
     {
-        $values = array_merge(range(65, 90), range(97, 122), range(48, 57));
-        $max = count($values) - 1;
-        $str = chr(random_int(97, 122));
-        for ($i = 1; $i < $length; ++$i) {
-            $str .= chr($values[random_int(0, $max)]);
-        }
-
-        return $str;
+        return Random::generate();
     }
 
     /**
      * Adds the test listener for all events, returns the listener.
-     *
      */
     public function addListener(): TestListener
     {
@@ -80,7 +64,6 @@ class GitWrapperTestCase extends TestCase
 
     /**
      * Adds the bypass listener so that Git commands are not run.
-     *
      */
     public function addBypassListener(): TestBypassListener
     {
@@ -93,29 +76,24 @@ class GitWrapperTestCase extends TestCase
     /**
      * Asserts a correct Git version string was returned.
      *
-     * @param type $version
-     *   The version returned by the `git --version` command.
+     * @param string $version The version returned by the `git --version` command.
      */
-    public function assertGitVersion(type $version): void
+    public function assertGitVersion(string $version): void
     {
         $match = preg_match('/^git version [.0-9]+/', $version);
         $this->assertNotEmpty($match);
     }
 
     /**
-     * Executes a bad command.
-     *
-     * @param bool $catchException
-     *   Whether to catch the exception to continue script execution, defaults
-     *   to false.
+     * @param bool $catchException Whether to catch the exception to continue script execution.
      */
     public function runBadCommand(bool $catchException = false): void
     {
         try {
             $this->wrapper->git('a-bad-command');
-        } catch (GitException $e) {
+        } catch (GitException $gitException) {
             if (! $catchException) {
-                throw $e;
+                throw $gitException;
             }
         }
     }
