@@ -67,7 +67,7 @@ class GitWrapper
 
     public function getDispatcher(): EventDispatcherInterface
     {
-        if (! isset($this->eventDispatcher)) {
+        if ($this->eventDispatcher === null) {
             $this->eventDispatcher = new EventDispatcher();
         }
 
