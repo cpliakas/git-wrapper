@@ -54,21 +54,6 @@ class GitWorkingCopy
     }
 
     /**
-     * Hackish, allows us to use "clone" as a method name.
-     */
-    public function __call($method, $args)
-    {
-        if ($method === 'clone') {
-            return call_user_func_array([$this, 'cloneRepository'], $args);
-        }
-
-        $class = get_called_class();
-        $message = "Call to undefined method ${class}::${method}()";
-
-        throw new BadMethodCallException($message);
-    }
-
-    /**
      * Gets the output captured by the last run Git commnd(s).
      *
      * @see GitWorkingCopy::getOutput()
@@ -596,7 +581,7 @@ class GitWorkingCopy
      * @code $git->checkout('new-branch', array('b' => true));
      * @endcode
      *
-     * @param string   Additional command line arguments.
+     * @param string Additional command line arguments.
      * @param array $options An associative array of command line options.
      *
      * @return \GitWrapper\GitWorkingCopy
@@ -611,19 +596,16 @@ class GitWorkingCopy
     /**
      * Executes a `git clone` command.
      *
-     * Clone a repository into a new directory. Use GitWorkingCopy::clone()
+     * Clone a repository into a new directory. Use @see GitWorkingCopy::cloneRepository()
      * instead for more readable code.
      *
      * @code
-     * $git->clone('git://github.com/cpliakas/git-wrapper.git');
+     * $git->cloneRepository('git://github.com/cpliakas/git-wrapper.git');
      * @endcode
      *
-     * @param string $repository
-     *   The Git URL of the repository being cloned.
+     * @param string $repository The Git URL of the repository being cloned.
      * @param array $options An associative array of command line options.
-     *
-     * @param string $repository
-     *   The URL of the repository being cloned.
+     * @param string $repository The URL of the repository being cloned.
      *
      * @return \GitWrapper\GitWorkingCopy
      */
