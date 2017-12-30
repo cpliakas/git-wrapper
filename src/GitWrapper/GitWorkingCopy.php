@@ -2,9 +2,6 @@
 
 namespace GitWrapper;
 
-use GitWrapper\GitWorkingCopy;
-use BadMethodCallException;
-
 /**
  * Interacts with a working copy.
  *
@@ -40,14 +37,10 @@ class GitWorkingCopy
      * If the variable is null, the a rudimentary check will be performed to see
      * if the directory looks like it is a working copy.
      *
-     * @param bool|null
+     * @var bool|null
      */
     protected $cloned;
 
-    /**
-     * @param \GitWrapper\GitWrapper $wrapper The GitWrapper object that likely instantiated this class.
-     * @param string $directory Path to the directory containing the working copy.
-     */
     public function __construct(GitWrapper $wrapper, string $directory)
     {
         $this->wrapper = $wrapper;
@@ -119,8 +112,8 @@ class GitWorkingCopy
     /**
      * Runs a Git command and captures the output.
      *
-     * @param array $args The arguments passed to the command method.
-     * @param boolean $setDirectory Set the working directory, defaults to true.
+     * @param mixed[] $args The arguments passed to the command method.
+     * @param bool $setDirectory Set the working directory, defaults to true.
      */
     public function run(array $args, bool $setDirectory = true): GitWorkingCopy
     {
@@ -254,9 +247,9 @@ class GitWorkingCopy
      * @param string $tag The tag being pushed.
      * @param string $repository The destination of the push operation, which is either a URL or name of
      *   the remote. Defaults to "origin".
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      */
-    public function pushTag(string $tag, string $repository = 'origin', array $options = [])
+    public function pushTag(string $tag, string $repository = 'origin', array $options = []): GitWorkingCopy
     {
         return $this->push($repository, 'tag', $tag, $options);
     }
@@ -269,9 +262,9 @@ class GitWorkingCopy
      * @param string $repository
      *   The destination of the push operation, which is either a URL or name of
      *   the remote. Defaults to "origin".
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      */
-    public function pushTags(string $repository = 'origin', array $options = [])
+    public function pushTags(string $repository = 'origin', array $options = []): GitWorkingCopy
     {
         $options['tags'] = true;
         return $this->push($repository, $options);
@@ -282,9 +275,9 @@ class GitWorkingCopy
      *
      * This is synonymous with `git fetch --all`.
      *
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      */
-    public function fetchAll(array $options = [])
+    public function fetchAll(array $options = []): GitWorkingCopy
     {
         $options['all'] = true;
         return $this->fetch($options);
@@ -295,9 +288,9 @@ class GitWorkingCopy
      *
      * This is synonymous with `git checkout -b`.
      *
-     * @param string $branch The new branch being created.
+     * @param mixed[] $options
      */
-    public function checkoutNewBranch(string $branch, array $options = [])
+    public function checkoutNewBranch(string $branch, array $options = []): GitWorkingCopy
     {
         $options['b'] = true;
         return $this->checkout($branch, $options);
@@ -310,7 +303,7 @@ class GitWorkingCopy
      *   The name of the remote to add.
      * @param string $url
      *   The URL of the remote to add.
-     * @param array $options
+     * @param mixed[] $options
      *   An associative array of options, with the following keys:
      *   - -f: Boolean, set to true to run git fetch immediately after the
      *     remote is set up. Defaults to false.
@@ -326,9 +319,6 @@ class GitWorkingCopy
      *     master branch on the remote. When omitted, no symbolic ref will be
      *     created.
      *
-     * @return \GitWrapper\GitWorkingCopy
-     *
-     *   Thrown when the name or URL are missing.
      */
     public function addRemote(string $name, string $url, array $options = []): GitWorkingCopy
     {
@@ -392,36 +382,25 @@ class GitWorkingCopy
     }
 
     /**
-     * Returns the given remote.
-     *
-     * @param string $name
-     *   The name of the remote.
-     *
-     * @return array
-     *   An associative array with the following keys:
-     *   - fetch: the fetch URL.
-     *   - push: the push URL.
-     *
-     *   Thrown when the remote does not exist.
+     * @return string[] An associative array with the following keys:
+     *  - fetch: the fetch URL.
+     *  - push: the push URL.
      */
     public function getRemote(string $name): array
     {
         if (! $this->hasRemote($name)) {
-            throw new GitException('The remote "' . $name . '" does not exist.');
+            throw new GitException(sprintf('The remote "%s" does not exist.', $name));
         }
 
         $remotes = $this->getRemotes();
+
         return $remotes[$name];
     }
 
     /**
-     * Returns all existing remotes.
-     *
-     * @return array
-     *   An associative array, keyed by remote name, containing an associative
-     *   array with the following keys:
-     *   - fetch: the fetch URL.
-     *   - push: the push URL.
+     * @return mixed[] An associative array, keyed by remote name, containing an associative array with keys:
+     *  - fetch: the fetch URL.
+     *  - push: the push URL.
      */
     public function getRemotes(): array
     {
@@ -439,14 +418,8 @@ class GitWorkingCopy
     /**
      * Returns the fetch or push URL of a given remote.
      *
-     * @param string $remote
-     *   The name of the remote for which to return the fetch or push URL.
-     * @param string $operation
-     *   The operation for which to return the remote. Can be either 'fetch' or
-     *   'push'. Defaults to 'fetch'.
-     *
-     * @return string
-     *   The URL.
+     * @param string $remote The name of the remote for which to return the fetch or push URL.
+     * @param string $operation The operation for which to return the remote. Can be either 'fetch' or 'push'.
      */
     public function getRemoteUrl(string $remote, string $operation = 'fetch'): string
     {
@@ -469,19 +442,6 @@ class GitWorkingCopy
     }
 
     /**
-     * @} End of "defgroup command_helpers".
-     */
-
-    /**
-     * @defgroup commands Git Commands
-     *
-     * All methods in this group correspond with Git commands, for example
-     * "git add", "git commit", "git push", etc.
-     *
-     * @{
-     */
-
-    /**
      * Executes a `git add` command.
      *
      * Add file contents to the index.
@@ -493,8 +453,7 @@ class GitWorkingCopy
      * @param string $filepattern Files to add content from. Fileglobs (e.g.  *.c) can be given to add
      *   all matching files. Also a leading directory name (e.g.  dir to add dir/file1 and dir/file2)
      *   can be given to add all files in the directory, recursively.
-     * @param array $options An optional array of command line options.
-     *
+     * @param mixed[] $options An optional array of command line options.
      */
     public function add(string $filepattern, array $options = []): GitWorkingCopy
     {
@@ -516,7 +475,7 @@ class GitWorkingCopy
      * @endcode
      *
      * @param string ... Additional command line arguments.
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      */
     public function apply(): GitWorkingCopy
     {
@@ -537,7 +496,7 @@ class GitWorkingCopy
      *
      * @param string $sub_command The subcommand passed to `git bisect`.
      * @param string ... Additional command line arguments.
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      *
      */
     public function bisect(string $sub_command): GitWorkingCopy
@@ -557,7 +516,7 @@ class GitWorkingCopy
      * @endcode
      *
      * @param string ... Additional command line arguments.
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      *
      */
     public function branch(): GitWorkingCopy
@@ -576,7 +535,7 @@ class GitWorkingCopy
      * @endcode
      *
      * @param string Additional command line arguments.
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      *
      */
     public function checkout(): GitWorkingCopy
@@ -594,7 +553,7 @@ class GitWorkingCopy
      * @endcode
      *
      * @param string $repository The Git URL of the repository being cloned.
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      * @param string $repository The URL of the repository being cloned.
      *
      */
@@ -621,7 +580,7 @@ class GitWorkingCopy
      * @endcode
      *
      * @param string ... Additional command line arguments.
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      *
      */
     public function commit(): GitWorkingCopy
@@ -648,7 +607,7 @@ class GitWorkingCopy
      * @endcode
      *
      * @param string ... Additional command line arguments.
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      *
      */
     public function config(): GitWorkingCopy
@@ -668,7 +627,7 @@ class GitWorkingCopy
      * @endcode
      *
      * @param string ... Additional command line arguments.
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      *
      */
     public function diff(): GitWorkingCopy
@@ -688,7 +647,7 @@ class GitWorkingCopy
      * @endcode
      *
      * @param string ... Additional command line arguments.
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      *
      */
     public function fetch(): GitWorkingCopy
@@ -707,7 +666,7 @@ class GitWorkingCopy
      * @endcode
      *
      * @param string ... Additional command line arguments.
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      *
      */
     public function grep(): GitWorkingCopy
@@ -726,7 +685,7 @@ class GitWorkingCopy
      * $git->init(array('bare' => true));
      * @endcode
      *
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      *
      */
     public function init(array $options = []): GitWorkingCopy
@@ -750,7 +709,7 @@ class GitWorkingCopy
      * @endcode
      *
      * @param string ... Additional command line arguments.
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      *
      */
     public function log(): GitWorkingCopy
@@ -769,7 +728,7 @@ class GitWorkingCopy
      * @endcode
      *
      * @param string ... Additional command line arguments.
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      *
      */
     public function merge(): GitWorkingCopy
@@ -790,7 +749,7 @@ class GitWorkingCopy
      *
      * @param string $source The file / directory being moved.
      * @param string $destination The target file / directory that the source is being move to.
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      *
      */
     public function mv(string $source, string $destination, array $options = []): GitWorkingCopy
@@ -813,7 +772,7 @@ class GitWorkingCopy
      * @endcode
      *
      * @param string ... Additional command line arguments.
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      *
      */
     public function pull(): GitWorkingCopy
@@ -832,7 +791,7 @@ class GitWorkingCopy
      * @endcode
      *
      * @param string ... Additional command line arguments.
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      *
      */
     public function push(): GitWorkingCopy
@@ -851,7 +810,7 @@ class GitWorkingCopy
      * @endcode
      *
      * @param string ... Additional command line arguments.
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      *
      */
     public function rebase(): GitWorkingCopy
@@ -870,7 +829,7 @@ class GitWorkingCopy
      * @endcode
      *
      * @param string ... Additional command line arguments.
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      *
      */
     public function remote(): GitWorkingCopy
@@ -889,7 +848,7 @@ class GitWorkingCopy
      * @endcode
      *
      * @param string ... Additional command line arguments.
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      *
      */
     public function reset(): GitWorkingCopy
@@ -912,7 +871,7 @@ class GitWorkingCopy
      *   given to add all matching files. Also a leading directory name (e.g.
      *   dir to add dir/file1 and dir/file2) can be given to add all files in
      *   the directory, recursively.
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      *
      */
     public function rm(string $filepattern, array $options = []): GitWorkingCopy
@@ -936,7 +895,7 @@ class GitWorkingCopy
      *
      * @param string $object The names of objects to show. For a more complete list of ways to spell
      *   object names, see "SPECIFYING REVISIONS" section in gitrevisions(7).
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      *
      */
     public function show(string $object, array $options = []): GitWorkingCopy
@@ -954,7 +913,7 @@ class GitWorkingCopy
      * @endcode
      *
      * @param string ... Additional command line arguments.
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      *
      */
     public function status(): GitWorkingCopy
@@ -973,7 +932,7 @@ class GitWorkingCopy
      * @endcode
      *
      * @param string ... Additional command line arguments.
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      *
      */
     public function tag(): GitWorkingCopy
@@ -992,7 +951,7 @@ class GitWorkingCopy
      * @endcode
      *
      * @param string ... Additional command line arguments.
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      *
      */
     public function clean(): GitWorkingCopy
@@ -1011,7 +970,7 @@ class GitWorkingCopy
      * @endcode
      *
      * @param string ... Additional command line arguments.
-     * @param array $options An associative array of command line options.
+     * @param mixed[] $options An associative array of command line options.
      *
      */
     public function archive(): GitWorkingCopy
