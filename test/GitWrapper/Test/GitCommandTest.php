@@ -14,10 +14,10 @@ class GitCommandTest extends GitWrapperTestCase
         $optionName = $this->randomString();
         $optionValue = $this->randomString();
 
-        $git = GitCommand::getInstance($command)
-            ->addArgument($argument)
-            ->setFlag($flag)
-            ->setOption($optionName, $optionValue);
+        $git = GitCommand::getInstance($command);
+        $git->addArgument($argument);
+        $git->setFlag($flag);
+        $git->setOption($optionName, $optionValue);
 
         $expected = [$command, "--${flag}", "--${optionName}", $optionValue, $argument];
         $commandLine = $git->getCommandLine();
@@ -30,8 +30,8 @@ class GitCommandTest extends GitWrapperTestCase
         $optionName = $this->randomString();
         $optionValue = $this->randomString();
 
-        $git = GitCommand::getInstance()
-            ->setOption($optionName, $optionValue);
+        $git = GitCommand::getInstance();
+        $git->setOption($optionName, $optionValue);
 
         $this->assertSame($optionValue, $git->getOption($optionName));
 
@@ -41,8 +41,8 @@ class GitCommandTest extends GitWrapperTestCase
 
     public function testMultiOption()
     {
-        $git = GitCommand::getInstance('test-command')
-            ->setOption('test-arg', [true, true]);
+        $git = GitCommand::getInstance('test-command');
+        $git->setOption('test-arg', [true, true]);
 
         $expected = ['test-command', '--test-arg', '--test-arg'];
         $commandLine = $git->getCommandLine();
