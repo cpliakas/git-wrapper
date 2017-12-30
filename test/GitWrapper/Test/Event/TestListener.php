@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace GitWrapper\Test\Event;
 
@@ -9,47 +9,44 @@ class TestListener
     /**
      * The methods that were called.
      *
-     * @var array
+     * @var string[]
      */
     protected $methods = [];
 
     /**
      * The event object passed to the onPrepare method.
      *
-     * @var \GitWrapper\Event\GitEvent
+     * @var GitEvent
      */
     protected $event;
 
-    public function methodCalled($method)
+    public function methodCalled(string $method): bool
     {
         return in_array($method, $this->methods);
     }
 
-    /**
-     * @return \GitWrapper\Event\GitEvent
-     */
-    public function getEvent()
+    public function getEvent(): GitEvent
     {
         return $this->event;
     }
 
-    public function onPrepare(GitEvent $event)
+    public function onPrepare(GitEvent $event): void
     {
         $this->methods[] = 'onPrepare';
         $this->event = $event;
     }
 
-    public function onSuccess(GitEvent $event)
+    public function onSuccess(): void
     {
         $this->methods[] = 'onSuccess';
     }
 
-    public function onError(GitEvent $event)
+    public function onError(): void
     {
         $this->methods[] = 'onError';
     }
 
-    public function onBypass(GitEvent $event)
+    public function onBypass(): void
     {
         $this->methods[] = 'onBypass';
     }

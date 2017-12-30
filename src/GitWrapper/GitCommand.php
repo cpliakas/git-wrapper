@@ -1,6 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace GitWrapper;
+
+use GitWrapper\GitCommand;
 
 /**
  * Base class extended by all Git command classes.
@@ -61,7 +63,7 @@ class GitCommand
      * @param array $args
      *   The arguments passed to GitCommand::getInstance().
      */
-    protected function __construct($args)
+    protected function __construct(array $args)
     {
         if ($args) {
             // The first argument is the command.
@@ -92,9 +94,8 @@ class GitCommand
      * @param string ... Zero or more arguments passed to the Git command.
      * @param array $options An optional array of arguments to pass to the command.
      *
-     * @return \GitWrapper\GitCommand
      */
-    public static function getInstance()
+    public static function getInstance(): GitCommand
     {
         $args = func_get_args();
         return new static($args);
@@ -103,9 +104,8 @@ class GitCommand
     /**
      * Returns Git command being run, e.g. "clone", "commit", etc.
      *
-     * @return string
      */
-    public function getCommand()
+    public function getCommand(): string
     {
         return $this->command;
     }
@@ -116,9 +116,8 @@ class GitCommand
      * @param string $directory
      *   The path to the directory containing the working copy.
      *
-     * @return \GitWrapper\GitCommand
      */
-    public function setDirectory($directory)
+    public function setDirectory(string $directory): void
     {
         $this->directory = $directory;
     }
@@ -129,7 +128,7 @@ class GitCommand
      * @return string|null
      *   The path, null if no path is set.
      */
-    public function getDirectory()
+    public function getDirectory(): ?string
     {
         return $this->directory;
     }
@@ -142,9 +141,8 @@ class GitCommand
      *   true for code readability, however the default behavior of this class
      *   is to run the command.
      *
-     * @return \GitWrapper\GitCommand
      */
-    public function bypass($bypass = true)
+    public function bypass(bool $bypass = true): void
     {
         $this->bypass = (bool) $bypass;
     }
@@ -155,9 +153,8 @@ class GitCommand
      * @param boolean $executeRaw
      *   Whether to execute the command as-is without excaping it.
      *
-     * @return \GitWrapper\GitCommand
      */
-    public function executeRaw($executeRaw = true)
+    public function executeRaw(bool $executeRaw = true): void
     {
         $this->executeRaw = $executeRaw;
     }
@@ -172,7 +169,7 @@ class GitCommand
      * @return boolean
      *   If true, the command should be run.
      */
-    public function notBypassed()
+    public function notBypassed(): bool
     {
         return ! $this->bypass;
     }
@@ -212,7 +209,7 @@ class GitCommand
      *
      * @reutrn \GitWrapper\GitCommand
      */
-    public function setOption($option, $value)
+    public function setOption(string $option, $value): void
     {
         $this->options[$option] = $value;
     }
@@ -225,7 +222,7 @@ class GitCommand
      *
      * @reutrn \GitWrapper\GitCommand
      */
-    public function setOptions(array $options)
+    public function setOptions(array $options): void
     {
         foreach ($options as $option => $value) {
             $this->setOption($option, $value);
@@ -236,9 +233,8 @@ class GitCommand
      * Sets a command line flag.
      *
      * @param string $flag The flag name, e.g. "q", "a".
-     * @return \GitWrapper\GitCommand
      */
-    public function setFlag($option)
+    public function setFlag($option): GitCommand
     {
         return $this->setOption($option, true);
     }
@@ -253,7 +249,7 @@ class GitCommand
      *
      * @return mixed
      */
-    public function getOption($option, $default = null)
+    public function getOption(string $option, $default = null)
     {
         return $this->options[$option] ?? $default;
     }
@@ -264,9 +260,8 @@ class GitCommand
      * @param string $option
      *   The option name, e.g. "branch", "q".
      *
-     * @return \GitWrapper\GitCommand
      */
-    public function unsetOption($option)
+    public function unsetOption(string $option): void
     {
         unset($this->options[$option]);
     }
@@ -277,9 +272,8 @@ class GitCommand
      * @param string $arg
      *   The argument, e.g. the repo URL, directory, etc.
      *
-     * @return \GitWrapper\GitCommand
      */
-    public function addArgument($arg)
+    public function addArgument(string $arg): void
     {
         $this->args[] = $arg;
     }

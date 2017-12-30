@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace GitWrapper\Test;
 
@@ -10,7 +10,7 @@ use Psr\Log\NullLogger;
 
 class GitLoggerListenerTest extends GitWrapperTestCase
 {
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
 
@@ -19,14 +19,14 @@ class GitLoggerListenerTest extends GitWrapperTestCase
         }
     }
 
-    public function testGetLogger()
+    public function testGetLogger(): void
     {
         $log = new NullLogger();
         $listener = new GitLoggerListener($log);
         $this->assertSame($log, $listener->getLogger());
     }
 
-    public function testSetLogLevelMapping()
+    public function testSetLogLevelMapping(): void
     {
         $listener = new GitLoggerListener(new NullLogger());
         $listener->setLogLevelMapping('test.event', 'test-level');
@@ -36,13 +36,13 @@ class GitLoggerListenerTest extends GitWrapperTestCase
     /**
      * @expectedException \DomainException
      */
-    public function testGetInvalidLogLevelMapping()
+    public function testGetInvalidLogLevelMapping(): void
     {
         $listener = new GitLoggerListener(new NullLogger());
         $listener->getLogLevelMapping('bad.event');
     }
 
-    public function testRegisterLogger()
+    public function testRegisterLogger(): void
     {
         $logger = new TestLogger();
         $this->wrapper->addLoggerListener(new GitLoggerListener($logger));
@@ -64,7 +64,7 @@ class GitLoggerListenerTest extends GitWrapperTestCase
         try {
             $logger->clearMessages();
             $git->commit('fatal: This operation must be run in a work tree');
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             // Nothing to do, this is expected.
         }
 
@@ -73,7 +73,7 @@ class GitLoggerListenerTest extends GitWrapperTestCase
         $this->assertSame(LogLevel::ERROR, $logger->levels[2]);
     }
 
-    public function testLogBypassedCommand()
+    public function testLogBypassedCommand(): void
     {
         $logger = new TestLogger();
         $this->wrapper->addLoggerListener(new GitLoggerListener($logger));

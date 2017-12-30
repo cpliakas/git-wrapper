@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace GitWrapper\Event;
 
@@ -36,7 +36,7 @@ class GitLoggerListener implements EventSubscriberInterface, LoggerAwareInterfac
     /**
      * {@inheritDoc}
      */
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
     }
@@ -44,7 +44,7 @@ class GitLoggerListener implements EventSubscriberInterface, LoggerAwareInterfac
     /**
      * @return \Psr\Log\LoggerInterface
      */
-    public function getLogger()
+    public function getLogger(): LoggerInterface
     {
         return $this->logger;
     }
@@ -52,12 +52,10 @@ class GitLoggerListener implements EventSubscriberInterface, LoggerAwareInterfac
     /**
      * Sets the log level mapping for an event.
      *
-     * @param string $eventName
      * @param string|false $logLevel
      *
-     * @return \GitWrapper\Event\GitLoggerListener
      */
-    public function setLogLevelMapping($eventName, $logLevel)
+    public function setLogLevelMapping(string $eventName, $logLevel): void
     {
         $this->logLevelMappings[$eventName] = $logLevel;
     }
@@ -65,11 +63,9 @@ class GitLoggerListener implements EventSubscriberInterface, LoggerAwareInterfac
     /**
      * Returns the log level mapping for an event.
      *
-     * @param string $eventName
      *
-     * @return string
      */
-    public function getLogLevelMapping($eventName)
+    public function getLogLevelMapping(string $eventName): string
     {
         if (! isset($this->logLevelMappings[$eventName])) {
             throw new DomainException('Unknown event: ' . $eventName);
@@ -95,10 +91,9 @@ class GitLoggerListener implements EventSubscriberInterface, LoggerAwareInterfac
     /**
      * Adds a log message using the level defined in the mappings.
      *
-     * @param string $message
      * @param string $eventName
      */
-    public function log(GitEvent $event, $message, array $context = [], $eventName = null)
+    public function log(GitEvent $event, string $message, array $context = [], ?string $eventName = null): void
     {
         // Provide backwards compatibility with Symfony 2.
         if ($eventName === null && method_exists($event, 'getName')) {
@@ -112,28 +107,28 @@ class GitLoggerListener implements EventSubscriberInterface, LoggerAwareInterfac
         }
     }
 
-    public function onPrepare(GitEvent $event, $eventName = null)
+    public function onPrepare(GitEvent $event, $eventName = null): void
     {
         $this->log($event, 'Git command preparing to run', [], $eventName);
     }
 
-    public function handleOutput(GitOutputEvent $event, $eventName = null)
+    public function handleOutput(GitOutputEvent $event, $eventName = null): void
     {
         $context = ['error' => $event->isError() ? true : false];
         $this->log($event, $event->getBuffer(), $context, $eventName);
     }
 
-    public function onSuccess(GitEvent $event, $eventName = null)
+    public function onSuccess(GitEvent $event, $eventName = null): void
     {
         $this->log($event, 'Git command successfully run', [], $eventName);
     }
 
-    public function onError(GitEvent $event, $eventName = null)
+    public function onError(GitEvent $event, $eventName = null): void
     {
         $this->log($event, 'Error running Git command', [], $eventName);
     }
 
-    public function onBypass(GitEvent $event, $eventName = null)
+    public function onBypass(GitEvent $event, $eventName = null): void
     {
         $this->log($event, 'Git command bypassed', [], $eventName);
     }
