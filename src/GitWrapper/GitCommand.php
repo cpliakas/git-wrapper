@@ -24,15 +24,11 @@ class GitCommand
     protected $command = '';
 
     /**
-     * An associative array of command line options and flags.
-     *
      * @var mixed[]
      */
     protected $options = [];
 
     /**
-     * Command line arguments passed to the Git command.
-     *
      * @var mixed[]
      */
     protected $args = [];
@@ -54,8 +50,6 @@ class GitCommand
     protected $executeRaw = false;
 
     /**
-     * Constructs a GitCommand object.
-     *
      * Use GitCommand::getInstance() as the factory method for this class.
      *
      * @param mixed[] $args The arguments passed to GitCommand::getInstance().
