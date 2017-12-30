@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace GitWrapper;
 
@@ -31,28 +31,26 @@ class GitWrapper
     /**
      * Environment variables defined in the scope of the Git command.
      *
-     * @var array
+     * @var string[]
      */
     protected $env = [];
 
     /**
-     * The timeout of the Git command in seconds, defaults to 60.
+     * The timeout of the Git command in seconds.
      *
      * @var int
      */
     protected $timeout = 60;
 
     /**
-     * @var \GitWrapper\Event\GitOutputListenerInterface
+     * @var GitOutputListenerInterface
      */
     protected $streamListener;
 
     /**
-     * Symfony event dispatcher object used by this library to dispatch events.
-     *
-     * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+     * @var EventDispatcherInterface
      */
-    private $dispatcher;
+    private $eventDispatcher;
 
     public function __construct(?string $gitBinary = null)
     {
@@ -67,37 +65,21 @@ class GitWrapper
         $this->setGitBinary($gitBinary);
     }
 
-    /**
-     * Gets the dispatcher used by this library to dispatch events.
-     *
-     * @return \Symfony\Component\EventDispatcher\EventDispatcherInterface
-     */
-    public function getDispatcher()
+    public function getDispatcher(): EventDispatcherInterface
     {
-        if (! isset($this->dispatcher)) {
-            $this->dispatcher = new EventDispatcher();
+        if (! isset($this->eventDispatcher)) {
+            $this->eventDispatcher = new EventDispatcher();
         }
 
-        return $this->dispatcher;
+        return $this->eventDispatcher;
     }
 
-    /**
-     * Sets the dispatcher used by this library to dispatch events.
-     *
-     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher
-     *   The Symfony event dispatcher object.
-     *
-     * @return \GitWrapper\GitWrapper
-     */
-    public function setDispatcher(EventDispatcherInterface $dispatcher)
+    public function setDispatcher(EventDispatcherInterface $dispatcher): void
     {
-        $this->dispatcher = $dispatcher;
+        $this->eventDispatcher = $dispatcher;
     }
 
-    /**
-     * @return \GitWrapper\GitWrapper
-     */
-    public function setGitBinary(string $gitBinary)
+    public function setGitBinary(string $gitBinary): void
     {
         $this->gitBinary = $gitBinary;
     }
@@ -107,27 +89,12 @@ class GitWrapper
         return $this->gitBinary;
     }
 
-    /**
-     * Sets an environment variable that is defined only in the scope of the Git
-     * command.
-     *
-     * @param string $var The name of the environment variable, e.g. "HOME", "GIT_SSH".
-     * @return \GitWrapper\GitWrapper
-     */
-    public function setEnvVar($var, $value)
+    public function setEnvVar(string $var, $value): void
     {
         $this->env[$var] = $value;
     }
 
-    /**
-     * Unsets an environment variable that is defined only in the scope of the
-     * Git command.
-     *
-     * @param string $var The name of the environment variable, e.g. "HOME", "GIT_SSH".
-     *
-     * @return \GitWrapper\GitWrapper
-     */
-    public function unsetEnvVar($var)
+    public function unsetEnvVar(string $var): void
     {
         unset($this->env[$var]);
     }
@@ -142,24 +109,20 @@ class GitWrapper
      *
      * @return mixed
      */
-    public function getEnvVar($var, $default = null)
+    public function getEnvVar(string $var, $default = null)
     {
         return $this->env[$var] ?? $default;
     }
 
     /**
-     * Returns the associative array of environment variables that are defined
-     * only in the scope of the Git command.
+     * Returns the associative array of environment variables that are defined only in the scope of the Git command.
      */
     public function getEnvVars(): array
     {
         return $this->env;
     }
 
-    /**
-     * @return \GitWrapper\GitWrapper
-     */
-    public function setTimeout(int $timeout)
+    public function setTimeout(int $timeout): void
     {
         $this->timeout = $timeout;
     }
@@ -181,7 +144,7 @@ class GitWrapper
      * @param string|null $wrapper Path the the GIT_SSH wrapper script, defaults to null which uses the
      *   script included with this library.
      */
-    public function setPrivateKey($privateKey, $port = 22, $wrapper = null)
+    public function setPrivateKey(string $privateKey, int $port = 22, ?string $wrapper = null): void
     {
         if ($wrapper === null) {
             $wrapper = __DIR__ . '/../../bin/git-ssh-wrapper.sh';
@@ -203,32 +166,26 @@ class GitWrapper
     /**
      * Unsets the private key by removing the appropriate environment variables.
      */
-    public function unsetPrivateKey()
+    public function unsetPrivateKey(): void
     {
         $this->unsetEnvVar('GIT_SSH');
         $this->unsetEnvVar('GIT_SSH_KEY');
         $this->unsetEnvVar('GIT_SSH_PORT');
     }
 
-    /**
-     * Adds output listener.
-     */
-    public function addOutputListener(GitOutputListenerInterface $listener)
+    public function addOutputListener(GitOutputListenerInterface $listener): void
     {
         $this->getDispatcher()
             ->addListener(GitEvents::GIT_OUTPUT, [$listener, 'handleOutput']);
     }
 
-    /**
-     * @return GitWrapper
-     */
-    public function addLoggerListener(GitLoggerListener $listener)
+    public function addLoggerListener(GitLoggerListener $listener): void
     {
         $this->getDispatcher()
             ->addSubscriber($listener);
     }
 
-    public function removeOutputListener(GitOutputListenerInterface $listener)
+    public function removeOutputListener(GitOutputListenerInterface $listener): void
     {
         $this->getDispatcher()
             ->removeListener(GitEvents::GIT_OUTPUT, [$listener, 'handleOutput']);
@@ -237,7 +194,7 @@ class GitWrapper
     /**
      * Set whether or not to stream real-time output to STDOUT and STDERR.
      */
-    public function streamOutput(bool $streamOutput = true)
+    public function streamOutput(bool $streamOutput = true): void
     {
         if ($streamOutput && ! isset($this->streamListener)) {
             $this->streamListener = new GitOutputStreamListener();
@@ -255,9 +212,8 @@ class GitWrapper
      *
      * @param string $directory Path to the directory containing the working copy.
      *
-     * @return GitWorkingCopy
      */
-    public function workingCopy($directory)
+    public function workingCopy(string $directory): GitWorkingCopy
     {
         return new GitWorkingCopy($this, $directory);
     }
@@ -273,21 +229,17 @@ class GitWrapper
     /**
      * For example, passing the "git@github.com:cpliakas/git-wrapper.git"
      * repository would return "git-wrapper".
-     *
-     * @param string $repository The repository URL.
-     *
-     * @return string
      */
-    public static function parseRepositoryName($repository)
+    public static function parseRepositoryName(string $repositoryUrl): string
     {
-        $scheme = parse_url($repository, PHP_URL_SCHEME);
+        $scheme = parse_url($repositoryUrl, PHP_URL_SCHEME);
 
         if ($scheme === null) {
-            $parts = explode('/', $repository);
+            $parts = explode('/', $repositoryUrl);
             $path = end($parts);
         } else {
-            $strpos = strpos($repository, ':');
-            $path = substr($repository, $strpos + 1);
+            $strpos = strpos($repositoryUrl, ':');
+            $path = substr($repositoryUrl, $strpos + 1);
         }
 
         return basename($path, '.git');
@@ -300,10 +252,8 @@ class GitWrapper
      *
      * @param string $directory The directory being initialized.
      * @param array $options An associative array of command line options.
-     *
-     * @return \GitWrapper\GitWorkingCopy
      */
-    public function init($directory, array $options = [])
+    public function init(string $directory, array $options = []): GitWorkingCopy
     {
         $git = $this->workingCopy($directory);
         $git->init($options);
@@ -323,10 +273,8 @@ class GitWrapper
      *   passed, the directory will automatically be generated from the URL via
      *   the GitWrapper::parseRepositoryName() method.
      * @param array $options An associative array of command line options.
-     *
-     * @return \GitWrapper\GitWorkingCopy
      */
-    public function cloneRepository($repository, $directory = null, array $options = [])
+    public function cloneRepository(string $repository, ?string $directory = null, array $options = []): GitWorkingCopy
     {
         if ($directory === null) {
             $directory = self::parseRepositoryName($repository);
@@ -353,7 +301,7 @@ class GitWrapper
      *
      * @return string The STDOUT returned by the Git command.
      */
-    public function git($commandLine, $cwd = null)
+    public function git(string $commandLine, ?string $cwd = null): string
     {
         $command = call_user_func_array('GitWrapper\\GitCommand::getInstance', (array) $commandLine);
         $command->executeRaw(is_string($commandLine));
@@ -369,14 +317,14 @@ class GitWrapper
      *
      * @return string The STDOUT returned by the Git command.
      */
-    public function run(GitCommand $command, $cwd = null)
+    public function run(GitCommand $command, ?string $cwd = null): string
     {
-        $wrapper = $this;
         $process = new GitProcess($this, $command, $cwd);
-        $process->run(function ($type, $buffer) use ($wrapper, $process, $command) {
-            $event = new GitOutputEvent($wrapper, $process, $command, $type, $buffer);
-            $wrapper->getDispatcher()->dispatch(GitEvents::GIT_OUTPUT, $event);
+        $process->run(function ($type, $buffer) use ($process, $command): void {
+            $event = new GitOutputEvent($this, $process, $command, $type, $buffer);
+            $this->getDispatcher()->dispatch(GitEvents::GIT_OUTPUT, $event);
         });
+
         return $command->notBypassed() ? $process->getOutput() : '';
     }
 }

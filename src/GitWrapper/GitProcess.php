@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace GitWrapper;
 
@@ -25,9 +25,8 @@ class GitProcess extends Process
     /**
      * Constructs a GitProcess object.
      *
-     * @param string|null $cwd
      */
-    public function __construct(GitWrapper $git, GitCommand $command, $cwd = null)
+    public function __construct(GitWrapper $git, GitCommand $command, ?string $cwd = null)
     {
         $this->git = $git;
         $this->command = $command;
@@ -65,7 +64,7 @@ class GitProcess extends Process
     /**
      * {@inheritdoc}
      */
-    public function run(callable $callback = null, array $env = []): int
+    public function run(?callable $callback = null, array $env = []): int
     {
         $exitCode = -1;
 

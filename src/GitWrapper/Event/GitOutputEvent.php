@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace GitWrapper\Event;
 
@@ -41,7 +41,7 @@ class GitOutputEvent extends GitEvent
     /**
      * @return string
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
@@ -49,7 +49,7 @@ class GitOutputEvent extends GitEvent
     /**
      * @return string
      */
-    public function getBuffer()
+    public function getBuffer(): string
     {
         return $this->buffer;
     }

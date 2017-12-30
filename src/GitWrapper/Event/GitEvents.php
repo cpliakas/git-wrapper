@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace GitWrapper\Event;
 
@@ -12,35 +12,35 @@ final class GitEvents
      *
      * @var string
      */
-    const GIT_PREPARE = 'git.command.prepare';
+    public const GIT_PREPARE = 'git.command.prepare';
 
     /**
      * Event thrown when real-time output is returned from the Git command.
      *
      * @var string
      */
-    const GIT_OUTPUT = 'git.command.output';
+    public const GIT_OUTPUT = 'git.command.output';
 
     /**
      * Event thrown after executing a succesful git command.
      *
      * @var string
      */
-    const GIT_SUCCESS = 'git.command.success';
+    public const GIT_SUCCESS = 'git.command.success';
 
     /**
      * Event thrown after executing a unsuccesful git command.
      *
      * @var string
      */
-    const GIT_ERROR = 'git.command.error';
+    public const GIT_ERROR = 'git.command.error';
 
     /**
      * Event thrown if the command is flagged to skip execution.
      *
      * @var string
      */
-    const GIT_BYPASS = 'git.command.bypass';
+    public const GIT_BYPASS = 'git.command.bypass';
 
     /**
      * Deprecated in favor of GitEvents::GIT_PREPARE.
@@ -49,5 +49,5 @@ final class GitEvents
      *
      * @deprecated since version 1.0.0beta5
      */
-    const GIT_COMMAND = 'git.command.prepare';
+    public const GIT_COMMAND = 'git.command.prepare';
 }
