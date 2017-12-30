@@ -19,7 +19,8 @@
         "symfony/filesystem": "^4.0",
         "psr/log": "1.0",
         "symplify/easy-coding-standard": "^3.0",
-        "slam/php-cs-fixer-extensions": "^1.10"
+        "slam/php-cs-fixer-extensions": "^1.10",
+        "nette/utils": "^2.4"
     },
     "suggest": {
         "monolog/monolog": "Enables logging of executed git commands"

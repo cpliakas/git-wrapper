@@ -95,9 +95,9 @@ class GitProcess extends Process
             } else {
                 $dispatcher->dispatch(GitEvents::GIT_BYPASS, $event);
             }
-        } catch (RuntimeException $e) {
+        } catch (RuntimeException $runtimeException) {
             $dispatcher->dispatch(GitEvents::GIT_ERROR, $event);
-            throw new GitException($e->getMessage());
+            throw new GitException($runtimeException->getMessage());
         }
 
         return $exitCode;
