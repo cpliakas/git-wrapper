@@ -1,9 +1,7 @@
 {
     "name": "cpliakas/git-wrapper",
-    "type": "library",
     "description": "A PHP wrapper around the Git command line utility.",
-    "keywords": ["git"],
-    "homepage": "https://github.com/cpliakas/git-wrapper",
+    "keywords": ["git", "git wrapper", "cli"],
     "license": "MIT",
     "authors": [
         {
@@ -17,7 +15,7 @@
         "symfony/event-dispatcher": "^4.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.4",
+        "phpunit/phpunit": "^6.5",
         "symfony/filesystem": "^4.0",
         "psr/log": "1.0"
     },
