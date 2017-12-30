@@ -41,10 +41,9 @@ $git = $wrapper->cloneRepository('git://github.com/cpliakas/git-wrapper.git', '/
 touch('/path/to/working/copy/text.txt');
 
 // Add it, commit it, and push the change.
-$git
-    ->add('test.txt')
-    ->commit('Added the test.txt file as per the examples.')
-    ->push();
+$git->add('test.txt');
+$git->commit('Added the test.txt file as per the examples.');
+$git->push();
 
 // Render the output.
 print $git->getOutput();
@@ -69,10 +68,10 @@ passed to the Git command line tool. `$options` is an optional array of command
 line options in the following format:
 
 ```php
-$options = array(
+$options = [
     'verbose' => true,   // Passes the "--verbose" flag.
     't' => 'my-branch',  // Passes the "-t my-branch" option.
-);
+];
 ```
 
 #### Logging

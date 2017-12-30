@@ -2,15 +2,14 @@
 
 namespace GitWrapper;
 
-use BadMethodCallException;
 use GitWrapper\Event\GitEvents;
+use GitWrapper\Event\GitLoggerListener;
 use GitWrapper\Event\GitOutputEvent;
 use GitWrapper\Event\GitOutputListenerInterface;
 use GitWrapper\Event\GitOutputStreamListener;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Process\ExecutableFinder;
-use Symfony\Component\Process\Process;
 
 /**
  * A wrapper class around the Git binary.
@@ -92,7 +91,6 @@ class GitWrapper
     public function setDispatcher(EventDispatcherInterface $dispatcher)
     {
         $this->dispatcher = $dispatcher;
-        return $this;
     }
 
     /**
@@ -101,7 +99,6 @@ class GitWrapper
     public function setGitBinary(string $gitBinary)
     {
         $this->gitBinary = $gitBinary;
-        return $this;
     }
 
     public function getGitBinary(): string
@@ -119,7 +116,6 @@ class GitWrapper
     public function setEnvVar($var, $value)
     {
         $this->env[$var] = $value;
-        return $this;
     }
 
     /**
@@ -133,7 +129,6 @@ class GitWrapper
     public function unsetEnvVar($var)
     {
         unset($this->env[$var]);
-        return $this;
     }
 
     /**
@@ -166,7 +161,6 @@ class GitWrapper
     public function setTimeout(int $timeout)
     {
         $this->timeout = $timeout;
-        return $this;
     }
 
     public function getTimeout(): int
@@ -185,8 +179,6 @@ class GitWrapper
      * @param int $port Port that the SSH server being connected to listens on, defaults to 22.
      * @param string|null $wrapper Path the the GIT_SSH wrapper script, defaults to null which uses the
      *   script included with this library.
-     *
-     * @return \GitWrapper\GitWrapper
      */
     public function setPrivateKey($privateKey, $port = 22, $wrapper = null)
     {
@@ -200,64 +192,49 @@ class GitWrapper
             throw new GitException('Path private key could not be resolved: ' . $privateKey);
         }
 
-        return $this->setEnvVar('GIT_SSH', $wrapperPath)
-            ->setEnvVar('GIT_SSH_KEY', $privateKeyPath)
-            ->setEnvVar('GIT_SSH_PORT', (int) $port);
+        $this->setEnvVar('GIT_SSH', $wrapperPath);
+        $this->setEnvVar('GIT_SSH_KEY', $privateKeyPath);
+        $this->setEnvVar('GIT_SSH_PORT', (int) $port);
     }
 
     /**
      * Unsets the private key by removing the appropriate environment variables.
-     *
-     * @return \GitWrapper\GitWrapper
      */
     public function unsetPrivateKey()
     {
-        return $this->unsetEnvVar('GIT_SSH')
-            ->unsetEnvVar('GIT_SSH_KEY')
-            ->unsetEnvVar('GIT_SSH_PORT');
+        $this->unsetEnvVar('GIT_SSH');
+        $this->unsetEnvVar('GIT_SSH_KEY');
+        $this->unsetEnvVar('GIT_SSH_PORT');
     }
 
     /**
      * Adds output listener.
-     *
-     * @return GitWrapper\GitWrapper
      */
     public function addOutputListener(GitOutputListenerInterface $listener)
     {
         $this->getDispatcher()
             ->addListener(GitEvents::GIT_OUTPUT, [$listener, 'handleOutput']);
-        return $this;
     }
 
     /**
      * @return GitWrapper
      */
-    public function addLoggerListener(Event\GitLoggerListener $listener)
+    public function addLoggerListener(GitLoggerListener $listener)
     {
         $this->getDispatcher()
             ->addSubscriber($listener);
-        return $this;
     }
 
-    /**
-     * @return GitWrapper\GitWrapper
-     */
     public function removeOutputListener(GitOutputListenerInterface $listener)
     {
         $this->getDispatcher()
             ->removeListener(GitEvents::GIT_OUTPUT, [$listener, 'handleOutput']);
-
-        return $this;
     }
 
     /**
      * Set whether or not to stream real-time output to STDOUT and STDERR.
-     *
-     * @param bool $streamOutput
-     *
-     * @return \GitWrapper\GitWrapper
      */
-    public function streamOutput($streamOutput = true)
+    public function streamOutput(bool $streamOutput = true)
     {
         if ($streamOutput && ! isset($this->streamListener)) {
             $this->streamListener = new GitOutputStreamListener();
@@ -268,8 +245,6 @@ class GitWrapper
             $this->removeOutputListener($this->streamListener);
             unset($this->streamListener);
         }
-
-        return $this;
     }
 
     /**
@@ -286,10 +261,8 @@ class GitWrapper
 
     /**
      * Returns the version of the installed Git client.
-     *
-     * @return string
      */
-    public function version()
+    public function version(): string
     {
         return $this->git('--version');
     }
@@ -332,6 +305,7 @@ class GitWrapper
         $git = $this->workingCopy($directory);
         $git->init($options);
         $git->setCloned(true);
+
         return $git;
     }
 
