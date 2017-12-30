@@ -156,14 +156,6 @@ class GitWrapperTest extends GitWrapperTestCase
         $this->assertTrue(is_executable($sshWrapper));
     }
 
-    /**
-     * @expectedException \BadMethodCallException
-     */
-    public function testCallError()
-    {
-        $this->wrapper->badMethod();
-    }
-
     public function testWorkingCopy()
     {
         $directory = './' . $this->randomString();
@@ -186,7 +178,7 @@ class GitWrapperTest extends GitWrapperTestCase
     public function testCloneWothoutDirectory()
     {
         $this->addBypassListener();
-        $git = $this->wrapper->clone('file:///' . $this->randomString());
+        $git = $this->wrapper->cloneRepository('file:///' . $this->randomString());
         $this->assertTrue($git->isCloned());
     }
 }
