@@ -33,12 +33,12 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "GitWrapper\\Test\\": "test/GitWrapper/Test"
+            "GitWrapper\\Test\\": "tests/GitWrapper/Test"
         }
     },
     "scripts": {
-        "check-cs": "vendor/bin/ecs check src test",
-        "fix-cs": "vendor/bin/ecs check src test --fix",
-        "phpstan": "vendor/bin/phpstan analyse src test --level max --configuration phpstan.neon"
+        "check-cs": "vendor/bin/ecs check src tests",
+        "fix-cs": "vendor/bin/ecs check src tests --fix",
+        "phpstan": "vendor/bin/phpstan analyse src tests --level max --configuration phpstan.neon"
     }
 }

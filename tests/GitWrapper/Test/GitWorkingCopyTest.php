@@ -27,7 +27,7 @@ final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
         $this->gitWrapper->init(self::REPO_DIR, ['bare' => true]);
 
         // Clone the local repository.
-        $directory = 'build/test/wc_init';
+        $directory = 'build/tests/wc_init';
         $git = $this->gitWrapper->cloneRepository('file://' . realpath(self::REPO_DIR), $directory);
         $git->config('user.email', self::CONFIG_EMAIL);
         $git->config('user.name', self::CONFIG_NAME);
@@ -67,8 +67,8 @@ final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
 
         $this->filesystem->remove(self::REPO_DIR);
 
-        if (is_dir('build/test/wc_init')) {
-            $this->filesystem->remove('build/test/wc_init');
+        if (is_dir('build/tests/wc_init')) {
+            $this->filesystem->remove('build/tests/wc_init');
         }
 
         if (is_dir(self::WORKING_DIR)) {
