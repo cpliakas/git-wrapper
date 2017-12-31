@@ -131,8 +131,8 @@ final class GitWorkingCopy
             );
         }
 
-        $mergeBase = (string) $this->run('merge-base', ['@', '@{u}']);
-        $remoteSha = (string) $this->run('rev-parse', ['@{u}']);
+        $mergeBase = $this->run('merge-base', ['@', '@{u}']);
+        $remoteSha = $this->run('rev-parse', ['@{u}']);
         return $mergeBase === $remoteSha;
     }
 
@@ -148,9 +148,9 @@ final class GitWorkingCopy
             throw new GitException('Error: HEAD does not have a remote tracking branch. Cannot check if it is ahead.');
         }
 
-        $mergeBase = (string) $this->run('merge-base', ['@', '@{u}']);
-        $localSha = (string) $this->run('rev-parse', ['@']);
-        $remoteSha = (string) $this->run('rev-parse', ['@{u}']);
+        $mergeBase = $this->run('merge-base', ['@', '@{u}']);
+        $localSha = $this->run('rev-parse', ['@']);
+        $remoteSha = $this->run('rev-parse', ['@{u}']);
         return $mergeBase === $remoteSha && $localSha !== $remoteSha;
     }
 
@@ -166,9 +166,9 @@ final class GitWorkingCopy
             throw new GitException('Error: HEAD does not have a remote tracking branch. Cannot check if it is behind.');
         }
 
-        $mergeBase = (string) $this->run('merge-base', ['@', '@{u}']);
-        $localSha = (string) $this->run('rev-parse', ['@']);
-        $remoteSha = (string) $this->run('rev-parse', ['@{u}']);
+        $mergeBase = $this->run('merge-base', ['@', '@{u}']);
+        $localSha = $this->run('rev-parse', ['@']);
+        $remoteSha = $this->run('rev-parse', ['@{u}']);
         return $mergeBase === $localSha && $localSha !== $remoteSha;
     }
 
@@ -185,9 +185,9 @@ final class GitWorkingCopy
             throw new GitException('Error: HEAD does not have a remote tracking branch. Cannot check if it is behind.');
         }
 
-        $mergeBase = (string) $this->run('merge-base', ['@', '@{u}']);
-        $localSha = (string) $this->run('rev-parse', ['@']);
-        $remoteSha = (string) $this->run('rev-parse', ['@{u}']);
+        $mergeBase = $this->run('merge-base', ['@', '@{u}']);
+        $localSha = $this->run('rev-parse', ['@']);
+        $remoteSha = $this->run('rev-parse', ['@{u}']);
         return $mergeBase !== $localSha && $mergeBase !== $remoteSha;
     }
 
