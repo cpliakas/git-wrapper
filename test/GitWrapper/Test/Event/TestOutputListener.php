@@ -12,9 +12,6 @@ final class TestOutputListener implements GitOutputListenerInterface
      */
     protected $gitOutputEvent;
 
-    /**
-     * @return GitWrapper\Event\GitOutputEvent
-     */
     public function getLastEvent(): GitOutputEvent
     {
         return $this->gitOutputEvent;

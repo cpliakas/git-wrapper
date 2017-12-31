@@ -453,7 +453,6 @@ final class GitWorkingCopy
      *
      * @code
      * $git->add('some/file.txt');
-     * @endcode
      *
      * @param string $filepattern Files to add content from. Fileglobs (e.g.  *.c) can be given to add
      *   all matching files. Also a leading directory name (e.g.  dir to add dir/file1 and dir/file2)
@@ -477,7 +476,6 @@ final class GitWorkingCopy
      *
      * @code
      * $git->apply('the/file/to/read/the/patch/from');
-     * @endcode
      *
      * @param string ... Additional command line arguments.
      * @param mixed[] $options An associative array of command line options.
@@ -497,7 +495,6 @@ final class GitWorkingCopy
      * @code
      * $git->bisect('good', '2.6.13-rc2');
      * $git->bisect('view', array('stat' => true));
-     * @endcode
      *
      * @param string $sub_command The subcommand passed to `git bisect`.
      * @param string ... Additional command line arguments.
@@ -518,7 +515,6 @@ final class GitWorkingCopy
      *
      * @code $git->branch('my2.6.14', 'v2.6.14');
      * $git->branch('origin/html', 'origin/man', array('d' => true, 'r' => 'origin/todo'));
-     * @endcode
      *
      * @param string ... Additional command line arguments.
      * @param mixed[] $options An associative array of command line options.
@@ -537,7 +533,6 @@ final class GitWorkingCopy
      * Checkout a branch or paths to the working tree.
      *
      * @code $git->checkout('new-branch', array('b' => true));
-     * @endcode
      *
      * @param string Additional command line arguments.
      * @param mixed[] $options An associative array of command line options.
@@ -555,7 +550,6 @@ final class GitWorkingCopy
      *
      * @code
      * $git->cloneRepository('git://github.com/cpliakas/git-wrapper.git');
-     * @endcode
      *
      * @param string $repository The Git URL of the repository being cloned.
      * @param mixed[] $options An associative array of command line options.
@@ -582,7 +576,6 @@ final class GitWorkingCopy
      *
      * @code $git->commit('My commit message');
      * $git->commit('Makefile', array('m' => 'My commit message'));
-     * @endcode
      *
      * @param string ... Additional command line arguments.
      * @param mixed[] $options An associative array of command line options.
@@ -609,7 +602,6 @@ final class GitWorkingCopy
      *
      * @code $git->config('user.email', 'opensource@chrispliakas.com');
      * $git->config('user.name', 'Chris Pliakas');
-     * @endcode
      *
      * @param string ... Additional command line arguments.
      * @param mixed[] $options An associative array of command line options.
@@ -629,7 +621,6 @@ final class GitWorkingCopy
      *
      * @code $git->diff();
      * $git->diff('topic', 'master');
-     * @endcode
      *
      * @param string ... Additional command line arguments.
      * @param mixed[] $options An associative array of command line options.
@@ -649,7 +640,6 @@ final class GitWorkingCopy
      *
      * @code $git->fetch('origin');
      * $git->fetch(array('all' => true));
-     * @endcode
      *
      * @param string ... Additional command line arguments.
      * @param mixed[] $options An associative array of command line options.
@@ -668,7 +658,6 @@ final class GitWorkingCopy
      * Print lines matching a pattern.
      *
      * @code $git->grep('time_t', '--', '*.[ch]');
-     * @endcode
      *
      * @param string ... Additional command line arguments.
      * @param mixed[] $options An associative array of command line options.
@@ -688,7 +677,6 @@ final class GitWorkingCopy
      *
      * @code
      * $git->init(array('bare' => true));
-     * @endcode
      *
      * @param mixed[] $options An associative array of command line options.
      *
@@ -711,7 +699,6 @@ final class GitWorkingCopy
      *
      * @code $git->log(array('no-merges' => true));
      * $git->log('v2.6.12..', 'include/scsi', 'drivers/scsi');
-     * @endcode
      *
      * @param string ... Additional command line arguments.
      * @param mixed[] $options An associative array of command line options.
@@ -730,7 +717,6 @@ final class GitWorkingCopy
      * Join two or more development histories together.
      *
      * @code $git->merge('fixes', 'enhancements');
-     * @endcode
      *
      * @param string ... Additional command line arguments.
      * @param mixed[] $options An associative array of command line options.
@@ -750,7 +736,6 @@ final class GitWorkingCopy
      *
      * @code
      * $git->mv('orig.txt', 'dest.txt');
-     * @endcode
      *
      * @param string $source The file / directory being moved.
      * @param string $destination The target file / directory that the source is being move to.
@@ -774,7 +759,6 @@ final class GitWorkingCopy
      * Fetch from and merge with another repository or a local branch.
      *
      * @code $git->pull('upstream', 'master');
-     * @endcode
      *
      * @param string ... Additional command line arguments.
      * @param mixed[] $options An associative array of command line options.
@@ -793,7 +777,6 @@ final class GitWorkingCopy
      * Update remote refs along with associated objects.
      *
      * @code $git->push('upstream', 'master');
-     * @endcode
      *
      * @param string ... Additional command line arguments.
      * @param mixed[] $options An associative array of command line options.
@@ -812,7 +795,6 @@ final class GitWorkingCopy
      * Forward-port local commits to the updated upstream head.
      *
      * @code $git->rebase('subsystem@{1}', array('onto' => 'subsystem'));
-     * @endcode
      *
      * @param string ... Additional command line arguments.
      * @param mixed[] $options An associative array of command line options.
@@ -831,7 +813,6 @@ final class GitWorkingCopy
      * Manage the set of repositories ("remotes") whose branches you track.
      *
      * @code $git->remote('add', 'upstream', 'git://github.com/cpliakas/git-wrapper.git');
-     * @endcode
      *
      * @param string ... Additional command line arguments.
      * @param mixed[] $options An associative array of command line options.
@@ -850,7 +831,6 @@ final class GitWorkingCopy
      * Reset current HEAD to the specified state.
      *
      * @code $git->reset(array('hard' => true));
-     * @endcode
      *
      * @param string ... Additional command line arguments.
      * @param mixed[] $options An associative array of command line options.
@@ -870,7 +850,6 @@ final class GitWorkingCopy
      *
      * @code
      * $git->rm('oldfile.txt');
-     * @endcode
      *
      * @param string $filepattern Files to remove from version control. Fileglobs (e.g.  *.c) can be
      *   given to add all matching files. Also a leading directory name (e.g.
@@ -896,7 +875,6 @@ final class GitWorkingCopy
      *
      * @code
      * $git->show('v1.0.0');
-     * @endcode
      *
      * @param string $object The names of objects to show. For a more complete list of ways to spell
      *   object names, see "SPECIFYING REVISIONS" section in gitrevisions(7).
@@ -915,7 +893,6 @@ final class GitWorkingCopy
      * Show the working tree status.
      *
      * @code $git->status(array('s' => true));
-     * @endcode
      *
      * @param string ... Additional command line arguments.
      * @param mixed[] $options An associative array of command line options.
@@ -934,7 +911,6 @@ final class GitWorkingCopy
      * Create, list, delete or verify a tag object signed with GPG.
      *
      * @code $git->tag('v1.0.0');
-     * @endcode
      *
      * @param string ... Additional command line arguments.
      * @param mixed[] $options An associative array of command line options.
@@ -953,7 +929,6 @@ final class GitWorkingCopy
      * Remove untracked files from the working tree
      *
      * @code $git->clean('-d', '-f');
-     * @endcode
      *
      * @param string ... Additional command line arguments.
      * @param mixed[] $options An associative array of command line options.
@@ -972,7 +947,6 @@ final class GitWorkingCopy
      * Create an archive of files from a named tree
      *
      * @code $git->archive('HEAD', array('o' => '/path/to/archive'));
-     * @endcode
      *
      * @param string ... Additional command line arguments.
      * @param mixed[] $options An associative array of command line options.
