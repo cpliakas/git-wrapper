@@ -2,6 +2,8 @@
 
 namespace GitWrapper;
 
+use GitWrapper\GitCommand;
+
 /**
  * Interacts with a working copy.
  *
@@ -15,7 +17,7 @@ final class GitWorkingCopy
      *
      * @var \GitWrapper\GitWrapper
      */
-    protected $wrapper;
+    protected $gitWrapper;
 
     /**
      * Path to the directory containing the working copy.
@@ -41,9 +43,9 @@ final class GitWorkingCopy
      */
     protected $cloned;
 
-    public function __construct(GitWrapper $wrapper, string $directory)
+    public function __construct(GitWrapper $gitWrapper, string $directory)
     {
-        $this->wrapper = $wrapper;
+        $this->gitWrapper = $gitWrapper;
         $this->directory = $directory;
     }
 
@@ -57,7 +59,7 @@ final class GitWorkingCopy
 
     public function getWrapper(): GitWrapper
     {
-        return $this->wrapper;
+        return $this->gitWrapper;
     }
 
     public function getDirectory(): string
@@ -117,12 +119,12 @@ final class GitWorkingCopy
      */
     public function run(array $args, bool $setDirectory = true): GitWorkingCopy
     {
-        $command = call_user_func_array(['GitWrapper\GitCommand', 'getInstance'], $args);
+        $command = call_user_func_array([GitCommand::class, 'getInstance'], $args);
         if ($setDirectory) {
             $command->setDirectory($this->directory);
         }
 
-        $this->output .= $this->wrapper->run($command);
+        $this->output .= $this->gitWrapper->run($command);
         return $this;
     }
 
@@ -131,7 +133,7 @@ final class GitWorkingCopy
      */
     public function getStatus(): string
     {
-        return $this->wrapper->git('status -s', $this->directory);
+        return $this->gitWrapper->git('status -s', $this->directory);
     }
 
     /**
@@ -163,7 +165,9 @@ final class GitWorkingCopy
     public function isUpToDate(): bool
     {
         if (! $this->isTracking()) {
-            throw new GitException('Error: HEAD does not have a remote tracking branch. Cannot check if it is up-to-date.');
+            throw new GitException(
+                'Error: HEAD does not have a remote tracking branch. Cannot check if it is up-to-date.'
+            );
         }
 
         $this->clearOutput();
@@ -433,7 +437,8 @@ final class GitWorkingCopy
             // that do not support `git remote get-url`.
             $identifier = " (${operation})";
             foreach (explode("\n", rtrim($this->remote('-v')->getOutput())) as $line) {
-                if (strpos($line, $remote) === 0 && strrpos($line, $identifier) === strlen($line) - strlen($identifier)) {
+                if (strpos($line, $remote) === 0 && strrpos($line, $identifier) === strlen($line) - strlen($identifier)
+                ) {
                     preg_match('/^.+\t(.+) \(' . $operation . '\)$/', $line, $matches);
                     return $matches[1];
                 }

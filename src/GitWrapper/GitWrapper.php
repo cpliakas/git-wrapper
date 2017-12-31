@@ -45,7 +45,7 @@ final class GitWrapper
     /**
      * @var GitOutputListenerInterface
      */
-    protected $streamListener;
+    protected $gitOutputListener;
 
     /**
      * @var EventDispatcherInterface
@@ -74,9 +74,9 @@ final class GitWrapper
         return $this->eventDispatcher;
     }
 
-    public function setDispatcher(EventDispatcherInterface $dispatcher): void
+    public function setDispatcher(EventDispatcherInterface $eventDispatcher): void
     {
-        $this->eventDispatcher = $dispatcher;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function setGitBinary(string $gitBinary): void
@@ -176,22 +176,22 @@ final class GitWrapper
         $this->unsetEnvVar('GIT_SSH_PORT');
     }
 
-    public function addOutputListener(GitOutputListenerInterface $listener): void
+    public function addOutputListener(GitOutputListenerInterface $gitOutputListener): void
     {
         $this->getDispatcher()
-            ->addListener(GitEvents::GIT_OUTPUT, [$listener, 'handleOutput']);
+            ->addListener(GitEvents::GIT_OUTPUT, [$gitOutputListener, 'handleOutput']);
     }
 
-    public function addLoggerListener(GitLoggerListener $listener): void
+    public function addLoggerListener(GitLoggerListener $gitLoggerListener): void
     {
         $this->getDispatcher()
-            ->addSubscriber($listener);
+            ->addSubscriber($gitLoggerListener);
     }
 
-    public function removeOutputListener(GitOutputListenerInterface $listener): void
+    public function removeOutputListener(GitOutputListenerInterface $gitOutputListener): void
     {
         $this->getDispatcher()
-            ->removeListener(GitEvents::GIT_OUTPUT, [$listener, 'handleOutput']);
+            ->removeListener(GitEvents::GIT_OUTPUT, [$gitOutputListener, 'handleOutput']);
     }
 
     /**
@@ -199,14 +199,14 @@ final class GitWrapper
      */
     public function streamOutput(bool $streamOutput = true): void
     {
-        if ($streamOutput && ! isset($this->streamListener)) {
-            $this->streamListener = new GitOutputStreamListener();
-            $this->addOutputListener($this->streamListener);
+        if ($streamOutput && ! isset($this->gitOutputListener)) {
+            $this->gitOutputListener = new GitOutputStreamListener();
+            $this->addOutputListener($this->gitOutputListener);
         }
 
-        if (! $streamOutput && isset($this->streamListener)) {
-            $this->removeOutputListener($this->streamListener);
-            unset($this->streamListener);
+        if (! $streamOutput && isset($this->gitOutputListener)) {
+            $this->removeOutputListener($this->gitOutputListener);
+            unset($this->gitOutputListener);
         }
     }
 
@@ -319,14 +319,14 @@ final class GitWrapper
      *
      * @return string The STDOUT returned by the Git command.
      */
-    public function run(GitCommand $command, ?string $cwd = null): string
+    public function run(GitCommand $gitCommand, ?string $cwd = null): string
     {
-        $process = new GitProcess($this, $command, $cwd);
-        $process->run(function ($type, $buffer) use ($process, $command): void {
-            $event = new GitOutputEvent($this, $process, $command, $type, $buffer);
+        $process = new GitProcess($this, $gitCommand, $cwd);
+        $process->run(function ($type, $buffer) use ($process, $gitCommand): void {
+            $event = new GitOutputEvent($this, $process, $gitCommand, $type, $buffer);
             $this->getDispatcher()->dispatch(GitEvents::GIT_OUTPUT, $event);
         });
 
-        return $command->notBypassed() ? $process->getOutput() : '';
+        return $gitCommand->notBypassed() ? $process->getOutput() : '';
     }
 }

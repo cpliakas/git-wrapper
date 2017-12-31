@@ -15,7 +15,7 @@ class GitEvent extends Event
     /**
      * @var GitWrapper
      */
-    protected $wrapper;
+    protected $gitWrapper;
 
     /**
      * @var Process
@@ -25,18 +25,18 @@ class GitEvent extends Event
     /**
      * @var GitCommand
      */
-    protected $command;
+    protected $gitCommand;
 
-    public function __construct(GitWrapper $wrapper, Process $process, GitCommand $command)
+    public function __construct(GitWrapper $gitWrapper, Process $process, GitCommand $gitCommand)
     {
-        $this->wrapper = $wrapper;
+        $this->gitWrapper = $gitWrapper;
         $this->process = $process;
-        $this->command = $command;
+        $this->gitCommand = $gitCommand;
     }
 
     public function getWrapper(): GitWrapper
     {
-        return $this->wrapper;
+        return $this->gitWrapper;
     }
 
     public function getProcess(): Process
@@ -46,6 +46,6 @@ class GitEvent extends Event
 
     public function getCommand(): GitCommand
     {
-        return $this->command;
+        return $this->gitCommand;
     }
 }
