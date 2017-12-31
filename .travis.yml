@@ -5,6 +5,8 @@ matrix:
     - php: 7.1
       env: CODING_STANDARD=true
     - php: 7.1
+      env: PHPSTAN=true
+    - php: 7.1
       env: PHPUNIT_FLAGS="--coverage-clover coverage.xml"
     - php: 7.2
 
@@ -19,6 +21,7 @@ script:
   # disable xdebug
   - phpenv config-rm xdebug.ini || return 0
   - if [[ $CODING_STANDARD != "" ]]; then composer check-cs; fi
+  - if [[ $PHPSTAN != "" ]]; then composer phpstan; fi
 
 after_script:
   # upload coverage
