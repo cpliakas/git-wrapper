@@ -8,7 +8,7 @@ namespace GitWrapper;
  * All commands executed via an instance of this class act on the working copy
  * that is set through the constructor.
  */
-class GitWorkingCopy
+final class GitWorkingCopy
 {
     /**
      * The GitWrapper object that likely instantiated this class.

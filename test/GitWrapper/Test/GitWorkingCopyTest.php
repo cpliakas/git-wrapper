@@ -9,7 +9,7 @@ use GitWrapper\GitWorkingCopy;
 use GitWrapper\Test\Event\TestOutputListener;
 use Symfony\Component\Process\Process;
 
-class GitWorkingCopyTest extends GitWrapperTestCase
+final class GitWorkingCopyTest extends GitWrapperTestCase
 {
     /**
      * @var string

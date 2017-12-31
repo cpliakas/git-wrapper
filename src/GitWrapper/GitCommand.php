@@ -5,7 +5,7 @@ namespace GitWrapper;
 /**
  * Base class extended by all Git command classes.
  */
-class GitCommand
+final class GitCommand
 {
     /**
      * Path to the directory containing the working copy. If this variable is

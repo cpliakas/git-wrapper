@@ -19,7 +19,7 @@ use Symfony\Component\Process\ExecutableFinder;
  * helper methods to run Git commands as set up the connection to the GIT_SSH
  * wrapper script.
  */
-class GitWrapper
+final class GitWrapper
 {
     /**
      * Path to the Git binary.

@@ -9,7 +9,7 @@ use Symfony\Component\Process\Process;
 /**
  * Event instance passed when output is returned from Git commands.
  */
-class GitOutputEvent extends GitEvent
+final class GitOutputEvent extends GitEvent
 {
     /**
      * @var string
