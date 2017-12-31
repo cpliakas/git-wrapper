@@ -1,0 +1,39 @@
+includes:
+    - vendor/symplify/easy-coding-standard/config/psr2.neon
+    - vendor/symplify/easy-coding-standard/config/php71.neon
+    - vendor/symplify/easy-coding-standard/config/common.neon
+    - vendor/symplify/easy-coding-standard/config/clean-code.neon
+
+checkers:
+    - SlevomatCodingStandard\Sniffs\Classes\UnusedPrivateElementsSniff
+
+    # Symplify set
+    - Symplify\CodingStandard\Fixer\Naming\PropertyNameMatchingTypeFixer
+    - Symplify\CodingStandard\Sniffs\Naming\AbstractClassNameSniff
+    - Symplify\CodingStandard\Fixer\ArrayNotation\StandaloneLineInMultilineArrayFixer
+    - Symplify\CodingStandard\Fixer\Import\ImportNamespacedNameFixer
+    - Symplify\CodingStandard\Fixer\Naming\PropertyNameMatchingTypeFixer
+    - Symplify\CodingStandard\Fixer\Php\ClassStringToClassConstantFixer
+
+    # Metrics
+    PHP_CodeSniffer\Standards\Generic\Sniffs\Files\LineLengthSniff:
+        absoluteLineLimit: 120
+    PHP_CodeSniffer\Standards\Generic\Sniffs\Metrics\CyclomaticComplexitySniff:
+        absoluteComplexity: 6
+    PHP_CodeSniffer\Standards\Generic\Sniffs\Metrics\NestingLevelSniff:
+        absoluteNestingLevel: 4
+
+    # Class should be Final or Abstract
+    - SlamCsFixer\FinalInternalClassFixer
+
+parameters:
+    exclude_checkers:
+        - PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis\AssignmentInConditionSniff
+
+    skip:
+        SlevomatCodingStandard\Sniffs\TypeHints\TypeHintDeclarationSniff:
+            - tests/TestLogger.php
+
+        SlamCsFixer\FinalInternalClassFixer:
+            # class with children
+            - src/Event/GitEvent.php

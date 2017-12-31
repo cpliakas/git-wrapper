@@ -1,17 +1,17 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace GitWrapper\Test;
 
-use GitWrapper\GitCommand;
 use GitWrapper\Event\GitEvent;
+use GitWrapper\GitCommand;
 use Symfony\Component\Process\Process;
 
-class GitListenerTest extends GitWrapperTestCase
+final class GitListenerTest extends AbstractGitWrapperTestCase
 {
-    public function testListener()
+    public function testListener(): void
     {
         $listener = $this->addListener();
-        $this->wrapper->version();
+        $this->gitWrapper->version();
 
         $this->assertTrue($listener->methodCalled('onPrepare'));
         $this->assertTrue($listener->methodCalled('onSuccess'));
@@ -19,7 +19,7 @@ class GitListenerTest extends GitWrapperTestCase
         $this->assertFalse($listener->methodCalled('onBypass'));
     }
 
-    public function testListenerError()
+    public function testListenerError(): void
     {
         $listener = $this->addListener();
         $this->runBadCommand(true);
@@ -30,12 +30,12 @@ class GitListenerTest extends GitWrapperTestCase
         $this->assertFalse($listener->methodCalled('onBypass'));
     }
 
-    public function testGitBypass()
+    public function testGitBypass(): void
     {
         $this->addBypassListener();
         $listener = $this->addListener();
 
-        $output = $this->wrapper->version();
+        $output = $this->gitWrapper->version();
 
         $this->assertTrue($listener->methodCalled('onPrepare'));
         $this->assertFalse($listener->methodCalled('onSuccess'));
@@ -45,14 +45,14 @@ class GitListenerTest extends GitWrapperTestCase
         $this->assertEmpty($output);
     }
 
-    public function testEvent()
+    public function testEvent(): void
     {
         $process = new Process('');
-        $command = GitCommand::getInstance();
-        $event = new GitEvent($this->wrapper, $process, $command);
+        $command = new GitCommand();
+        $event = new GitEvent($this->gitWrapper, $process, $command);
 
-        $this->assertEquals($this->wrapper, $event->getWrapper());
-        $this->assertEquals($process, $event->getProcess());
-        $this->assertEquals($command, $event->getCommand());
+        $this->assertSame($this->gitWrapper, $event->getWrapper());
+        $this->assertSame($process, $event->getProcess());
+        $this->assertSame($command, $event->getCommand());
     }
 }
