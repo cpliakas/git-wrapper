@@ -107,7 +107,7 @@ final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
 
         // Test getting output of a simple status command.
         $output = $git->status();
-        $this->assertTrue(strpos($output, 'nothing to commit') !== false);
+        $this->assertContains('nothing to commit', $output);
     }
 
     public function testHasChanges(): void
@@ -175,7 +175,7 @@ PATCH;
         file_put_contents(self::WORKING_DIR . '/patch.txt', $patch);
         $git->apply('patch.txt');
         $this->assertRegExp('@\?\?\\s+FileCreatedByPatch\\.txt@s', $git->getStatus());
-        $this->assertSame("contents\n", file_get_contents(self::WORKING_DIR . '/FileCreatedByPatch.txt'));
+        $this->assertStringEqualsFile(self::WORKING_DIR . '/FileCreatedByPatch.txt', "contents\n");
     }
 
     public function testGitRm(): void
@@ -206,14 +206,14 @@ PATCH;
         $branches = $git->branch();
 
         // Check that our branch is there.
-        $this->assertTrue(strpos($branches, $branchName) !== false);
+        $this->assertContains($branchName, $branches);
     }
 
     public function testGitLog(): void
     {
         $git = $this->getWorkingCopy();
         $output = $git->log();
-        $this->assertTrue(strpos($output, 'Initial commit.') !== false);
+        $this->assertContains('Initial commit.', $output);
     }
 
     public function testGitConfig(): void
@@ -232,7 +232,7 @@ PATCH;
         $git->pushTag($tag);
 
         $tags = $git->tag();
-        $this->assertTrue(strpos($tags, $tag) !== false);
+        $this->assertContains($tag, $tags);
     }
 
     public function testGitClean(): void
@@ -301,35 +301,35 @@ PATCH;
         $git = $this->getWorkingCopy();
         file_put_contents(self::WORKING_DIR . '/change.me', "changed\n");
         $output = $git->diff();
-        $this->assertTrue(strpos($output, 'diff --git a/change.me b/change.me') === 0);
+        $this->assertStringStartsWith('diff --git a/change.me b/change.me', $output);
     }
 
     public function testGitGrep(): void
     {
         $git = $this->getWorkingCopy();
         $output = $git->grep('changed', '--', '*.me');
-        $this->assertTrue(strpos($output, 'change.me') === 0);
+        $this->assertStringStartsWith('change.me', $output);
     }
 
     public function testGitShow(): void
     {
         $git = $this->getWorkingCopy();
         $output = $git->show('test-tag');
-        $this->assertTrue(strpos($output, 'commit ') === 0);
+        $this->assertStringStartsWith('commit ', $output);
     }
 
     public function testGitBisect(): void
     {
         $git = $this->getWorkingCopy();
         $output = $git->bisect('help');
-        $this->assertTrue(stripos($output, 'usage: git bisect') === 0);
+        $this->assertStringStartsWith('usage: git bisect', $output);
     }
 
     public function testGitRemote(): void
     {
         $git = $this->getWorkingCopy();
         $output = $git->remote();
-        $this->assertSame(rtrim($output), 'origin');
+        $this->assertSame('origin', rtrim($output));
     }
 
     public function testRebase(): void
@@ -338,7 +338,7 @@ PATCH;
         $git->checkout('test-branch');
 
         $output = $git->rebase('test-branch', 'master');
-        $this->assertTrue(strpos($output, 'First, rewinding head') === 0);
+        $this->assertStringStartsWith('First, rewinding head', $output);
     }
 
     public function testMerge(): void
@@ -348,7 +348,7 @@ PATCH;
         $git->checkout('master');
 
         $output = $git->merge('test-branch');
-        $this->assertTrue(strpos($output, 'Updating ') === 0);
+        $this->assertStringStartsWith('Updating ', $output);
     }
 
     public function testOutputListener(): void
@@ -364,7 +364,7 @@ PATCH;
         $expectedType = Process::OUT;
         $this->assertSame($expectedType, $event->getType());
 
-        $this->assertTrue(stripos($event->getBuffer(), 'nothing to commit') !== false);
+        $this->assertContains('nothing to commit', $event->getBuffer());
     }
 
     public function testLiveOutput(): void
@@ -382,7 +382,7 @@ PATCH;
         $contents = ob_get_contents();
         ob_end_clean();
 
-        $this->assertTrue(stripos($contents, 'nothing to commit') !== false);
+        $this->assertContains('nothing to commit', $contents);
 
         $git->getWrapper()->streamOutput(false);
         ob_start();
