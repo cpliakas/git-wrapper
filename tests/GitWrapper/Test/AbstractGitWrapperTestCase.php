@@ -21,7 +21,7 @@ abstract class AbstractGitWrapperTestCase extends TestCase
     /**
      * @var string
      */
-    public const WORKING_DIR = 'build/test/wc';
+    public const WORKING_DIR = 'build/tests/wc';
 
     /**
      * @var string

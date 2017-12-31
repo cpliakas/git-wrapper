@@ -32,7 +32,7 @@ parameters:
 
     skip:
         SlevomatCodingStandard\Sniffs\TypeHints\TypeHintDeclarationSniff:
-            - test/GitWrapper/Test/TestLogger.php
+            - tests/GitWrapper/Test/TestLogger.php
 
         SlamCsFixer\FinalInternalClassFixer:
             # class with children
