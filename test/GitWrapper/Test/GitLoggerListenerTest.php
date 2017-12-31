@@ -2,7 +2,6 @@
 
 namespace GitWrapper\Test;
 
-use Exception;
 use GitWrapper\Event\GitLoggerListener;
 use GitWrapper\GitCommand;
 use Psr\Log\LogLevel;
