@@ -2,7 +2,6 @@
 
 namespace GitWrapper\Test;
 
-use GitWrapper\Test\StreamSuppressFilter;
 use Exception;
 use GitWrapper\GitBranches;
 use GitWrapper\GitException;
@@ -590,7 +589,7 @@ PATCH;
             [
                 [
                     '-f' => true,
-                    '--no-tags' => true
+                    '--no-tags' => true,
                 ],
                 [
                     'assertRemoteBranches' => [['remote/master', 'remote/remote-branch']],
@@ -605,7 +604,7 @@ PATCH;
             [
                 [
                     '-f' => true,
-                    '-t' => ['master']
+                    '-t' => ['master'],
                 ],
                 [
                     'assertRemoteBranches' => [['remote/master']],
@@ -620,7 +619,7 @@ PATCH;
                 [
                     '-f' => true,
                     '-t' => ['master'],
-                    '--tags' => true
+                    '--tags' => true,
                 ],
                 [
                     'assertRemoteBranches' => [['remote/master']],
@@ -633,7 +632,7 @@ PATCH;
             [
                 [
                     '-f' => true,
-                    '-m' => 'remote-branch'
+                    '-m' => 'remote-branch',
                 ],
                 [
                     'assertRemoteBranches' => [['remote/master', 'remote/remote-branch']],
