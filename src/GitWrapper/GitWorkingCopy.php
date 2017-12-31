@@ -236,11 +236,8 @@ final class GitWorkingCopy
     }
 
     /**
-     * Helper method that pushes a tag to a repository.
-     *
      * This is synonymous with `git push origin tag v1.2.3`.
      *
-     * @param string $tag The tag being pushed.
      * @param string $repository The destination of the push operation, which is either a URL or name of
      *   the remote. Defaults to "origin".
      * @param mixed[] $options
@@ -251,13 +248,9 @@ final class GitWorkingCopy
     }
 
     /**
-     * Helper method that pushes all tags to a repository.
-     *
      * This is synonymous with `git push --tags origin`.
      *
-     * @param string $repository
-     *   The destination of the push operation, which is either a URL or name of
-     *   the remote. Defaults to "origin".
+     * @param string $repository The destination of the push operation, which is either a URL or name of the remote.
      * @param mixed[] $options
      */
     public function pushTags(string $repository = 'origin', array $options = []): self
@@ -295,12 +288,7 @@ final class GitWorkingCopy
     /**
      * Adds a remote to the repository.
      *
-     * @param string $name
-     *   The name of the remote to add.
-     * @param string $url
-     *   The URL of the remote to add.
-     * @param mixed[] $options
-     *   An associative array of options, with the following keys:
+     * @param mixed[] $options An associative array of options, with the following keys:
      *   - -f: Boolean, set to true to run git fetch immediately after the
      *     remote is set up. Defaults to false.
      *   - --tags: Boolean. By default only the tags from the fetched branches
@@ -346,22 +334,11 @@ final class GitWorkingCopy
         return $this->remote(...$args);
     }
 
-    /**
-     * Removes the given remote.
-     *
-     * @param string $name The name of the remote to remove.
-     */
     public function removeRemote(string $name): self
     {
         return $this->remote('rm', $name);
     }
 
-    /**
-     * Checks if the given remote exists.
-     *
-     * @param string $name
-     *   The name of the remote to check.
-     */
     public function hasRemote(string $name): bool
     {
         return array_key_exists($name, $this->getRemotes());
@@ -378,9 +355,7 @@ final class GitWorkingCopy
             throw new GitException(sprintf('The remote "%s" does not exist.', $name));
         }
 
-        $remotes = $this->getRemotes();
-
-        return $remotes[$name];
+        return $this->getRemotes()[$name];
     }
 
     /**
@@ -404,7 +379,6 @@ final class GitWorkingCopy
     /**
      * Returns the fetch or push URL of a given remote.
      *
-     * @param string $remote The name of the remote for which to return the fetch or push URL.
      * @param string $operation The operation for which to return the remote. Can be either 'fetch' or 'push'.
      */
     public function getRemoteUrl(string $remote, string $operation = 'fetch'): string
@@ -429,16 +403,9 @@ final class GitWorkingCopy
     }
 
     /**
-     * Executes a `git add` command.
-     *
-     * Add file contents to the index.
-     *
      * @code $git->add('some/file.txt');
      *
-     * @param string $filepattern Files to add content from. Fileglobs (e.g.  *.c) can be given to add
-     *   all matching files. Also a leading directory name (e.g.  dir to add dir/file1 and dir/file2)
-     *   can be given to add all files in the directory, recursively.
-     * @param mixed[] $options An optional array of command line options.
+     * @param mixed[] $options
      */
     public function add(string $filepattern, array $options = []): self
     {
@@ -446,8 +413,6 @@ final class GitWorkingCopy
     }
 
     /**
-     * Executes a `git apply` command.
-     *
      * @code $git->apply('the/file/to/read/the/patch/from');
      *
      * @param mixed ...$argsAndOptions
@@ -458,8 +423,6 @@ final class GitWorkingCopy
     }
 
     /**
-     * Executes a `git bisect` command.
-     *
      * Find by binary search the change that introduced a bug.
      *
      * @code
@@ -474,8 +437,6 @@ final class GitWorkingCopy
     }
 
     /**
-     * Executes a `git branch` command.
-     *
      * @code $git->branch('my2.6.14', 'v2.6.14');
      * $git->branch('origin/html', 'origin/man', ['d' => true, 'r' => 'origin/todo']);
      *
@@ -487,8 +448,6 @@ final class GitWorkingCopy
     }
 
     /**
-     * Executes a `git checkout` command.
-     *
      * @code $git->checkout('new-branch', ['b' => true]);
      *
      * @param mixed ...$argsAndOptions
@@ -512,11 +471,8 @@ final class GitWorkingCopy
     }
 
     /**
-     * Executes a `git commit` command.
-     *
-     * Record changes to the repository. If only one argument is passed, it is
-     * assumed to be the commit message. Therefore `$git->commit('Message');`
-     * yields a `git commit -am "Message"` command.
+     * Record changes to the repository. If only one argument is passed, it is  assumed to be the commit message.
+     * Therefore `$git->commit('Message');` yields a `git commit -am "Message"` command.
      *
      * @code $git->commit('My commit message');
      * $git->commit('Makefile', ['m' => 'My commit message']);
@@ -536,10 +492,6 @@ final class GitWorkingCopy
     }
 
     /**
-     * Executes a `git config` command.
-     *
-     * Get and set repository options.
-     *
      * @code $git->config('user.email', 'opensource@chrispliakas.com');
      * $git->config('user.name', 'Chris Pliakas');
      *
@@ -551,10 +503,6 @@ final class GitWorkingCopy
     }
 
     /**
-     * Executes a `git diff` command.
-     *
-     * Show changes between commits, commit and working tree, etc.
-     *
      * @code $git->diff();
      * $git->diff('topic', 'master');
      *
@@ -566,10 +514,6 @@ final class GitWorkingCopy
     }
 
     /**
-     * Executes a `git fetch` command.
-     *
-     * Download objects and refs from another repository.
-     *
      * @code $git->fetch('origin');
      * $git->fetch(['all' => true]);
      *
@@ -581,8 +525,6 @@ final class GitWorkingCopy
     }
 
     /**
-     * Executes a `git grep` command.
-     *
      * Print lines matching a pattern.
      *
      * @code $git->grep('time_t', '--', '*.[ch]');
@@ -595,8 +537,6 @@ final class GitWorkingCopy
     }
 
     /**
-     * Executes a `git init` command.
-     *
      * Create an empty git repository or reinitialize an existing one.
      *
      * @code $git->init(['bare' => true]);
@@ -610,8 +550,6 @@ final class GitWorkingCopy
     }
 
     /**
-     * Executes a `git log` command.
-     *
      * @code $git->log(['no-merges' => true]);
      * $git->log('v2.6.12..', 'include/scsi', 'drivers/scsi');
      *
@@ -623,8 +561,6 @@ final class GitWorkingCopy
     }
 
     /**
-     * Executes a `git merge` command.
-     *
      * @code $git->merge('fixes', 'enhancements');
      *
      * @param mixed ...$argsAndOptions
@@ -635,8 +571,6 @@ final class GitWorkingCopy
     }
 
     /**
-     * Executes a `git mv` command.
-     *
      * @code $git->mv('orig.txt', 'dest.txt');
      *
      * @param mixed[] $options
@@ -648,8 +582,6 @@ final class GitWorkingCopy
     }
 
     /**
-     * Executes a `git pull` command.
-     *
      * @code $git->pull('upstream', 'master');
      *
      * @param mixed ...$argsAndOptions
@@ -660,10 +592,6 @@ final class GitWorkingCopy
     }
 
     /**
-     * Executes a `git push` command.
-     *
-     * Update remote refs along with associated objects.
-     *
      * @code $git->push('upstream', 'master');
      *
      * @param mixed ...$argsAndOptions
@@ -674,10 +602,6 @@ final class GitWorkingCopy
     }
 
     /**
-     * Executes a `git rebase` command.
-     *
-     * Forward-port local commits to the updated upstream head.
-     *
      * @code $git->rebase('subsystem@{1}', ['onto' => 'subsystem']);
      *
      * @param mixed ...$argsAndOptions
@@ -688,10 +612,6 @@ final class GitWorkingCopy
     }
 
     /**
-     * Executes a `git remote` command.
-     *
-     * Manage the set of repositories ("remotes") whose branches you track.
-     *
      * @code $git->remote('add', 'upstream', 'git://github.com/cpliakas/git-wrapper.git');
      *
      * @param mixed ...$argsAndOptions
@@ -702,10 +622,6 @@ final class GitWorkingCopy
     }
 
     /**
-     * Executes a `git reset` command.
-     *
-     * Reset current HEAD to the specified state.
-     *
      * @code $git->reset(['hard' => true]);
      *
      * @param mixed ...$argsAndOptions
@@ -716,16 +632,8 @@ final class GitWorkingCopy
     }
 
     /**
-     * Executes a `git rm` command.
-     *
-     * Remove files from the working tree and from the index.
-     *
      * @code $git->rm('oldfile.txt');
      *
-     * @param string $filepattern Files to remove from version control. Fileglobs (e.g.  *.c) can be
-     *   given to add all matching files. Also a leading directory name (e.g.
-     *   dir to add dir/file1 and dir/file2) can be given to add all files in
-     *   the directory, recursively.
      * @param mixed[] $options
      */
     public function rm(string $filepattern, array $options = []): self
@@ -735,14 +643,8 @@ final class GitWorkingCopy
     }
 
     /**
-     * Executes a `git show` command.
-     *
-     * Show various types of objects.
-     *
      * @code $git->show('v1.0.0');
      *
-     * @param string $object The names of objects to show. For a more complete list of ways to spell
-     *   object names, see "SPECIFYING REVISIONS" section in gitrevisions(7).
      * @param mixed[] $options
      */
     public function show(string $object, array $options = []): self
@@ -752,10 +654,6 @@ final class GitWorkingCopy
     }
 
     /**
-     * Executes a `git status` command.
-     *
-     * Show the working tree status.
-     *
      * @code $git->status(['s' => true]);
      *
      * @param mixed ...$argsAndOptions
@@ -766,10 +664,6 @@ final class GitWorkingCopy
     }
 
     /**
-     * Executes a `git tag` command.
-     *
-     * Create, list, delete or verify a tag object signed with GPG.
-     *
      * @code $git->tag('v1.0.0');
      *
      * @param mixed ...$argsAndOptions
@@ -780,8 +674,6 @@ final class GitWorkingCopy
     }
 
     /**
-     * Executes a `git clean` command.
-     *
      * @code $git->clean('-d', '-f');
      *
      * @param mixed ...$argsAndOptions
@@ -792,10 +684,6 @@ final class GitWorkingCopy
     }
 
     /**
-     * Executes a `git archive` command.
-     *
-     * Create an archive of files from a named tree
-     *
      * @code $git->archive('HEAD', ['o' => '/path/to/archive']);
      *
      * @param mixed ...$argsAndOptions
