@@ -3,6 +3,7 @@
 namespace GitWrapper\Test;
 
 use GitWrapper\GitCommand;
+use GitWrapper\GitException;
 use GitWrapper\GitWorkingCopy;
 use GitWrapper\GitWrapper;
 use GitWrapper\Test\Event\TestDispatcher;
@@ -85,20 +86,16 @@ final class GitWrapperTest extends AbstractGitWrapperTestCase
         $this->assertSame($sshWrapperExpected, $this->gitWrapper->getEnvVar('GIT_SSH'));
     }
 
-    /**
-     * @expectedException \GitWrapper\GitException
-     */
     public function testSetPrivateKeyError(): void
     {
+        $this->expectException(GitException::class);
         $badKey = './tests/id_rsa_bad';
         $this->gitWrapper->setPrivateKey($badKey);
     }
 
-    /**
-     * @expectedException \GitWrapper\GitException
-     */
     public function testSetPrivateKeyWrapperError(): void
     {
+        $this->expectException(GitException::class);
         $badWrapper = './tests/dummy-wrapper-bad.sh';
         $this->gitWrapper->setPrivateKey('./tests/id_rsa', 22, $badWrapper);
     }
@@ -122,11 +119,9 @@ final class GitWrapperTest extends AbstractGitWrapperTestCase
         $this->assertGitVersion($version);
     }
 
-    /**
-     * @expectedException \GitWrapper\GitException
-     */
     public function testGitCommandError(): void
     {
+        $this->expectException(GitException::class);
         $this->runBadCommand();
     }
 
@@ -139,11 +134,9 @@ final class GitWrapperTest extends AbstractGitWrapperTestCase
         $this->assertGitVersion($version);
     }
 
-    /**
-     * @expectedException \GitWrapper\GitException
-     */
     public function testGitRunDirectoryError(): void
     {
+        $this->expectException(GitException::class);
         $command = new GitCommand();
         $command->setFlag('version');
         $command->setDirectory('/some/bad/directory');
