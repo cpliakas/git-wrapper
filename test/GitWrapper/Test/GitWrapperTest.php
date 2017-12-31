@@ -152,7 +152,7 @@ final class GitWrapperTest extends AbstractGitWrapperTestCase
 
     public function testWrapperExecutable(): void
     {
-        $sshWrapper = realpath(__DIR__ . '/../../../bin/git-ssh-wrapper.sh');
+        $sshWrapper = dirname(dirname(dirname(__DIR__))) . '/bin/git-ssh-wrapper.sh';
         $this->assertTrue(is_executable($sshWrapper));
     }
 
@@ -161,9 +161,9 @@ final class GitWrapperTest extends AbstractGitWrapperTestCase
         $directory = './' . $this->randomString();
         $git = $this->gitWrapper->workingCopy($directory);
 
-        $this->assertTrue($git instanceof GitWorkingCopy);
+        $this->assertInstanceOf(GitWorkingCopy::class, $git);
         $this->assertSame($directory, $git->getDirectory());
-        $this->assertSame($this->wrapper, $git->getWrapper());
+        $this->assertSame($this->gitWrapper, $git->getWrapper());
     }
 
     public function testParseRepositoryName(): void
