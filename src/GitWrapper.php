@@ -142,15 +142,13 @@ final class GitWrapper
      * script included with this library. It also sets the custom GIT_SSH_KEY
      * and GIT_SSH_PORT environment variables that are used by the script.
      *
-     * @param string $privateKey Path to the private key.
-     * @param int $port Port that the SSH server being connected to listens on, defaults to 22.
      * @param string|null $wrapper Path the the GIT_SSH wrapper script, defaults to null which uses the
      *   script included with this library.
      */
     public function setPrivateKey(string $privateKey, int $port = 22, ?string $wrapper = null): void
     {
         if ($wrapper === null) {
-            $wrapper = __DIR__ . '/../../bin/git-ssh-wrapper.sh';
+            $wrapper = __DIR__ . '/../bin/git-ssh-wrapper.sh';
         }
 
         if (! $wrapperPath = realpath($wrapper)) {

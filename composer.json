@@ -21,20 +21,20 @@
         "symplify/easy-coding-standard": "^3.0",
         "slam/php-cs-fixer-extensions": "^1.10",
         "nette/utils": "^2.4",
-        "phpstan/phpstan": "^0.9.1"
-    },
-    "suggest": {
-        "monolog/monolog": "Enables logging of executed git commands"
+        "phpstan/phpstan": "^0.9"
     },
     "autoload": {
         "psr-4": {
-            "GitWrapper\\": "src/GitWrapper"
+            "GitWrapper\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
             "GitWrapper\\Test\\": "tests"
         }
+    },
+    "suggest": {
+        "monolog/monolog": "Enables logging of executed git commands"
     },
     "scripts": {
         "check-cs": "vendor/bin/ecs check src tests",
