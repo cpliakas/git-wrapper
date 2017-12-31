@@ -16,7 +16,7 @@ final class TestLogger extends AbstractLogger
     public $messages = [];
 
     /**
-     * @var string
+     * @var string[]
      */
     public $levels = [];
 
@@ -39,6 +39,8 @@ final class TestLogger extends AbstractLogger
 
     public function clearMessages(): void
     {
-        $this->messages = $this->levels = $this->contexts = [];
+        $this->messages = [];
+        $this->levels = [];
+        $this->contexts = [];
     }
 }

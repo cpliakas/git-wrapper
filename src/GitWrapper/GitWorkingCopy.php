@@ -82,7 +82,7 @@ final class GitWorkingCopy
 
     public function setCloned(bool $cloned): void
     {
-        $this->cloned = (bool) $cloned;
+        $this->cloned = $cloned;
     }
 
     /**
@@ -98,7 +98,7 @@ final class GitWorkingCopy
                 $gitDir .= '/.git';
             }
 
-            $this->cloned = (is_dir($gitDir . '/objects') && is_dir($gitDir . '/refs') && is_file($gitDir . '/HEAD'));
+            $this->cloned = is_dir($gitDir . '/objects') && is_dir($gitDir . '/refs') && is_file($gitDir . '/HEAD');
         }
 
         return $this->cloned;
@@ -503,9 +503,7 @@ final class GitWorkingCopy
      *
      * @code $git->cloneRepository('git://github.com/cpliakas/git-wrapper.git');
      *
-     * @param string $repository The Git URL of the repository being cloned.
      * @param mixed[] $options
-     * @param string $repository The URL of the repository being cloned.
      */
     public function cloneRepository(string $repository, array $options = []): self
     {
