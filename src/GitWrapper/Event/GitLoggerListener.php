@@ -8,7 +8,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class GitLoggerListener implements EventSubscriberInterface, LoggerAwareInterface
+final class GitLoggerListener implements EventSubscriberInterface, LoggerAwareInterface
 {
     /**
      * @var LoggerInterface

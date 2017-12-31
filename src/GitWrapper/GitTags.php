@@ -8,7 +8,7 @@ use IteratorAggregate;
 /**
  * Class that parses and returnes an array of Tags.
  */
-class GitTags implements IteratorAggregate
+final class GitTags implements IteratorAggregate
 {
     /**
      * @var GitWorkingCopy

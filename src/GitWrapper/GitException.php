@@ -7,6 +7,6 @@ use RuntimeException;
 /**
  * Base class for exceptions thrown by the Git library.
  */
-class GitException extends RuntimeException
+final class GitException extends RuntimeException
 {
 }

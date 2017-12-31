@@ -11,30 +11,39 @@ use Nette\Utils\Random;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
-class GitWrapperTestCase extends TestCase
+abstract class GitWrapperTestCase extends TestCase
 {
+    /**
+     * @var string
+     */
     public const REPO_DIR = 'build/test/repo';
 
+    /**
+     * @var string
+     */
     public const WORKING_DIR = 'build/test/wc';
 
+    /**
+     * @var string
+     */
     public const CONFIG_EMAIL = 'opensource@chrispliakas.com';
 
+    /**
+     * @var string
+     */
     public const CONFIG_NAME = 'Chris Pliakas';
 
     /**
-     * @var \Symfony\Component\Filesystem\Filesystem
+     * @var Filesystem
      */
     protected $filesystem;
 
     /**
-     * @var \GitWrapper\GitWrapper
+     * @var GitWrapper
      */
     protected $wrapper;
 
-    /**
-     * Overrides PHPUnit\Framework\TestCase::setUp().
-     */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->filesystem = new Filesystem();

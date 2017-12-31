@@ -8,7 +8,7 @@ use IteratorAggregate;
 /**
  * Class that parses and returnes an array of branches.
  */
-class GitBranches implements IteratorAggregate
+final class GitBranches implements IteratorAggregate
 {
     /**
      * @var GitWorkingCopy

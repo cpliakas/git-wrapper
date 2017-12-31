@@ -5,7 +5,7 @@ namespace GitWrapper\Test\Event;
 use GitWrapper\Event\GitOutputEvent;
 use GitWrapper\Event\GitOutputListenerInterface;
 
-class TestOutputListener implements GitOutputListenerInterface
+final class TestOutputListener implements GitOutputListenerInterface
 {
     /**
      * @var \GitWrapper\Event\GitOutputEvent

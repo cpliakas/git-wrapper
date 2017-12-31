@@ -10,7 +10,7 @@ use Symfony\Component\Process\Process;
 /**
  * GitProcess runs a Git command in an independent process.
  */
-class GitProcess extends Process
+final class GitProcess extends Process
 {
     /**
      * @var GitWrapper

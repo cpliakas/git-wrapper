@@ -9,7 +9,7 @@ use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
 use Throwable;
 
-class GitLoggerListenerTest extends GitWrapperTestCase
+final class GitLoggerListenerTest extends GitWrapperTestCase
 {
     protected function tearDown(): void
     {
