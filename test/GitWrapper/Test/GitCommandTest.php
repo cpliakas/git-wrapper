@@ -4,7 +4,7 @@ namespace GitWrapper\Test;
 
 use GitWrapper\GitCommand;
 
-final class GitCommandTest extends GitWrapperTestCase
+final class GitCommandTest extends AbstractGitWrapperTestCase
 {
     public function testCommand(): void
     {

@@ -6,12 +6,12 @@ use GitWrapper\Event\GitEvent;
 use GitWrapper\GitCommand;
 use Symfony\Component\Process\Process;
 
-final class GitListenerTest extends GitWrapperTestCase
+final class GitListenerTest extends AbstractGitWrapperTestCase
 {
     public function testListener(): void
     {
         $listener = $this->addListener();
-        $this->wrapper->version();
+        $this->gitWrapper->version();
 
         $this->assertTrue($listener->methodCalled('onPrepare'));
         $this->assertTrue($listener->methodCalled('onSuccess'));
@@ -35,7 +35,7 @@ final class GitListenerTest extends GitWrapperTestCase
         $this->addBypassListener();
         $listener = $this->addListener();
 
-        $output = $this->wrapper->version();
+        $output = $this->gitWrapper->version();
 
         $this->assertTrue($listener->methodCalled('onPrepare'));
         $this->assertFalse($listener->methodCalled('onSuccess'));
@@ -49,9 +49,9 @@ final class GitListenerTest extends GitWrapperTestCase
     {
         $process = new Process('');
         $command = GitCommand::getInstance();
-        $event = new GitEvent($this->wrapper, $process, $command);
+        $event = new GitEvent($this->gitWrapper, $process, $command);
 
-        $this->assertSame($this->wrapper, $event->getWrapper());
+        $this->assertSame($this->gitWrapper, $event->getWrapper());
         $this->assertSame($process, $event->getProcess());
         $this->assertSame($command, $event->getCommand());
     }
