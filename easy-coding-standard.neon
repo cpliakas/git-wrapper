@@ -36,4 +36,4 @@ parameters:
 
         SlamCsFixer\FinalInternalClassFixer:
             # class with children
-            - src/GitWrapper/Event/GitEvent.php
+            - src/Event/GitEvent.php
