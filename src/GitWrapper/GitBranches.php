@@ -30,7 +30,6 @@ final class GitBranches implements IteratorAggregate
      */
     public function fetchBranches(bool $onlyRemote = false): array
     {
-        $this->gitWorkingCopy->clearOutput();
         $options = ($onlyRemote) ? ['r' => true] : ['a' => true];
         $output = (string) $this->gitWorkingCopy->branch($options);
         $branches = preg_split("/\r\n|\n|\r/", rtrim($output));
