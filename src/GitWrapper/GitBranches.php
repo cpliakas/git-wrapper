@@ -13,7 +13,7 @@ final class GitBranches implements IteratorAggregate
     /**
      * @var GitWorkingCopy
      */
-    protected $gitWorkingCopy;
+    private $gitWorkingCopy;
 
     public function __construct(GitWorkingCopy $gitWorkingCopy)
     {

@@ -13,14 +13,14 @@ final class GitLoggerListener implements EventSubscriberInterface, LoggerAwareIn
     /**
      * @var LoggerInterface
      */
-    protected $logger;
+    private $logger;
 
     /**
      * Mapping of event to log level.
      *
      * @var string[]
      */
-    protected $logLevelMappings = [
+    private $logLevelMappings = [
         GitEvents::GIT_PREPARE => LogLevel::INFO,
         GitEvents::GIT_OUTPUT => LogLevel::DEBUG,
         GitEvents::GIT_SUCCESS => LogLevel::INFO,

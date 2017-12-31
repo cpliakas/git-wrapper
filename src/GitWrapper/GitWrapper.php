@@ -26,26 +26,26 @@ final class GitWrapper
      *
      * @var string
      */
-    protected $gitBinary;
+    private $gitBinary;
 
     /**
      * Environment variables defined in the scope of the Git command.
      *
      * @var string[]
      */
-    protected $env = [];
+    private $env = [];
 
     /**
      * The timeout of the Git command in seconds.
      *
      * @var int
      */
-    protected $timeout = 60;
+    private $timeout = 60;
 
     /**
      * @var GitOutputListenerInterface
      */
-    protected $gitOutputListener;
+    private $gitOutputListener;
 
     /**
      * @var EventDispatcherInterface
