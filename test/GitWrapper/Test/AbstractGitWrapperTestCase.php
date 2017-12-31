@@ -11,7 +11,7 @@ use Nette\Utils\Random;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
-abstract class GitWrapperTestCase extends TestCase
+abstract class AbstractGitWrapperTestCase extends TestCase
 {
     /**
      * @var string
@@ -41,13 +41,13 @@ abstract class GitWrapperTestCase extends TestCase
     /**
      * @var GitWrapper
      */
-    protected $wrapper;
+    protected $gitWrapper;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->filesystem = new Filesystem();
-        $this->wrapper = new GitWrapper();
+        $this->gitWrapper = new GitWrapper();
     }
 
     public function randomString(): string
@@ -60,7 +60,7 @@ abstract class GitWrapperTestCase extends TestCase
      */
     public function addListener(): TestListener
     {
-        $dispatcher = $this->wrapper->getDispatcher();
+        $dispatcher = $this->gitWrapper->getDispatcher();
         $listener = new TestListener();
 
         $dispatcher->addListener(GitEvents::GIT_PREPARE, [$listener, 'onPrepare']);
@@ -77,7 +77,7 @@ abstract class GitWrapperTestCase extends TestCase
     public function addBypassListener(): TestBypassListener
     {
         $listener = new TestBypassListener();
-        $dispatcher = $this->wrapper->getDispatcher();
+        $dispatcher = $this->gitWrapper->getDispatcher();
         $dispatcher->addListener(GitEvents::GIT_PREPARE, [$listener, 'onPrepare'], -5);
         return $listener;
     }
@@ -99,7 +99,7 @@ abstract class GitWrapperTestCase extends TestCase
     public function runBadCommand(bool $catchException = false): void
     {
         try {
-            $this->wrapper->git('a-bad-command');
+            $this->gitWrapper->git('a-bad-command');
         } catch (GitException $gitException) {
             if (! $catchException) {
                 throw $gitException;

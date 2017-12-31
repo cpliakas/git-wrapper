@@ -2,6 +2,7 @@
 
 namespace GitWrapper\Test;
 
+use GitWrapper\Test\StreamSuppressFilter;
 use Exception;
 use GitWrapper\GitBranches;
 use GitWrapper\GitException;
@@ -9,7 +10,7 @@ use GitWrapper\GitWorkingCopy;
 use GitWrapper\Test\Event\TestOutputListener;
 use Symfony\Component\Process\Process;
 
-final class GitWorkingCopyTest extends GitWrapperTestCase
+final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
 {
     /**
      * @var string
@@ -24,11 +25,11 @@ final class GitWorkingCopyTest extends GitWrapperTestCase
         parent::setUp();
 
         // Create the local repository.
-        $this->wrapper->init(self::REPO_DIR, ['bare' => true]);
+        $this->gitWrapper->init(self::REPO_DIR, ['bare' => true]);
 
         // Clone the local repository.
         $directory = 'build/test/wc_init';
-        $git = $this->wrapper->cloneRepository('file://' . realpath(self::REPO_DIR), $directory);
+        $git = $this->gitWrapper->cloneRepository('file://' . realpath(self::REPO_DIR), $directory);
         $git->config('user.email', self::CONFIG_EMAIL);
         $git->config('user.name', self::CONFIG_NAME);
 
@@ -85,18 +86,16 @@ final class GitWorkingCopyTest extends GitWrapperTestCase
     /**
      * Clones the local repo and returns an initialized GitWorkingCopy object.
      *
-     * @param string $directory
-     *   The directory that the repository is being cloned to, defaults to
-     *   "test/wc".
-     *
+     * @param string $directory The directory that the repository is being cloned to, defaults to "test/wc".
      */
     public function getWorkingCopy(string $directory = self::WORKING_DIR): GitWorkingCopy
     {
-        $git = $this->wrapper->workingCopy($directory);
-        $git->cloneRepository('file://' . realpath(self::REPO_DIR))
-            ->config('user.email', self::CONFIG_EMAIL)
-            ->config('user.name', self::CONFIG_NAME)
-            ->clearOutput();
+        $git = $this->gitWrapper->workingCopy($directory);
+        $git->cloneRepository('file://' . realpath(self::REPO_DIR));
+        $git->config('user.email', self::CONFIG_EMAIL);
+        $git->config('user.name', self::CONFIG_NAME);
+        $git->clearOutput();
+
         return $git;
     }
 
@@ -133,11 +132,11 @@ final class GitWorkingCopyTest extends GitWrapperTestCase
 
     public function testHasChanges(): void
     {
-        $git = $this->getWorkingCopy();
-        $this->assertFalse($git->hasChanges());
+        $gitWorkingCopy = $this->getWorkingCopy();
+        $this->assertFalse($gitWorkingCopy->hasChanges());
 
         file_put_contents(self::WORKING_DIR . '/change.me', "changed\n");
-        $this->assertTrue($git->hasChanges());
+        $this->assertTrue($gitWorkingCopy->hasChanges());
     }
 
     public function testGetBranches(): void
@@ -315,13 +314,8 @@ PATCH;
     {
         $git = $this->getWorkingCopy();
 
-        try {
-            $git->commit('Nothing to commit so generates an error / not error');
-        } catch (GitException $exception) {
-            $errorOutput = $exception->getMessage();
-        }
-
-        $this->assertRegExp("/Your branch is up[- ]to[- ]date with 'origin\\/master'./", $errorOutput);
+        $this->expectExceptionMessageRegExp("/Your branch is up[- ]to[- ]date with 'origin\\/master'./");
+        $git->commit('Nothing to commit so generates an error / not error');
     }
 
     public function testGitDiff(): void
@@ -405,7 +399,7 @@ PATCH;
 
         // Capture output written to STDOUT and use echo so we can suppress and
         // capture it using normal output buffering.
-        stream_filter_register('suppress', '\GitWrapper\Test\StreamSuppressFilter');
+        stream_filter_register('suppress', StreamSuppressFilter::class);
         $stdoutSuppress = stream_filter_append(STDOUT, 'suppress');
 
         $git->getWrapper()->streamOutput(true);
@@ -594,7 +588,10 @@ PATCH;
             ],
             // The --no-tags options should omit importing tags.
             [
-                ['-f' => true, '--no-tags' => true],
+                [
+                    '-f' => true,
+                    '--no-tags' => true
+                ],
                 [
                     'assertRemoteBranches' => [['remote/master', 'remote/remote-branch']],
                     'assertNoGitTag' => ['remote-tag'],
@@ -606,7 +603,10 @@ PATCH;
             // branches. No tags were added to the master branch, so the tag
             // should not be imported.
             [
-                ['-f' => true, '-t' => ['master']],
+                [
+                    '-f' => true,
+                    '-t' => ['master']
+                ],
                 [
                     'assertRemoteBranches' => [['remote/master']],
                     'assertNoRemoteBranches' => [['remote/remote-branch']],
@@ -617,7 +617,11 @@ PATCH;
             // The -t option in combination with the --tags option should fetch
             // all tags, so now the tag should be there.
             [
-                ['-f' => true, '-t' => ['master'], '--tags' => true],
+                [
+                    '-f' => true,
+                    '-t' => ['master'],
+                    '--tags' => true
+                ],
                 [
                     'assertRemoteBranches' => [['remote/master']],
                     'assertNoRemoteBranches' => [['remote/remote-branch']],
@@ -627,7 +631,10 @@ PATCH;
             ],
             // The -m option should set up a remote master branch.
             [
-                ['-f' => true, '-m' => 'remote-branch'],
+                [
+                    '-f' => true,
+                    '-m' => 'remote-branch'
+                ],
                 [
                     'assertRemoteBranches' => [['remote/master', 'remote/remote-branch']],
                     'assertGitTag' => ['remote-tag'],
@@ -717,15 +724,15 @@ PATCH;
         ];
     }
 
-    protected function assertGitTag(GitWorkingCopy $repository, string $tag): void
+    protected function assertGitTag(GitWorkingCopy $gitWorkingCopy, string $tag): void
     {
-        $repository->run(['rev-parse', $tag]);
+        $gitWorkingCopy->run(['rev-parse', $tag]);
     }
 
-    protected function assertNoGitTag(GitWorkingCopy $repository, string $tag): void
+    protected function assertNoGitTag(GitWorkingCopy $gitWorkingCopy, string $tag): void
     {
         try {
-            $repository->run(['rev-parse', $tag]);
+            $gitWorkingCopy->run(['rev-parse', $tag]);
         } catch (GitException $e) {
             // Expected result. The tag does not exist.
             return;
@@ -734,15 +741,15 @@ PATCH;
         throw new Exception("Expecting that the tag '${tag}' doesn't exist, but it does.");
     }
 
-    protected function assertRemoteMaster(GitWorkingCopy $repository): void
+    protected function assertRemoteMaster(GitWorkingCopy $gitWorkingCopy): void
     {
-        $repository->run(['rev-parse', 'remote/HEAD']);
+        $gitWorkingCopy->run(['rev-parse', 'remote/HEAD']);
     }
 
-    protected function assertNoRemoteMaster(GitWorkingCopy $repository): void
+    protected function assertNoRemoteMaster(GitWorkingCopy $gitWorkingCopy): void
     {
         try {
-            $repository->run(['rev-parse', 'remote/HEAD']);
+            $gitWorkingCopy->run(['rev-parse', 'remote/HEAD']);
         } catch (GitException $e) {
             // Expected result. The remote master does not exist.
             return;
@@ -754,39 +761,39 @@ PATCH;
     /**
      * @param string[] $branches
      */
-    protected function assertRemoteBranches(GitWorkingCopy $repository, array $branches): void
+    protected function assertRemoteBranches(GitWorkingCopy $gitWorkingCopy, array $branches): void
     {
         foreach ($branches as $branch) {
-            $this->assertRemoteBranch($repository, $branch);
+            $this->assertRemoteBranch($gitWorkingCopy, $branch);
         }
     }
 
-    protected function assertRemoteBranch(GitWorkingCopy $repository, string $branch): void
+    protected function assertRemoteBranch(GitWorkingCopy $gitWorkingCopy, string $branch): void
     {
-        $branches = $repository->getBranches()->remote();
+        $branches = $gitWorkingCopy->getBranches()->remote();
         $this->assertArrayHasKey($branch, array_flip($branches));
     }
 
     /**
      * @param string[] $branches
      */
-    protected function assertNoRemoteBranches(GitWorkingCopy $repository, array $branches): void
+    protected function assertNoRemoteBranches(GitWorkingCopy $gitWorkingCopy, array $branches): void
     {
         foreach ($branches as $branch) {
-            $this->assertNoRemoteBranch($repository, $branch);
+            $this->assertNoRemoteBranch($gitWorkingCopy, $branch);
         }
     }
 
-    protected function assertNoRemoteBranch(GitWorkingCopy $repository, string $branch): void
+    protected function assertNoRemoteBranch(GitWorkingCopy $gitWorkingCopy, string $branch): void
     {
-        $branches = $repository->getBranches()->remote();
+        $branches = $gitWorkingCopy->getBranches()->remote();
         $this->assertArrayNotHasKey($branch, array_flip($branches));
     }
 
     protected function createRemote(): void
     {
         // Create a clone of the working copy that will serve as a remote.
-        $git = $this->wrapper->cloneRepository('file://' . realpath(self::REPO_DIR), self::REMOTE_REPO_DIR);
+        $git = $this->gitWrapper->cloneRepository('file://' . realpath(self::REPO_DIR), self::REMOTE_REPO_DIR);
         $git->config('user.email', self::CONFIG_EMAIL);
         $git->config('user.name', self::CONFIG_NAME);
 

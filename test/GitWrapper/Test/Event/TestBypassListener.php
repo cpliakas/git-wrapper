@@ -6,8 +6,8 @@ use GitWrapper\Event\GitEvent;
 
 final class TestBypassListener
 {
-    public function onPrepare(GitEvent $event): void
+    public function onPrepare(GitEvent $gitEvent): void
     {
-        $event->getCommand()->bypass();
+        $gitEvent->getCommand()->bypass();
     }
 }
