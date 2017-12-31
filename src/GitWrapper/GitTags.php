@@ -23,8 +23,6 @@ final class GitTags implements IteratorAggregate
     /**
      * Fetches the Tags via the `git branch` command.
      *
-     * @param bool $onlyRemote Whether to fetch only remote Tags, defaults to false which returns all Tags.
-     *
      * @return mixed[]
      */
     public function fetchTags(): array

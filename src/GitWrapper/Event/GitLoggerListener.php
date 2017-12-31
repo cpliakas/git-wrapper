@@ -41,9 +41,6 @@ final class GitLoggerListener implements EventSubscriberInterface, LoggerAwareIn
         $this->logger = $logger;
     }
 
-    /**
-     * @return LoggerInterface
-     */
     public function getLogger(): LoggerInterface
     {
         return $this->logger;
@@ -53,7 +50,6 @@ final class GitLoggerListener implements EventSubscriberInterface, LoggerAwareIn
      * Sets the log level mapping for an event.
      *
      * @param string|false $logLevel
-     *
      */
     public function setLogLevelMapping(string $eventName, $logLevel): void
     {

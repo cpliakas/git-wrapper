@@ -748,7 +748,7 @@ PATCH;
     protected function assertNoRemoteMaster(GitWorkingCopy $gitWorkingCopy): void
     {
         try {
-            $gitWorkingCopy->run('rev-parse',[ 'remote/HEAD']);
+            $gitWorkingCopy->run('rev-parse', ['remote/HEAD']);
         } catch (GitException $e) {
             // Expected result. The remote master does not exist.
             return;
