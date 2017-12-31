@@ -62,7 +62,7 @@ final class GitWrapperTest extends AbstractGitWrapperTestCase
     {
         $key = './tests/id_rsa';
         $keyExpected = realpath($key);
-        $sshWrapperExpected = realpath(__DIR__ . '/../../../bin/git-ssh-wrapper.sh');
+        $sshWrapperExpected = dirname(__DIR__) . '/bin/git-ssh-wrapper.sh';
 
         $this->gitWrapper->setPrivateKey($key);
         $this->assertSame($keyExpected, $this->gitWrapper->getEnvVar('GIT_SSH_KEY'));
@@ -152,7 +152,7 @@ final class GitWrapperTest extends AbstractGitWrapperTestCase
 
     public function testWrapperExecutable(): void
     {
-        $sshWrapper = dirname(dirname(dirname(__DIR__))) . '/bin/git-ssh-wrapper.sh';
+        $sshWrapper = dirname(__DIR__) . '/bin/git-ssh-wrapper.sh';
         $this->assertTrue(is_executable($sshWrapper));
     }
 

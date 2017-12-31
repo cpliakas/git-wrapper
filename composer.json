@@ -33,7 +33,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "GitWrapper\\Test\\": "tests/GitWrapper/Test"
+            "GitWrapper\\Test\\": "tests"
         }
     },
     "scripts": {
