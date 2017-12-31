@@ -346,21 +346,13 @@ final class GitWorkingCopy
      */
     public function getRemoteUrl(string $remote, string $operation = 'fetch'): string
     {
-        $args = $operation === 'push' ? ['get-url', '--push', $remote] : ['get-url', $remote];
-        try {
-            return rtrim(call_user_func_array([$this, 'remote'], $args));
-        } catch (GitException $gitException) {
-            // Fall back to parsing 'git remote -v' for older versions of git
-            // that do not support `git remote get-url`.
-            $identifier = " (${operation})";
-            foreach (explode(PHP_EOL, rtrim($this->remote('-v'))) as $line) {
-                if (strpos($line, $remote) === 0 && strrpos($line, $identifier) === strlen($line) - strlen($identifier)
-                ) {
-                    preg_match('/^.+\t(.+) \(' . $operation . '\)$/', $line, $matches);
-                    return $matches[1];
-                }
-            }
+        $argsAndOptions = ['get-url', $remote];
+
+        if ($operation === 'push') {
+            $argsAndOptions[] = '--push';
         }
+
+        return rtrim($this->remote(...$argsAndOptions));
     }
 
     /**
@@ -386,8 +378,7 @@ final class GitWorkingCopy
     /**
      * Find by binary search the change that introduced a bug.
      *
-     * @code
-     * $git->bisect('good', '2.6.13-rc2');
+     * @code $git->bisect('good', '2.6.13-rc2');
      * $git->bisect('view', ['stat' => true]);
      *
      * @param mixed ...$argsAndOptions
