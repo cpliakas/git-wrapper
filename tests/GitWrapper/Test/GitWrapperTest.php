@@ -60,7 +60,7 @@ final class GitWrapperTest extends AbstractGitWrapperTestCase
 
     public function testSetPrivateKey(): void
     {
-        $key = './test/id_rsa';
+        $key = './tests/id_rsa';
         $keyExpected = realpath($key);
         $sshWrapperExpected = realpath(__DIR__ . '/../../../bin/git-ssh-wrapper.sh');
 
@@ -73,15 +73,15 @@ final class GitWrapperTest extends AbstractGitWrapperTestCase
     public function testSetPrivateKeyPort(): void
     {
         $port = random_int(1024, 10000);
-        $this->gitWrapper->setPrivateKey('./test/id_rsa', $port);
+        $this->gitWrapper->setPrivateKey('./tests/id_rsa', $port);
         $this->assertSame($port, $this->gitWrapper->getEnvVar('GIT_SSH_PORT'));
     }
 
     public function testSetPrivateKeyWrapper(): void
     {
-        $sshWrapper = './test/dummy-wrapper.sh';
+        $sshWrapper = './tests/dummy-wrapper.sh';
         $sshWrapperExpected = realpath($sshWrapper);
-        $this->gitWrapper->setPrivateKey('./test/id_rsa', 22, $sshWrapper);
+        $this->gitWrapper->setPrivateKey('./tests/id_rsa', 22, $sshWrapper);
         $this->assertSame($sshWrapperExpected, $this->gitWrapper->getEnvVar('GIT_SSH'));
     }
 
@@ -90,7 +90,7 @@ final class GitWrapperTest extends AbstractGitWrapperTestCase
      */
     public function testSetPrivateKeyError(): void
     {
-        $badKey = './test/id_rsa_bad';
+        $badKey = './tests/id_rsa_bad';
         $this->gitWrapper->setPrivateKey($badKey);
     }
 
@@ -99,15 +99,15 @@ final class GitWrapperTest extends AbstractGitWrapperTestCase
      */
     public function testSetPrivateKeyWrapperError(): void
     {
-        $badWrapper = './test/dummy-wrapper-bad.sh';
-        $this->gitWrapper->setPrivateKey('./test/id_rsa', 22, $badWrapper);
+        $badWrapper = './tests/dummy-wrapper-bad.sh';
+        $this->gitWrapper->setPrivateKey('./tests/id_rsa', 22, $badWrapper);
     }
 
     public function testUnsetPrivateKey(): void
     {
         // Set and unset the private key.
-        $key = './test/id_rsa';
-        $sshWrapper = './test/dummy-wrapper.sh';
+        $key = './tests/id_rsa';
+        $sshWrapper = './tests/dummy-wrapper.sh';
         $this->gitWrapper->setPrivateKey($key, 22, $sshWrapper);
         $this->gitWrapper->unsetPrivateKey();
 
@@ -134,7 +134,7 @@ final class GitWrapperTest extends AbstractGitWrapperTestCase
     {
         $command = new GitCommand();
         $command->setFlag('version');
-        $command->setDirectory('./test'); // Directory just has to exist.
+        $command->setDirectory('./tests'); // Directory just has to exist.
         $version = $this->gitWrapper->run($command);
         $this->assertGitVersion($version);
     }
