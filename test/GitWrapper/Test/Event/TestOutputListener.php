@@ -10,7 +10,7 @@ final class TestOutputListener implements GitOutputListenerInterface
     /**
      * @var \GitWrapper\Event\GitOutputEvent
      */
-    protected $gitOutputEvent;
+    private $gitOutputEvent;
 
     public function getLastEvent(): GitOutputEvent
     {
