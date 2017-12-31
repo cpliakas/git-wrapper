@@ -214,7 +214,6 @@ final class GitWrapper
      * Returns an object that interacts with a working copy.
      *
      * @param string $directory Path to the directory containing the working copy.
-     *
      */
     public function workingCopy(string $directory): GitWorkingCopy
     {
@@ -289,17 +288,8 @@ final class GitWrapper
     }
 
     /**
-     * The command is simply a raw command line entry for everything after the
-     * Git binary. For example, a `git config -l` command would be passed as
-     * `config -l` via the first argument of this method.
-     *
-     * Note that no events are thrown by this method.
-     *
-     * @param string $commandLine The raw command containing the Git options and arguments. The Git
-     *   binary should not be in the command, for example `git config -l` would
-     *   translate to "config -l".
-     * @param string|null $cwd The working directory of the Git process. Defaults to null which uses
-     *   the current working directory of the PHP process.
+     * The command is simply a raw command line entry for everything after the Git binary.
+     * For example, a `git config -l` command would be passed as `config -l` via the first argument of this method.
      *
      * @return string The STDOUT returned by the Git command.
      */
@@ -312,11 +302,6 @@ final class GitWrapper
     }
 
     /**
-     * @param \GitWrapper\GitCommand $command The Git command being executed.
-     * @param string|null $cwd Explicitly specify the working directory of the Git process. Defaults
-     *   to null which automatically sets the working directory based on the
-     *   command being executed relative to the working copy.
-     *
      * @return string The STDOUT returned by the Git command.
      */
     public function run(GitCommand $gitCommand, ?string $cwd = null): string

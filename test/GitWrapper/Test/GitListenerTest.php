@@ -48,7 +48,7 @@ final class GitListenerTest extends AbstractGitWrapperTestCase
     public function testEvent(): void
     {
         $process = new Process('');
-        $command = new GitCommand;
+        $command = new GitCommand();
         $event = new GitEvent($this->gitWrapper, $process, $command);
 
         $this->assertSame($this->gitWrapper, $event->getWrapper());
