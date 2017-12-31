@@ -2,6 +2,7 @@
 
 namespace GitWrapper\Test;
 
+use DomainException;
 use GitWrapper\Event\GitLoggerListener;
 use GitWrapper\GitCommand;
 use Psr\Log\LogLevel;
@@ -33,11 +34,9 @@ final class GitLoggerListenerTest extends AbstractGitWrapperTestCase
         $this->assertSame('test-level', $listener->getLogLevelMapping('test.event'));
     }
 
-    /**
-     * @expectedException \DomainException
-     */
     public function testGetInvalidLogLevelMapping(): void
     {
+        $this->expectException(DomainException::class);
         $listener = new GitLoggerListener(new NullLogger());
         $listener->getLogLevelMapping('bad.event');
     }
