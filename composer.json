@@ -21,7 +21,8 @@
         "symplify/easy-coding-standard": "^3.0",
         "slam/php-cs-fixer-extensions": "^1.10",
         "nette/utils": "^2.4",
-        "phpstan/phpstan": "^0.9"
+        "phpstan/phpstan": "^0.9",
+        "symplify/changelog-linker": "^3.0"
     },
     "autoload": {
         "psr-4": {
