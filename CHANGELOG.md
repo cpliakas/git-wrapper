@@ -82,7 +82,9 @@
 
 - misc
 
-[v2.0.0]: https://github.com/cpliakas/git-wrapper/compare/1.7.0...v2.0.0[#138]: https://github.com/cpliakas/git-wrapper/pull/138
+
+[v2.0.0]: https://github.com/cpliakas/git-wrapper/compare/1.7.0...v2.0.0
+[#138]: https://github.com/cpliakas/git-wrapper/pull/138
 [#137]: https://github.com/cpliakas/git-wrapper/pull/137
 [#136]: https://github.com/cpliakas/git-wrapper/pull/136
 [#130]: https://github.com/cpliakas/git-wrapper/pull/130
