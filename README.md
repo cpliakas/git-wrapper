@@ -3,7 +3,7 @@
 [![Build Status](https://img.shields.io/travis/cpliakas/git-wrapper/master.svg?style=flat-square)](https://travis-ci.org/cpliakas/git-wrapper)
 [![Coverage Status](https://img.shields.io/coveralls/cpliakas/git-wrapper/master.svg?style=flat-square)](https://coveralls.io/github/cpliakas/git-wrapper?branch=master)
 [![Total Downloads](https://img.shields.io/packagist/dt/cpliakas/git-wrapper.svg?style=flat-square)](https://packagist.org/packages/cpliakas/git-wrapper)
-[![Latest Stable Version](https://img.shields.io/packagist/v/cpliakas/git-wrapper.svg?style=flat-square))](https://packagist.org/packages/cpliakas/git-wrapper)
+[![Latest Stable Version](https://img.shields.io/packagist/v/cpliakas/git-wrapper.svg?style=flat-square)](https://packagist.org/packages/cpliakas/git-wrapper)
 
 Git Wrapper provides a **readable API that abstracts challenges of executing Git commands from within a PHP process** for you. 
 
