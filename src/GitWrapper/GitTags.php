@@ -27,7 +27,7 @@ final class GitTags implements IteratorAggregate
      */
     public function fetchTags(): array
     {
-        $output = (string) $this->gitWorkingCopy->tag(['l' => true]);
+        $output = $this->gitWorkingCopy->tag(['l' => true]);
         $tags = preg_split("/\r\n|\n|\r/", rtrim($output));
         return array_map([$this, 'trimTags'], $tags);
     }
