@@ -24,11 +24,11 @@ script:
   - if [[ $PHPSTAN != "" ]]; then composer phpstan; fi
 
 after_script:
-  # upload coverage
+  # upload coverage.xml to Coveralls
   - |
     if [[ $PHPUNIT_FLAGS != "" ]]; then
-      wget https://github.com/satooshi/php-coveralls/releases/download/v1.0.1/coveralls.phar
-      php coveralls.phar --verbose
+      wget https://github.com/satooshi/php-coveralls/releases/download/v1.0.1/coveralls.phar;
+      php coveralls.phar --verbose;
     fi
 
 notifications:
