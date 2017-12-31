@@ -132,7 +132,7 @@ final class GitWrapperTest extends AbstractGitWrapperTestCase
 
     public function testGitRun(): void
     {
-        $command = GitCommand::getInstance();
+        $command = new GitCommand();
         $command->setFlag('version');
         $command->setDirectory('./test'); // Directory just has to exist.
         $version = $this->gitWrapper->run($command);
@@ -144,7 +144,7 @@ final class GitWrapperTest extends AbstractGitWrapperTestCase
      */
     public function testGitRunDirectoryError(): void
     {
-        $command = GitCommand::getInstance();
+        $command = new GitCommand();
         $command->setFlag('version');
         $command->setDirectory('/some/bad/directory');
         $this->gitWrapper->run($command);
