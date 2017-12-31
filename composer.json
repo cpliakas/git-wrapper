@@ -20,7 +20,8 @@
         "psr/log": "1.0",
         "symplify/easy-coding-standard": "^3.0",
         "slam/php-cs-fixer-extensions": "^1.10",
-        "nette/utils": "^2.4"
+        "nette/utils": "^2.4",
+        "phpstan/phpstan": "^0.9.1"
     },
     "suggest": {
         "monolog/monolog": "Enables logging of executed git commands"
@@ -37,6 +38,7 @@
     },
     "scripts": {
         "check-cs": "vendor/bin/ecs check src test",
-        "fix-cs": "vendor/bin/ecs check src test --fix"
+        "fix-cs": "vendor/bin/ecs check src test --fix",
+        "phpstan": "vendor/bin/phpstan analyse src test --level max --configuration phpstan.neon"
     }
 }
