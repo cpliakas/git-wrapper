@@ -7,7 +7,17 @@
 [![Latest Stable Version](https://img.shields.io/packagist/v/cpliakas/git-wrapper.svg)](https://packagist.org/packages/cpliakas/git-wrapper)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/cpliakas/git-wrapper/master/LICENSE)
 
-Its purpose is to provide a readable API that abstracts some of the challenges of executing Git commands from within a PHP process. Specifically, this library builds upon the Symfony framework's Process component to execute the Git command in a way that works across platforms and uses the best-in-breed techniques available to PHP. This library also provides an SSH wrapper script and API method for developers to easily specify a private key other than one of the defaults by using the technique in [this thread on StackOverflow](http://stackoverflow.com/a/3500308/870667). Finally, various commands are expected to be executed in the directory containing the working copy. Although this a fairly simple challenge to overcome, the library handles this transparently so the developer doesn't have to think about it.
+Git Wrapper provides a **readable API that abstracts challenges of executing Git commands from within a PHP process** for you. 
+
+- It's built upon the [`Symfony\Process`](https://symfony.com/doc/current/components/process.html) to execute the Git command with **cross-platform support** and uses the best-in-breed techniques available to PHP. 
+- This library also provides an SSH wrapper script and API method for developers to **easily specify a private key other than default** by using [the technique from StackOverflow](http://stackoverflow.com/a/3500308/870667). 
+- Finally, various commands are expected to be executed in the directory containing the working copy. **The library handles this transparently** so the developer doesn't have to think about it.
+
+## Install
+
+```json
+composer require cpliakas/git-wrapper
+```
 
 ## Usage
 
@@ -85,11 +95,6 @@ $git = $wrapper->cloneRepository('git://github.com/cpliakas/git-wrapper.git', '/
 // The "git.log" file now has info about the command that was executed above.
 ```
 
-## Install
-
-```json
-composer require cpliakas/git-wrapper
-```
 
 ## Gotchas
 
