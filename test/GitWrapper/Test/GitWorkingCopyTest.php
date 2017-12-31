@@ -91,7 +91,6 @@ final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
         $git->cloneRepository('file://' . realpath(self::REPO_DIR));
         $git->config('user.email', self::CONFIG_EMAIL);
         $git->config('user.name', self::CONFIG_NAME);
-        $git->clearOutput();
 
         return $git;
     }
@@ -102,28 +101,13 @@ final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
         $this->assertTrue($git->isCloned());
     }
 
-    public function testGetOutput(): void
+    public function testOutput(): void
     {
         $git = $this->getWorkingCopy();
 
         // Test getting output of a simple status command.
         $output = (string) $git->status();
         $this->assertTrue(strpos($output, 'nothing to commit') !== false);
-
-        // Getting output should clear the buffer.
-        $this->assertEmpty($git->getOutput());
-    }
-
-    public function testClearOutput(): void
-    {
-        $git = $this->getWorkingCopy();
-
-        // Put stuff in the output buffer.
-        $git->status();
-
-        $git->clearOutput();
-        $output = $git->getOutput();
-        $this->assertEmpty($output);
     }
 
     public function testHasChanges(): void
@@ -400,7 +384,6 @@ PATCH;
 
         $this->assertTrue(stripos($contents, 'nothing to commit') !== false);
 
-        $git->clearOutput();
         $git->getWrapper()->streamOutput(false);
         ob_start();
         $git->status();

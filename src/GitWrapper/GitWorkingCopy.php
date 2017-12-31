@@ -25,13 +25,6 @@ final class GitWorkingCopy
     private $directory;
 
     /**
-     * The output captured by the last run Git commnd(s).
-     *
-     * @var string
-     */
-    private $output = '';
-
-    /**
      * A boolean flagging whether the repository is cloned.
      *
      * If the variable is null, the a rudimentary check will be performed to see
@@ -55,21 +48,6 @@ final class GitWorkingCopy
     public function getDirectory(): string
     {
         return $this->directory;
-    }
-
-    public function getOutput(): string
-    {
-        $output = $this->output;
-        $this->clearOutput();
-        return $output;
-    }
-
-    /**
-     * Clears the stored output captured by the last run Git command(s).
-     */
-    public function clearOutput(): void
-    {
-        $this->output = '';
     }
 
     public function setCloned(bool $cloned): void
@@ -109,7 +87,6 @@ final class GitWorkingCopy
         }
 
         return $this->gitWrapper->run($command);
-//        return $this->getOutput();
     }
 
     /**
@@ -154,7 +131,6 @@ final class GitWorkingCopy
             );
         }
 
-        $this->clearOutput();
         $mergeBase = (string) $this->run('merge-base', ['@', '@{u}']);
         $remoteSha = (string) $this->run('rev-parse', ['@{u}']);
         return $mergeBase === $remoteSha;
@@ -172,7 +148,6 @@ final class GitWorkingCopy
             throw new GitException('Error: HEAD does not have a remote tracking branch. Cannot check if it is ahead.');
         }
 
-        $this->clearOutput();
         $mergeBase = (string) $this->run('merge-base', ['@', '@{u}']);
         $localSha = (string) $this->run('rev-parse', ['@']);
         $remoteSha = (string) $this->run('rev-parse', ['@{u}']);
@@ -191,7 +166,6 @@ final class GitWorkingCopy
             throw new GitException('Error: HEAD does not have a remote tracking branch. Cannot check if it is behind.');
         }
 
-        $this->clearOutput();
         $mergeBase = (string) $this->run('merge-base', ['@', '@{u}']);
         $localSha = (string) $this->run('rev-parse', ['@']);
         $remoteSha = (string) $this->run('rev-parse', ['@{u}']);
@@ -211,7 +185,6 @@ final class GitWorkingCopy
             throw new GitException('Error: HEAD does not have a remote tracking branch. Cannot check if it is behind.');
         }
 
-        $this->clearOutput();
         $mergeBase = (string) $this->run('merge-base', ['@', '@{u}']);
         $localSha = (string) $this->run('rev-parse', ['@']);
         $remoteSha = (string) $this->run('rev-parse', ['@{u}']);
@@ -357,8 +330,6 @@ final class GitWorkingCopy
      */
     public function getRemotes(): array
     {
-        $this->clearOutput();
-
         $remotes = [];
         foreach (explode(PHP_EOL, rtrim($this->remote())) as $remote) {
             $remotes[$remote]['fetch'] = $this->getRemoteUrl($remote);
@@ -375,8 +346,6 @@ final class GitWorkingCopy
      */
     public function getRemoteUrl(string $remote, string $operation = 'fetch'): string
     {
-        $this->clearOutput();
-
         $args = $operation === 'push' ? ['get-url', '--push', $remote] : ['get-url', $remote];
         try {
             return rtrim(call_user_func_array([$this, 'remote'], $args));
