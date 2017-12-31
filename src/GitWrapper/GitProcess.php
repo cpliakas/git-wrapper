@@ -15,31 +15,31 @@ final class GitProcess extends Process
     /**
      * @var GitWrapper
      */
-    protected $git;
+    protected $gitWrapper;
 
     /**
      * @var GitCommand
      */
-    protected $command;
+    protected $gitCommand;
 
-    public function __construct(GitWrapper $git, GitCommand $command, ?string $cwd = null)
+    public function __construct(GitWrapper $gitWrapper, GitCommand $gitCommand, ?string $cwd = null)
     {
-        $this->git = $git;
-        $this->command = $command;
+        $this->gitWrapper = $gitWrapper;
+        $this->gitCommand = $gitCommand;
 
         // Build the command line options, flags, and arguments.
-        $gitCommand = $command->getCommandLine();
-        $commandLine = array_merge([$git->getGitBinary()], (array) $gitCommand);
+        $gitCommandLine = $gitCommand->getCommandLine();
+        $commandLine = array_merge([$gitWrapper->getGitBinary()], (array) $gitCommandLine);
 
         // Support for executing an arbitrary git command.
-        if (is_string($gitCommand)) {
+        if (is_string($gitCommandLine)) {
             $commandLine = implode(' ', $commandLine);
         }
 
         // Resolve the working directory of the Git process. Use the directory
         // in the command object if it exists.
         if ($cwd === null) {
-            $directory = $command->getDirectory();
+            $directory = $gitCommand->getDirectory();
             if ($directory !== null) {
                 if (! $cwd = realpath($directory)) {
                     throw new GitException('Path to working directory could not be resolved: ' . $directory);
@@ -49,12 +49,12 @@ final class GitProcess extends Process
 
         // Finalize the environment variables, an empty array is converted
         // to null which enherits the environment of the PHP process.
-        $env = $git->getEnvVars();
+        $env = $gitWrapper->getEnvVars();
         if (! $env) {
             $env = null;
         }
 
-        parent::__construct($commandLine, $cwd, $env, null, $git->getTimeout());
+        parent::__construct($commandLine, $cwd, $env, null, $gitWrapper->getTimeout());
     }
 
     /**
@@ -64,8 +64,8 @@ final class GitProcess extends Process
     {
         $exitCode = -1;
 
-        $event = new GitEvent($this->git, $this, $this->command);
-        $dispatcher = $this->git->getDispatcher();
+        $event = new GitEvent($this->gitWrapper, $this, $this->gitCommand);
+        $dispatcher = $this->gitWrapper->getDispatcher();
 
         try {
             // Throw the "git.command.prepare" event prior to executing.
@@ -74,7 +74,7 @@ final class GitProcess extends Process
             // Execute command if it is not flagged to be bypassed and throw the
             // "git.command.success" event, otherwise do not execute the comamnd
             // and throw the "git.command.bypass" event.
-            if ($this->command->notBypassed()) {
+            if ($this->gitCommand->notBypassed()) {
                 $exitCode = parent::run($callback, $env);
 
                 if ($this->isSuccessful()) {
