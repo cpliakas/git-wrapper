@@ -470,7 +470,7 @@ final class GitWorkingCopy
      *
      * @code
      * $git->bisect('good', '2.6.13-rc2');
-     * $git->bisect('view', array('stat' => true));
+     * $git->bisect('view', ['stat' => true]);
      *
      * @param mixed ...$argsAndOptions
      */
@@ -483,7 +483,7 @@ final class GitWorkingCopy
      * Executes a `git branch` command.
      *
      * @code $git->branch('my2.6.14', 'v2.6.14');
-     * $git->branch('origin/html', 'origin/man', array('d' => true, 'r' => 'origin/todo'));
+     * $git->branch('origin/html', 'origin/man', ['d' => true, 'r' => 'origin/todo']);
      *
      * @param mixed ...$argsAndOptions
      */
@@ -495,7 +495,7 @@ final class GitWorkingCopy
     /**
      * Executes a `git checkout` command.
      *
-     * @code $git->checkout('new-branch', array('b' => true));
+     * @code $git->checkout('new-branch', ['b' => true]);
      *
      * @param mixed ...$argsAndOptions
      */
@@ -527,7 +527,7 @@ final class GitWorkingCopy
      * yields a `git commit -am "Message"` command.
      *
      * @code $git->commit('My commit message');
-     * $git->commit('Makefile', array('m' => 'My commit message'));
+     * $git->commit('Makefile', ['m' => 'My commit message']);
      *
      * @param mixed ...$argsAndOptions
      */
@@ -579,7 +579,7 @@ final class GitWorkingCopy
      * Download objects and refs from another repository.
      *
      * @code $git->fetch('origin');
-     * $git->fetch(array('all' => true));
+     * $git->fetch(['all' => true]);
      *
      * @param mixed ...$argsAndOptions
      */
@@ -607,7 +607,7 @@ final class GitWorkingCopy
      *
      * Create an empty git repository or reinitialize an existing one.
      *
-     * @code $git->init(array('bare' => true));
+     * @code $git->init(['bare' => true]);
      *
      * @param mixed[] $options
      */
@@ -620,7 +620,7 @@ final class GitWorkingCopy
     /**
      * Executes a `git log` command.
      *
-     * @code $git->log(array('no-merges' => true));
+     * @code $git->log(['no-merges' => true]);
      * $git->log('v2.6.12..', 'include/scsi', 'drivers/scsi');
      *
      * @param mixed ...$argsAndOptions
@@ -696,7 +696,7 @@ final class GitWorkingCopy
      *
      * Forward-port local commits to the updated upstream head.
      *
-     * @code $git->rebase('subsystem@{1}', array('onto' => 'subsystem'));
+     * @code $git->rebase('subsystem@{1}', ['onto' => 'subsystem']);
      *
      * @param mixed ...$argsAndOptions
      */
@@ -724,7 +724,7 @@ final class GitWorkingCopy
      *
      * Reset current HEAD to the specified state.
      *
-     * @code $git->reset(array('hard' => true));
+     * @code $git->reset(['hard' => true]);
      *
      * @param mixed ...$argsAndOptions
      */
@@ -774,7 +774,7 @@ final class GitWorkingCopy
      *
      * Show the working tree status.
      *
-     * @code $git->status(array('s' => true));
+     * @code $git->status(['s' => true]);
      *
      * @param mixed ...$argsAndOptions
      */
@@ -814,7 +814,7 @@ final class GitWorkingCopy
      *
      * Create an archive of files from a named tree
      *
-     * @code $git->archive('HEAD', array('o' => '/path/to/archive'));
+     * @code $git->archive('HEAD', ['o' => '/path/to/archive']);
      *
      * @param mixed ...$argsAndOptions
      */
