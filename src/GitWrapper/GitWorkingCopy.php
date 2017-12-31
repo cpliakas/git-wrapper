@@ -589,7 +589,7 @@ final class GitWorkingCopy
      *
      * @param mixed ...$argsAndOptions
      */
-    public function grep(... $argsAndOptions): self
+    public function grep(...$argsAndOptions): self
     {
         return $this->run('grep', $argsAndOptions);
     }
@@ -637,34 +637,24 @@ final class GitWorkingCopy
     /**
      * Executes a `git mv` command.
      *
-     * Move or rename a file, a directory, or a symlink.
-     *
      * @code $git->mv('orig.txt', 'dest.txt');
      *
-     * @param string $source The file / directory being moved.
-     * @param string $destination The target file / directory that the source is being move to.
      * @param mixed[] $options
      */
     public function mv(string $source, string $destination, array $options = []): self
     {
-        $args = [
-            $source,
-            $destination,
-            $options,
-        ];
-        return $this->run('mv', $args);
+        $argsAndOptions = [$source, $destination, $options];
+        return $this->run('mv', $argsAndOptions);
     }
 
     /**
      * Executes a `git pull` command.
      *
-     * Fetch from and merge with another repository or a local branch.
-     *
      * @code $git->pull('upstream', 'master');
      *
      * @param mixed ...$argsAndOptions
      */
-    public function pull(... $argsAndOptions): self
+    public function pull(...$argsAndOptions): self
     {
         return $this->run('pull', $argsAndOptions);
     }

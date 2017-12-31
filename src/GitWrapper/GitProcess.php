@@ -7,9 +7,6 @@ use GitWrapper\Event\GitEvents;
 use RuntimeException;
 use Symfony\Component\Process\Process;
 
-/**
- * GitProcess runs a Git command in an independent process.
- */
 final class GitProcess extends Process
 {
     /**
