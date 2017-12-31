@@ -13,11 +13,11 @@ final class GitTags implements IteratorAggregate
     /**
      * @var GitWorkingCopy
      */
-    protected $git;
+    protected $gitWorkingCopy;
 
-    public function __construct(GitWorkingCopy $git)
+    public function __construct(GitWorkingCopy $gitWorkingCopy)
     {
-        $this->git = clone $git;
+        $this->gitWorkingCopy = clone $gitWorkingCopy;
     }
 
     /**
@@ -29,8 +29,8 @@ final class GitTags implements IteratorAggregate
      */
     public function fetchTags(): array
     {
-        $this->git->clearOutput();
-        $output = (string) $this->git->tag(['l' => true]);
+        $this->gitWorkingCopy->clearOutput();
+        $output = (string) $this->gitWorkingCopy->tag(['l' => true]);
         $tags = preg_split("/\r\n|\n|\r/", rtrim($output));
         return array_map([$this, 'trimTags'], $tags);
     }

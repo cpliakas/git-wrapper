@@ -13,12 +13,12 @@ final class GitBranches implements IteratorAggregate
     /**
      * @var GitWorkingCopy
      */
-    protected $git;
+    protected $gitWorkingCopy;
 
-    public function __construct(GitWorkingCopy $git)
+    public function __construct(GitWorkingCopy $gitWorkingCopy)
     {
-        $this->git = clone $git;
-        $output = (string) $git->branch(['a' => true]);
+        $this->gitWorkingCopy = clone $gitWorkingCopy;
+        $output = (string) $gitWorkingCopy->branch(['a' => true]);
     }
 
     /**
@@ -30,9 +30,9 @@ final class GitBranches implements IteratorAggregate
      */
     public function fetchBranches(bool $onlyRemote = false): array
     {
-        $this->git->clearOutput();
+        $this->gitWorkingCopy->clearOutput();
         $options = ($onlyRemote) ? ['r' => true] : ['a' => true];
-        $output = (string) $this->git->branch($options);
+        $output = (string) $this->gitWorkingCopy->branch($options);
         $branches = preg_split("/\r\n|\n|\r/", rtrim($output));
         return array_map([$this, 'trimBranch'], $branches);
     }
@@ -69,6 +69,6 @@ final class GitBranches implements IteratorAggregate
      */
     public function head(): string
     {
-        return trim((string) $this->git->run(['rev-parse --abbrev-ref HEAD']));
+        return trim((string) $this->gitWorkingCopy->run(['rev-parse --abbrev-ref HEAD']));
     }
 }

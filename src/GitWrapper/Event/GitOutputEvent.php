@@ -22,13 +22,13 @@ final class GitOutputEvent extends GitEvent
     protected $buffer;
 
     public function __construct(
-        GitWrapper $wrapper,
+        GitWrapper $gitWrapper,
         Process $process,
-        GitCommand $command,
+        GitCommand $gitCommand,
         string $type,
         string $buffer
     ) {
-        parent::__construct($wrapper, $process, $command);
+        parent::__construct($gitWrapper, $process, $gitCommand);
         $this->type = $type;
         $this->buffer = $buffer;
     }
