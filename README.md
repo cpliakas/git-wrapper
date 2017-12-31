@@ -42,8 +42,8 @@ $git->add('test.txt');
 $git->commit('Added the test.txt file as per the examples.');
 $git->push();
 
-// Render the output
-print $git->getOutput();
+// Render the output for operation
+echo $git->push();
 
 // Stream output of subsequent Git commands in real time to STDOUT and STDERR.
 $gitWrapper->streamOutput();
