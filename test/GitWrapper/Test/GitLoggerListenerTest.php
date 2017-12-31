@@ -81,7 +81,7 @@ final class GitLoggerListenerTest extends AbstractGitWrapperTestCase
         $logger = new TestLogger();
         $this->gitWrapper->addLoggerListener(new GitLoggerListener($logger));
 
-        $command = GitCommand::getInstance('status', ['s' => true]);
+        $command = new GitCommand('status', ['s' => true]);
         $command->bypass();
 
         $this->gitWrapper->run($command);

@@ -305,7 +305,7 @@ final class GitWrapper
      */
     public function git(string $commandLine, ?string $cwd = null): string
     {
-        $command = call_user_func_array('GitWrapper\\GitCommand::getInstance', (array) $commandLine);
+        $command = new GitCommand($commandLine);
         $command->executeRaw(is_string($commandLine));
         $command->setDirectory($cwd);
         return $this->run($command);

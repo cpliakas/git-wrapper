@@ -2,9 +2,6 @@
 
 namespace GitWrapper;
 
-/**
- * Base class extended by all Git command classes.
- */
 final class GitCommand
 {
     /**
@@ -14,31 +11,31 @@ final class GitCommand
      *
      * @var string|null
      */
-    protected $directory;
+    private $directory;
 
     /**
      * The command being run, e.g. "clone", "commit", etc.
      *
      * @var string
      */
-    protected $command = '';
+    private $command = '';
 
     /**
      * @var mixed[]
      */
-    protected $options = [];
+    private $options = [];
 
     /**
      * @var mixed[]
      */
-    protected $args = [];
+    private $args = [];
 
     /**
      * Whether command execution should be bypassed.
      *
      * @var bool
      */
-    protected $bypass = false;
+    private $bypass = false;
 
     /**
      * Whether to execute the raw command without escaping it. This is useful
@@ -47,49 +44,24 @@ final class GitCommand
      *
      * @var bool
      */
-    protected $executeRaw = false;
+    private $executeRaw = false;
 
     /**
-     * Use GitCommand::getInstance() as the factory method for this class.
-     *
-     * @param mixed[] $args The arguments passed to GitCommand::getInstance().
+     * @param mixed ...$argsAndOptions
      */
-    protected function __construct(array $args)
+    public function __construct(string $command = '', ...$argsAndOptions)
     {
-        if ($args) {
-            // The first argument is the command.
-            $this->command = array_shift($args);
+        $this->command = $command;
 
-            // If the last element is an array, set it as the options.
-            $options = end($args);
-            if (is_array($options)) {
-                $this->setOptions($options);
-                array_pop($args);
-            }
-
-            // Pass all other method arguments as the Git command arguments.
-            foreach ($args as $arg) {
-                $this->addArgument($arg);
+        foreach ($argsAndOptions as $argOrOption) {
+            if (is_array($argOrOption)) {
+                // If item is array, set it as the options
+                $this->setOptions($argOrOption);
+            } else {
+                // Pass all other as the Git command arguments
+                $this->addArgument($argOrOption);
             }
         }
-    }
-
-    /**
-     * Constructs a GitCommand object.
-     *
-     * Accepts a variable number of arguments to model the arguments passed to
-     * the Git command line utility. If the last argument is an array, it is
-     * passed as the command options.
-     *
-     * @param string $command The Git command being run, e.g. "clone", "commit", etc.
-     * @param string ... Zero or more arguments passed to the Git command.
-     * @param array $options An optional array of arguments to pass to the command.
-     *
-     */
-    public static function getInstance(): GitCommand
-    {
-        $args = func_get_args();
-        return new static($args);
     }
 
     /**
@@ -112,9 +84,6 @@ final class GitCommand
 
     /**
      * A bool flagging whether to skip running the command.
-     *
-     * @param bool $bypass Whether to bypass execution of the command. The parameter defaults to
-     *   true for code readability, however the default behavior of this class is to run the command.
      */
     public function bypass(bool $bypass = true): void
     {
@@ -123,9 +92,6 @@ final class GitCommand
 
     /**
      * Set whether to execute the command as-is without escaping it.
-     *
-     * @param bool $executeRaw Whether to execute the command as-is without excaping it.
-     *
      */
     public function executeRaw(bool $executeRaw = true): void
     {
@@ -134,13 +100,6 @@ final class GitCommand
 
     /**
      * Returns true if the Git command should be run.
-     *
-     * The return value is the bool opposite $this->bypass. Although this
-     * seems complex, it makes the code more readable when checking whether the
-     * command should be run or not.
-     *
-     * @return bool
-     *   If true, the command should be run.
      */
     public function notBypassed(): bool
     {

@@ -725,36 +725,36 @@ PATCH;
 
     protected function assertGitTag(GitWorkingCopy $gitWorkingCopy, string $tag): void
     {
-        $gitWorkingCopy->run(['rev-parse', $tag]);
+        $gitWorkingCopy->run('rev-parse', [$tag]);
     }
 
     protected function assertNoGitTag(GitWorkingCopy $gitWorkingCopy, string $tag): void
     {
         try {
-            $gitWorkingCopy->run(['rev-parse', $tag]);
-        } catch (GitException $e) {
+            $gitWorkingCopy->run('rev-parse', [$tag]);
+        } catch (GitException $gitException) {
             // Expected result. The tag does not exist.
             return;
         }
 
-        throw new Exception("Expecting that the tag '${tag}' doesn't exist, but it does.");
+        throw new Exception(sprintf('Tag "%s" should not exist', $tag));
     }
 
     protected function assertRemoteMaster(GitWorkingCopy $gitWorkingCopy): void
     {
-        $gitWorkingCopy->run(['rev-parse', 'remote/HEAD']);
+        $gitWorkingCopy->run('rev-parse', ['remote/HEAD']);
     }
 
     protected function assertNoRemoteMaster(GitWorkingCopy $gitWorkingCopy): void
     {
         try {
-            $gitWorkingCopy->run(['rev-parse', 'remote/HEAD']);
+            $gitWorkingCopy->run('rev-parse',[ 'remote/HEAD']);
         } catch (GitException $e) {
             // Expected result. The remote master does not exist.
             return;
         }
 
-        throw new Exception("Expecting that the remote master doesn't exist, but it does.");
+        throw new Exception('Branch `master` should not exist');
     }
 
     /**
