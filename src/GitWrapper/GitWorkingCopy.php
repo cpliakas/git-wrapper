@@ -317,13 +317,7 @@ final class GitWorkingCopy
      */
     public function addRemote(string $name, string $url, array $options = []): self
     {
-        if (empty($name)) {
-            throw new GitException('Cannot add remote without a name.');
-        }
-
-        if (empty($url)) {
-            throw new GitException('Cannot add remote without a URL.');
-        }
+        $this->ensureAddRemoveArgsAreValid($name, $url);
 
         $args = ['add'];
 
@@ -349,14 +343,13 @@ final class GitWorkingCopy
         // Add remote name and URL.
         array_push($args, $name, $url);
 
-        return call_user_func_array([$this, 'remote'], $args);
+        return $this->remote(...$args);
     }
 
     /**
      * Removes the given remote.
      *
-     * @param string $name
-     *   The name of the remote to remove.
+     * @param string $name The name of the remote to remove.
      */
     public function removeRemote(string $name): self
     {
@@ -830,5 +823,16 @@ final class GitWorkingCopy
     public function tags(): GitTags
     {
         return new GitTags($this);
+    }
+
+    private function ensureAddRemoveArgsAreValid(string $name, string $url): void
+    {
+        if (empty($name)) {
+            throw new GitException('Cannot add remote without a name.');
+        }
+
+        if (empty($url)) {
+            throw new GitException('Cannot add remote without a URL.');
+        }
     }
 }
