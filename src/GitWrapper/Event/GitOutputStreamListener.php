@@ -6,7 +6,7 @@ namespace GitWrapper\Event;
  * Event handler that streams real-time output from Git commands to STDOUT and
  * STDERR.
  */
-class GitOutputStreamListener implements GitOutputListenerInterface
+final class GitOutputStreamListener implements GitOutputListenerInterface
 {
     public function handleOutput(GitOutputEvent $event): void
     {

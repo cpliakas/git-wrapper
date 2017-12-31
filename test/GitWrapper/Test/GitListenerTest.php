@@ -6,7 +6,7 @@ use GitWrapper\Event\GitEvent;
 use GitWrapper\GitCommand;
 use Symfony\Component\Process\Process;
 
-class GitListenerTest extends GitWrapperTestCase
+final class GitListenerTest extends GitWrapperTestCase
 {
     public function testListener(): void
     {

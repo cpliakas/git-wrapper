@@ -7,7 +7,7 @@ use GitWrapper\GitWorkingCopy;
 use GitWrapper\GitWrapper;
 use GitWrapper\Test\Event\TestDispatcher;
 
-class GitWrapperTest extends GitWrapperTestCase
+final class GitWrapperTest extends GitWrapperTestCase
 {
     public function testSetGitBinary(): void
     {

@@ -4,7 +4,7 @@ namespace GitWrapper\Test\Event;
 
 use GitWrapper\Event\GitEvent;
 
-class TestListener
+final class TestListener
 {
     /**
      * The methods that were called.
