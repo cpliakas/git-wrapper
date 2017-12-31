@@ -18,7 +18,7 @@ final class TestListener
      *
      * @var GitEvent
      */
-    protected $event;
+    protected $gitEvent;
 
     public function methodCalled(string $method): bool
     {
@@ -27,13 +27,13 @@ final class TestListener
 
     public function getEvent(): GitEvent
     {
-        return $this->event;
+        return $this->gitEvent;
     }
 
-    public function onPrepare(GitEvent $event): void
+    public function onPrepare(GitEvent $gitEvent): void
     {
         $this->methods[] = 'onPrepare';
-        $this->event = $event;
+        $this->gitEvent = $gitEvent;
     }
 
     public function onSuccess(): void

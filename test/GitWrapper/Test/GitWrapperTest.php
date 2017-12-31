@@ -7,27 +7,27 @@ use GitWrapper\GitWorkingCopy;
 use GitWrapper\GitWrapper;
 use GitWrapper\Test\Event\TestDispatcher;
 
-final class GitWrapperTest extends GitWrapperTestCase
+final class GitWrapperTest extends AbstractGitWrapperTestCase
 {
     public function testSetGitBinary(): void
     {
         $binary = '/path/to/binary';
-        $this->wrapper->setGitBinary($binary);
-        $this->assertSame($binary, $this->wrapper->getGitBinary());
+        $this->gitWrapper->setGitBinary($binary);
+        $this->assertSame($binary, $this->gitWrapper->getGitBinary());
     }
 
     public function testSetDispatcher(): void
     {
         $dispatcher = new TestDispatcher();
-        $this->wrapper->setDispatcher($dispatcher);
-        $this->assertSame($dispatcher, $this->wrapper->getDispatcher());
+        $this->gitWrapper->setDispatcher($dispatcher);
+        $this->assertSame($dispatcher, $this->gitWrapper->getDispatcher());
     }
 
     public function testSetTimeout(): void
     {
         $timeout = random_int(1, 60);
-        $this->wrapper->setTimeout($timeout);
-        $this->assertSame($timeout, $this->wrapper->getTimeout());
+        $this->gitWrapper->setTimeout($timeout);
+        $this->assertSame($timeout, $this->gitWrapper->getTimeout());
     }
 
     public function testEnvVar(): void
@@ -35,26 +35,26 @@ final class GitWrapperTest extends GitWrapperTestCase
         $var = $this->randomString();
         $value = $this->randomString();
 
-        $this->wrapper->setEnvVar($var, $value);
-        $this->assertSame($value, $this->wrapper->getEnvVar($var));
+        $this->gitWrapper->setEnvVar($var, $value);
+        $this->assertSame($value, $this->gitWrapper->getEnvVar($var));
 
-        $envvars = $this->wrapper->getEnvVars();
+        $envvars = $this->gitWrapper->getEnvVars();
         $this->assertSame($value, $envvars[$var]);
 
-        $this->wrapper->unsetEnvVar($var);
-        $this->assertNull($this->wrapper->getEnvVar($var));
+        $this->gitWrapper->unsetEnvVar($var);
+        $this->assertNull($this->gitWrapper->getEnvVar($var));
     }
 
     public function testEnvVarDefault(): void
     {
         $var = $this->randomString();
         $default = $this->randomString();
-        $this->assertSame($default, $this->wrapper->getEnvVar($var, $default));
+        $this->assertSame($default, $this->gitWrapper->getEnvVar($var, $default));
     }
 
     public function testGitVersion(): void
     {
-        $version = $this->wrapper->version();
+        $version = $this->gitWrapper->version();
         $this->assertGitVersion($version);
     }
 
@@ -64,25 +64,25 @@ final class GitWrapperTest extends GitWrapperTestCase
         $keyExpected = realpath($key);
         $sshWrapperExpected = realpath(__DIR__ . '/../../../bin/git-ssh-wrapper.sh');
 
-        $this->wrapper->setPrivateKey($key);
-        $this->assertSame($keyExpected, $this->wrapper->getEnvVar('GIT_SSH_KEY'));
-        $this->assertSame(22, $this->wrapper->getEnvVar('GIT_SSH_PORT'));
-        $this->assertSame($sshWrapperExpected, $this->wrapper->getEnvVar('GIT_SSH'));
+        $this->gitWrapper->setPrivateKey($key);
+        $this->assertSame($keyExpected, $this->gitWrapper->getEnvVar('GIT_SSH_KEY'));
+        $this->assertSame(22, $this->gitWrapper->getEnvVar('GIT_SSH_PORT'));
+        $this->assertSame($sshWrapperExpected, $this->gitWrapper->getEnvVar('GIT_SSH'));
     }
 
     public function testSetPrivateKeyPort(): void
     {
         $port = random_int(1024, 10000);
-        $this->wrapper->setPrivateKey('./test/id_rsa', $port);
-        $this->assertSame($port, $this->wrapper->getEnvVar('GIT_SSH_PORT'));
+        $this->gitWrapper->setPrivateKey('./test/id_rsa', $port);
+        $this->assertSame($port, $this->gitWrapper->getEnvVar('GIT_SSH_PORT'));
     }
 
     public function testSetPrivateKeyWrapper(): void
     {
         $sshWrapper = './test/dummy-wrapper.sh';
         $sshWrapperExpected = realpath($sshWrapper);
-        $this->wrapper->setPrivateKey('./test/id_rsa', 22, $sshWrapper);
-        $this->assertSame($sshWrapperExpected, $this->wrapper->getEnvVar('GIT_SSH'));
+        $this->gitWrapper->setPrivateKey('./test/id_rsa', 22, $sshWrapper);
+        $this->assertSame($sshWrapperExpected, $this->gitWrapper->getEnvVar('GIT_SSH'));
     }
 
     /**
@@ -91,7 +91,7 @@ final class GitWrapperTest extends GitWrapperTestCase
     public function testSetPrivateKeyError(): void
     {
         $badKey = './test/id_rsa_bad';
-        $this->wrapper->setPrivateKey($badKey);
+        $this->gitWrapper->setPrivateKey($badKey);
     }
 
     /**
@@ -100,7 +100,7 @@ final class GitWrapperTest extends GitWrapperTestCase
     public function testSetPrivateKeyWrapperError(): void
     {
         $badWrapper = './test/dummy-wrapper-bad.sh';
-        $this->wrapper->setPrivateKey('./test/id_rsa', 22, $badWrapper);
+        $this->gitWrapper->setPrivateKey('./test/id_rsa', 22, $badWrapper);
     }
 
     public function testUnsetPrivateKey(): void
@@ -108,17 +108,17 @@ final class GitWrapperTest extends GitWrapperTestCase
         // Set and unset the private key.
         $key = './test/id_rsa';
         $sshWrapper = './test/dummy-wrapper.sh';
-        $this->wrapper->setPrivateKey($key, 22, $sshWrapper);
-        $this->wrapper->unsetPrivateKey();
+        $this->gitWrapper->setPrivateKey($key, 22, $sshWrapper);
+        $this->gitWrapper->unsetPrivateKey();
 
-        $this->assertNull($this->wrapper->getEnvVar('GIT_SSH_KEY'));
-        $this->assertNull($this->wrapper->getEnvVar('GIT_SSH_PORT'));
-        $this->assertNull($this->wrapper->getEnvVar('GIT_SSH'));
+        $this->assertNull($this->gitWrapper->getEnvVar('GIT_SSH_KEY'));
+        $this->assertNull($this->gitWrapper->getEnvVar('GIT_SSH_PORT'));
+        $this->assertNull($this->gitWrapper->getEnvVar('GIT_SSH'));
     }
 
     public function testGitCommand(): void
     {
-        $version = $this->wrapper->git('--version');
+        $version = $this->gitWrapper->git('--version');
         $this->assertGitVersion($version);
     }
 
@@ -135,7 +135,7 @@ final class GitWrapperTest extends GitWrapperTestCase
         $command = GitCommand::getInstance();
         $command->setFlag('version');
         $command->setDirectory('./test'); // Directory just has to exist.
-        $version = $this->wrapper->run($command);
+        $version = $this->gitWrapper->run($command);
         $this->assertGitVersion($version);
     }
 
@@ -147,7 +147,7 @@ final class GitWrapperTest extends GitWrapperTestCase
         $command = GitCommand::getInstance();
         $command->setFlag('version');
         $command->setDirectory('/some/bad/directory');
-        $this->wrapper->run($command);
+        $this->gitWrapper->run($command);
     }
 
     public function testWrapperExecutable(): void
@@ -159,7 +159,7 @@ final class GitWrapperTest extends GitWrapperTestCase
     public function testWorkingCopy(): void
     {
         $directory = './' . $this->randomString();
-        $git = $this->wrapper->workingCopy($directory);
+        $git = $this->gitWrapper->workingCopy($directory);
 
         $this->assertTrue($git instanceof GitWorkingCopy);
         $this->assertSame($directory, $git->getDirectory());
@@ -178,7 +178,7 @@ final class GitWrapperTest extends GitWrapperTestCase
     public function testCloneWothoutDirectory(): void
     {
         $this->addBypassListener();
-        $git = $this->wrapper->cloneRepository('file:///' . $this->randomString());
+        $git = $this->gitWrapper->cloneRepository('file:///' . $this->randomString());
         $this->assertTrue($git->isCloned());
     }
 }

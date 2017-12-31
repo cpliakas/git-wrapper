@@ -9,7 +9,7 @@ use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
 use Throwable;
 
-final class GitLoggerListenerTest extends GitWrapperTestCase
+final class GitLoggerListenerTest extends AbstractGitWrapperTestCase
 {
     protected function tearDown(): void
     {
@@ -46,8 +46,8 @@ final class GitLoggerListenerTest extends GitWrapperTestCase
     public function testRegisterLogger(): void
     {
         $logger = new TestLogger();
-        $this->wrapper->addLoggerListener(new GitLoggerListener($logger));
-        $git = $this->wrapper->init(self::REPO_DIR, ['bare' => true]);
+        $this->gitWrapper->addLoggerListener(new GitLoggerListener($logger));
+        $git = $this->gitWrapper->init(self::REPO_DIR, ['bare' => true]);
 
         $this->assertSame('Git command preparing to run', $logger->messages[0]);
         $this->assertSame('Initialized empty Git repository in ' . realpath(self::REPO_DIR) . "/\n", $logger->messages[1]);
@@ -77,12 +77,12 @@ final class GitLoggerListenerTest extends GitWrapperTestCase
     public function testLogBypassedCommand(): void
     {
         $logger = new TestLogger();
-        $this->wrapper->addLoggerListener(new GitLoggerListener($logger));
+        $this->gitWrapper->addLoggerListener(new GitLoggerListener($logger));
 
         $command = GitCommand::getInstance('status', ['s' => true]);
         $command->bypass();
 
-        $this->wrapper->run($command);
+        $this->gitWrapper->run($command);
 
         $this->assertSame('Git command bypassed', $logger->messages[1]);
         $this->assertArrayHasKey('command', $logger->contexts[1]);
