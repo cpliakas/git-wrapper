@@ -29,10 +29,10 @@ final class GitProcess extends Process
 
         // Build the command line options, flags, and arguments.
         $gitCommandLine = $gitCommand->getCommandLine();
-        $commandLine = array_merge([$gitWrapper->getGitBinary()], (array) $gitCommand);
+        $commandLine = array_merge([$gitWrapper->getGitBinary()], (array) $gitCommandLine);
 
         // Support for executing an arbitrary git command.
-        if (is_string($gitCommand)) {
+        if (is_string($gitCommandLine)) {
             $commandLine = implode(' ', $commandLine);
         }
 
