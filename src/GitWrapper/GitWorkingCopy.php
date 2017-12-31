@@ -96,7 +96,8 @@ final class GitWorkingCopy
             $gitDir = $this->directory;
             if (is_dir($gitDir . '/.git')) {
                 $gitDir .= '/.git';
-            };
+            }
+
             $this->cloned = (is_dir($gitDir . '/objects') && is_dir($gitDir . '/refs') && is_file($gitDir . '/HEAD'));
         }
 

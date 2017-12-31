@@ -11,14 +11,14 @@ final class TestListener
      *
      * @var string[]
      */
-    protected $methods = [];
+    private $methods = [];
 
     /**
      * The event object passed to the onPrepare method.
      *
      * @var GitEvent
      */
-    protected $gitEvent;
+    private $gitEvent;
 
     public function methodCalled(string $method): bool
     {
