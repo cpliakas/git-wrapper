@@ -167,9 +167,9 @@ class GitWorkingCopy
         }
 
         $this->clearOutput();
-        $merge_base = (string) $this->run(['merge-base', '@', '@{u}']);
-        $remote_sha = (string) $this->run(['rev-parse', '@{u}']);
-        return $merge_base === $remote_sha;
+        $mergeBase = (string) $this->run(['merge-base', '@', '@{u}']);
+        $remoteSha = (string) $this->run(['rev-parse', '@{u}']);
+        return $mergeBase === $remoteSha;
     }
 
     /**
@@ -185,10 +185,10 @@ class GitWorkingCopy
         }
 
         $this->clearOutput();
-        $merge_base = (string) $this->run(['merge-base', '@', '@{u}']);
-        $local_sha = (string) $this->run(['rev-parse', '@']);
-        $remote_sha = (string) $this->run(['rev-parse', '@{u}']);
-        return $merge_base === $remote_sha && $local_sha !== $remote_sha;
+        $mergeBase = (string) $this->run(['merge-base', '@', '@{u}']);
+        $localSha = (string) $this->run(['rev-parse', '@']);
+        $remoteSha = (string) $this->run(['rev-parse', '@{u}']);
+        return $mergeBase === $remoteSha && $localSha !== $remoteSha;
     }
 
     /**
@@ -204,10 +204,10 @@ class GitWorkingCopy
         }
 
         $this->clearOutput();
-        $merge_base = (string) $this->run(['merge-base', '@', '@{u}']);
-        $local_sha = (string) $this->run(['rev-parse', '@']);
-        $remote_sha = (string) $this->run(['rev-parse', '@{u}']);
-        return $merge_base === $local_sha && $local_sha !== $remote_sha;
+        $mergeBase = (string) $this->run(['merge-base', '@', '@{u}']);
+        $localSha = (string) $this->run(['rev-parse', '@']);
+        $remoteSha = (string) $this->run(['rev-parse', '@{u}']);
+        return $mergeBase === $localSha && $localSha !== $remoteSha;
     }
 
     /**
@@ -224,10 +224,10 @@ class GitWorkingCopy
         }
 
         $this->clearOutput();
-        $merge_base = (string) $this->run(['merge-base', '@', '@{u}']);
-        $local_sha = (string) $this->run(['rev-parse', '@']);
-        $remote_sha = (string) $this->run(['rev-parse', '@{u}']);
-        return $merge_base !== $local_sha && $merge_base !== $remote_sha;
+        $mergeBase = (string) $this->run(['merge-base', '@', '@{u}']);
+        $localSha = (string) $this->run(['rev-parse', '@']);
+        $remoteSha = (string) $this->run(['rev-parse', '@{u}']);
+        return $mergeBase !== $localSha && $mergeBase !== $remoteSha;
     }
 
     /**

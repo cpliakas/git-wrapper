@@ -7,6 +7,7 @@ use GitWrapper\Event\GitLoggerListener;
 use GitWrapper\GitCommand;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
+use Throwable;
 
 class GitLoggerListenerTest extends GitWrapperTestCase
 {
@@ -64,7 +65,7 @@ class GitLoggerListenerTest extends GitWrapperTestCase
         try {
             $logger->clearMessages();
             $git->commit('fatal: This operation must be run in a work tree');
-        } catch (Throwable $e) {
+        } catch (Throwable $throwable) {
             // Nothing to do, this is expected.
         }
 
