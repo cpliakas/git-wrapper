@@ -87,7 +87,7 @@ final class GitCommand
      */
     public function bypass(bool $bypass = true): void
     {
-        $this->bypass = (bool) $bypass;
+        $this->bypass = $bypass;
     }
 
     /**
