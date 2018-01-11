@@ -2,7 +2,6 @@
 
 namespace GitWrapper\Test;
 
-use Exception;
 use GitWrapper\GitBranches;
 use GitWrapper\GitException;
 use GitWrapper\GitWorkingCopy;
@@ -707,7 +706,7 @@ PATCH;
             return;
         }
 
-        throw new Exception(sprintf('Tag "%s" should not exist', $tag));
+        throw new GitException(sprintf('Tag "%s" should not exist', $tag));
     }
 
     protected function assertRemoteMaster(GitWorkingCopy $gitWorkingCopy): void
@@ -724,7 +723,7 @@ PATCH;
             return;
         }
 
-        throw new Exception('Branch `master` should not exist');
+        throw new GitException('Branch `master` should not exist');
     }
 
     /**

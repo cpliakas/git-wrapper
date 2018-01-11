@@ -4,7 +4,6 @@ namespace GitWrapper;
 
 use GitWrapper\Event\GitEvent;
 use GitWrapper\Event\GitEvents;
-use RuntimeException;
 use Symfony\Component\Process\Process;
 
 final class GitProcess extends Process
@@ -83,7 +82,7 @@ final class GitProcess extends Process
                         $output = $this->getOutput();
                     }
 
-                    throw new RuntimeException($output);
+                    throw new GitException($output);
                 }
             } else {
                 $dispatcher->dispatch(GitEvents::GIT_BYPASS, $event);
