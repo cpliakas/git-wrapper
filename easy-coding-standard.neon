@@ -19,7 +19,6 @@ checkers:
 parameters:
     exclude_checkers:
         - PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis\AssignmentInConditionSniff
-        - Symplify\CodingStandard\Sniffs\Architecture\ExplicitExceptionSniff
         - Symplify\CodingStandard\Sniffs\DependencyInjection\NoClassInstantiationSniff
 
     skip:
