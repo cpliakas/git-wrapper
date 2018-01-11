@@ -14,6 +14,8 @@ checkers:
     PHP_CodeSniffer\Standards\Generic\Sniffs\Metrics\NestingLevelSniff:
         absoluteNestingLevel: 4
 
+    # Class should be Final or Abstract
+    - SlamCsFixer\FinalInternalClassFixer
 parameters:
     exclude_checkers:
         - PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis\AssignmentInConditionSniff
