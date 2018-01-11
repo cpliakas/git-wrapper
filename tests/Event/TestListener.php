@@ -22,7 +22,7 @@ final class TestListener
 
     public function methodCalled(string $method): bool
     {
-        return in_array($method, $this->methods);
+        return in_array($method, $this->methods, true);
     }
 
     public function getEvent(): GitEvent
