@@ -90,7 +90,7 @@ final class GitProcess extends Process
             }
         } catch (RuntimeException $runtimeException) {
             $dispatcher->dispatch(GitEvents::GIT_ERROR, $event);
-            throw new GitException($runtimeException->getMessage());
+            throw new GitException($runtimeException->getMessage(), $runtimeException->getCode(), $runtimeException);
         }
 
         return $exitCode;
