@@ -4,6 +4,7 @@ namespace GitWrapper;
 
 use GitWrapper\Event\GitEvent;
 use GitWrapper\Event\GitEvents;
+use RuntimeException;
 use Symfony\Component\Process\Process;
 
 final class GitProcess extends Process
