@@ -84,7 +84,7 @@ final class GitProcess extends Process
                         $output = $this->getOutput();
                     }
 
-                    throw new RuntimeException($output);
+                    throw new GitException($output);
                 }
             } else {
                 $dispatcher->dispatch(GitEvents::GIT_BYPASS, $event);
