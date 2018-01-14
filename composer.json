@@ -41,5 +41,10 @@
         "check-cs": "vendor/bin/ecs check src tests",
         "fix-cs": "vendor/bin/ecs check src tests --fix",
         "phpstan": "vendor/bin/phpstan analyse src tests --level max --configuration phpstan.neon"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.x-dev"
+        }
     }
 }
