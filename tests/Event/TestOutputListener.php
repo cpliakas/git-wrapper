@@ -8,7 +8,7 @@ use GitWrapper\Event\GitOutputListenerInterface;
 final class TestOutputListener implements GitOutputListenerInterface
 {
     /**
-     * @var \GitWrapper\Event\GitOutputEvent
+     * @var GitOutputEvent
      */
     private $gitOutputEvent;
 
