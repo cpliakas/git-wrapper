@@ -57,43 +57,50 @@ final class GitProcess extends Process
     /**
      * {@inheritdoc}
      */
-    public function run(?callable $callback = null, array $env = []): int
+    public function start(?callable $callback = null, array $env = []): void
     {
-        $exitCode = -1;
+        $this->dispatchGitEvent(GitEvents::GIT_PREPARE);
 
-        $event = new GitEvent($this->gitWrapper, $this, $this->gitCommand);
-        $dispatcher = $this->gitWrapper->getDispatcher();
+        if ($this->gitCommand->notBypassed()) {
+            parent::start($callback, $env);
+        } else {
+            $this->dispatchGitEvent(GitEvents::GIT_BYPASS);
+        }
+    }
+
+    public function wait(?callable $callback = null): int
+    {
+        if (! $this->gitCommand->notBypassed()) {
+            return -1;
+        }
 
         try {
-            // Throw the "git.command.prepare" event prior to executing.
-            $dispatcher->dispatch(GitEvents::GIT_PREPARE, $event);
+            $exitCode = parent::wait($callback);
 
-            // Execute command if it is not flagged to be bypassed and throw the
-            // "git.command.success" event, otherwise do not execute the comamnd
-            // and throw the "git.command.bypass" event.
-            if ($this->gitCommand->notBypassed()) {
-                $this->start($callback, $env);
-                $exitCode = $this->wait();
-
-                if ($this->isSuccessful()) {
-                    $dispatcher->dispatch(GitEvents::GIT_SUCCESS, $event);
-                } else {
-                    $output = $this->getErrorOutput();
-
-                    if (trim($output) === '') {
-                        $output = $this->getOutput();
-                    }
-
-                    throw new GitException($output);
-                }
+            if ($this->isSuccessful()) {
+                $this->dispatchGitEvent(GitEvents::GIT_SUCCESS);
             } else {
-                $dispatcher->dispatch(GitEvents::GIT_BYPASS, $event);
+                $output = $this->getErrorOutput();
+
+                if (trim($output) === '') {
+                    $output = $this->getOutput();
+                }
+
+                throw new GitException($output);
             }
         } catch (RuntimeException $runtimeException) {
-            $dispatcher->dispatch(GitEvents::GIT_ERROR, $event);
+            $this->dispatchGitEvent(GitEvents::GIT_ERROR);
             throw new GitException($runtimeException->getMessage(), $runtimeException->getCode(), $runtimeException);
         }
 
         return $exitCode;
+    }
+
+    private function dispatchGitEvent(string $eventName): void
+    {
+        $this->gitWrapper->getDispatcher()->dispatch(
+            $eventName,
+            new GitEvent($this->gitWrapper, $this, $this->gitCommand)
+        );
     }
 }
