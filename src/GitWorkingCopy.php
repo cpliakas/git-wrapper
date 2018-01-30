@@ -330,8 +330,13 @@ final class GitWorkingCopy
      */
     public function getRemotes(): array
     {
+        $result = rtrim($this->remote());
+        if (empty($result)) {
+            return [];
+        }
+
         $remotes = [];
-        foreach (explode(PHP_EOL, rtrim($this->remote())) as $remote) {
+        foreach (explode(PHP_EOL, $result) as $remote) {
             $remotes[$remote]['fetch'] = $this->getRemoteUrl($remote);
             $remotes[$remote]['push'] = $this->getRemoteUrl($remote, 'push');
         }
