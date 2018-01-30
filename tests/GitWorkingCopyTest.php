@@ -443,10 +443,7 @@ PATCH;
         $this->assertTrue($git->isUpToDate());
 
         // Reset the branch to its first commit, so that it is 1 commit behind.
-        $git->reset(
-            'HEAD~2',
-            ['hard' => true]
-        );
+        $git->reset('HEAD~2', ['hard' => true]);
 
         $this->assertFalse($git->isUpToDate());
     }
@@ -475,10 +472,7 @@ PATCH;
         $this->assertFalse($git->isBehind());
 
         // Reset the branch to its parent commit, so that it is 1 commit behind.
-        $git->reset(
-            'HEAD^',
-            ['hard' => true]
-        );
+        $git->reset('HEAD^', ['hard' => true]);
 
         $this->assertTrue($git->isBehind());
     }
@@ -493,10 +487,7 @@ PATCH;
 
         // Reset the branch to its parent commit, so that it is 1 commit behind.
         // This does not require the branches to be merged.
-        $git->reset(
-            'HEAD^',
-            ['hard' => true]
-        );
+        $git->reset('HEAD^', ['hard' => true]);
         $this->assertFalse($git->needsMerge());
 
         // Create a new commit, so that the branch is also 1 commit ahead. Now a
