@@ -15,7 +15,7 @@
         "symfony/event-dispatcher": "^4.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.5",
+        "phpunit/phpunit": "^7.0",
         "symfony/filesystem": "^4.0",
         "psr/log": "1.0",
         "symplify/easy-coding-standard": "^3.0",
