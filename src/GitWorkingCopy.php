@@ -79,14 +79,14 @@ final class GitWorkingCopy
      *
      * @param mixed[] $argsAndOptions
      */
-    public function run(string $command, array $argsAndOptions = [], bool $setDirectory = true): string
+    public function run(string $command, array $argsAndOptions = [], bool $setDirectory = true, ?string $input = null): string
     {
         $command = new GitCommand($command, ...$argsAndOptions);
         if ($setDirectory) {
             $command->setDirectory($this->directory);
         }
 
-        return $this->gitWrapper->run($command);
+        return $this->gitWrapper->run($command, null, $input);
     }
 
     /**
@@ -378,6 +378,16 @@ final class GitWorkingCopy
     public function apply(...$argsAndOptions): string
     {
         return $this->run('apply', $argsAndOptions);
+    }
+
+    /**
+     * @code $git->applyRaw('raw-diff-content');
+     *
+     * @param mixed ...$argsAndOptions
+     */
+    public function applyRaw(string $patch, ...$argsAndOptions): string
+    {
+        return $this->run('apply', $argsAndOptions, true, $patch);
     }
 
     /**

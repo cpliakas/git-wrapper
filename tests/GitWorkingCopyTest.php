@@ -177,6 +177,25 @@ PATCH;
         $this->assertStringEqualsFile(self::WORKING_DIR . '/FileCreatedByPatch.txt', "contents\n");
     }
 
+    public function testGitApplyRaw(): void
+    {
+        $git = $this->getWorkingCopy();
+
+        $patch = <<<PATCH
+diff --git a/FileCreatedByPatch.txt b/FileCreatedByPatch.txt
+new file mode 100644
+index 0000000..dfe437b
+--- /dev/null
++++ b/FileCreatedByPatch.txt
+@@ -0,0 +1 @@
++contents
+
+PATCH;
+        $git->applyRaw($patch);
+        $this->assertRegExp('@\?\?\\s+FileCreatedByPatch\\.txt@s', $git->getStatus());
+        $this->assertStringEqualsFile(self::WORKING_DIR . '/FileCreatedByPatch.txt', "contents\n");
+    }
+
     public function testGitRm(): void
     {
         $git = $this->getWorkingCopy();

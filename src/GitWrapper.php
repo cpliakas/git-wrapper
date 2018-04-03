@@ -10,6 +10,7 @@ use GitWrapper\Event\GitOutputStreamListener;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Process\ExecutableFinder;
+use Symfony\Component\Process\InputStream;
 
 /**
  * A wrapper class around the Git binary.
@@ -302,9 +303,17 @@ final class GitWrapper
     /**
      * @return string The STDOUT returned by the Git command.
      */
-    public function run(GitCommand $gitCommand, ?string $cwd = null): string
+    public function run(GitCommand $gitCommand, ?string $cwd = null, ?string $input = null): string
     {
         $process = new GitProcess($this, $gitCommand, $cwd);
+
+        if ($input !== null) {
+            $in = new InputStream();
+            $in->write($input);
+            $process->setInput($in);
+            $in->close();
+        }
+
         $process->run(function ($type, $buffer) use ($process, $gitCommand): void {
             $event = new GitOutputEvent($this, $process, $gitCommand, $type, $buffer);
             $this->getDispatcher()->dispatch(GitEvents::GIT_OUTPUT, $event);
