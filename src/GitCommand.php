@@ -183,11 +183,7 @@ final class GitCommand
             return $this->getCommand();
         }
 
-        $command = array_merge(
-            [$this->getCommand()],
-            $this->buildOptions(),
-            $this->args
-        );
+        $command = array_merge([$this->getCommand()], $this->buildOptions(), $this->args);
 
         return array_filter($command);
     }
