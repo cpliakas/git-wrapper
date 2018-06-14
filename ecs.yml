@@ -1,0 +1,23 @@
+imports:
+    - { resource: 'vendor/symplify/easy-coding-standard/config/psr2.yml' }
+    - { resource: 'vendor/symplify/easy-coding-standard/config/php71.yml' }
+    - { resource: 'vendor/symplify/easy-coding-standard/config/common.yml' }
+    - { resource: 'vendor/symplify/easy-coding-standard/config/clean-code.yml' }
+    - { resource: 'vendor/symplify/easy-coding-standard/config/symplify.yml' }
+
+services:
+    # Class should be Final or Abstract
+    SlamCsFixer\FinalInternalClassFixer: ~
+
+parameters:
+    exclude_checkers:
+        - 'PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis\AssignmentInConditionSniff'
+        - 'Symplify\CodingStandard\Sniffs\DependencyInjection\NoClassInstantiationSniff'
+
+    skip:
+        SlevomatCodingStandard\Sniffs\TypeHints\TypeHintDeclarationSniff:
+            - 'tests/TestLogger.php'
+
+        SlamCsFixer\FinalInternalClassFixer:
+            # class with children
+            - 'src/Event/GitEvent.php'
