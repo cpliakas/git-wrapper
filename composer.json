@@ -11,12 +11,12 @@
     ],
     "require": {
         "php": "^7.1.3",
-        "symfony/process": "^3.4|^4.0",
-        "symfony/event-dispatcher": "^3.4|^4.0"
+        "symfony/process": "^4.0",
+        "symfony/event-dispatcher": "^4.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^7.2",
-        "symfony/filesystem": "^3.4|^4.0",
+        "symfony/filesystem": "^4.0",
         "psr/log": "1.0",
         "symplify/easy-coding-standard": "^4.4",
         "slam/php-cs-fixer-extensions": "^1.16",

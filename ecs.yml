@@ -18,6 +18,16 @@ parameters:
         SlevomatCodingStandard\Sniffs\TypeHints\TypeHintDeclarationSniff:
             - 'tests/TestLogger.php'
 
+        Symplify\CodingStandard\Sniffs\CleanCode\ForbiddenStaticFunctionSniff:
+            # helper method
+            - 'src/GitWrapper.php'
+            # parent interface → nothing we can do about this
+            - 'src/Event/GitLoggerListener.php'
+
         SlamCsFixer\FinalInternalClassFixer:
             # class with children
             - 'src/Event/GitEvent.php'
+
+        Symplify\CodingStandard\Sniffs\CleanCode\ForbiddenReferenceSniff:
+            # native PHP api → nothing we can do about this
+            - 'tests/StreamSuppressFilter.php'
