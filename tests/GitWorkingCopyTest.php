@@ -18,7 +18,7 @@ final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
     /**
      * Creates and initializes the local repository used for testing.
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -403,9 +403,9 @@ PATCH;
 
         $git->add('commit.txt');
         $git->commit([
-                'm' => 'Committed testing branch.',
-                'a' => true,
-                'author' => 'test <test@lol.com>',
+            'm' => 'Committed testing branch.',
+            'a' => true,
+            'author' => 'test <test@lol.com>',
         ]);
 
         $output = $git->log();
