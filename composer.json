@@ -15,14 +15,14 @@
         "symfony/event-dispatcher": "^4.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^7.0",
+        "phpunit/phpunit": "^7.2",
         "symfony/filesystem": "^4.0",
         "psr/log": "1.0",
-        "symplify/easy-coding-standard": "^3.0",
-        "slam/php-cs-fixer-extensions": "^1.10",
-        "nette/utils": "^2.4",
+        "symplify/easy-coding-standard": "^4.4",
+        "slam/php-cs-fixer-extensions": "^1.16",
+        "nette/utils": "^2.5",
         "phpstan/phpstan": "^0.9",
-        "symplify/changelog-linker": "^3.0"
+        "symplify/changelog-linker": "^4.4"
     },
     "autoload": {
         "psr-4": {
