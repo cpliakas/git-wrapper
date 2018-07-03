@@ -94,7 +94,7 @@ final class GitWorkingCopy
      */
     public function getStatus(): string
     {
-        return $this->gitWrapper->git('status -s', $this->directory);
+        return $this->run('status', ['-s']);
     }
 
     /**
