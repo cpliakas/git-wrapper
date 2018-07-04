@@ -185,6 +185,6 @@ final class GitCommand
 
         $command = array_merge([$this->getCommand()], $this->buildOptions(), $this->args);
 
-        return $command;
+        return array_filter($command, 'strlen');
     }
 }
