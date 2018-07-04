@@ -36,10 +36,7 @@ final class GitProcess extends Process
 
         // Resolve the working directory of the Git process. Use the directory
         // in the command object if it exists.
-        if ($cwd === null && ($directory = $gitCommand->getDirectory()) !== null &&
-            ! $cwd = realpath($directory)) {
-            throw new GitException('Path to working directory could not be resolved: ' . $directory);
-        }
+        $cwd = $this->resolveWorkingDirectory($cwd, $gitCommand);
 
         // Finalize the environment variables, an empty array is converted
         // to null which enherits the environment of the PHP process.
@@ -99,5 +96,18 @@ final class GitProcess extends Process
             $eventName,
             new GitEvent($this->gitWrapper, $this, $this->gitCommand)
         );
+    }
+
+    private function resolveWorkingDirectory(?string $cwd, GitCommand $gitCommand): ?string
+    {
+        if ($cwd === null) {
+            $directory = $gitCommand->getDirectory();
+            if ($directory !== null) {
+                if (! $cwd = realpath($directory)) {
+                    throw new GitException('Path to working directory could not be resolved: ' . $directory);
+                }
+            }
+        }
+        return $cwd;
     }
 }
