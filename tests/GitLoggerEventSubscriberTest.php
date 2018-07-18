@@ -23,22 +23,22 @@ final class GitLoggerEventSubscriberTest extends AbstractGitWrapperTestCase
     public function testGetLogger(): void
     {
         $log = new NullLogger();
-        $listener = new GitLoggerEventSubscriber($log);
-        $this->assertSame($log, $listener->getLogger());
+        $gitLoggerEventSubscriber = new GitLoggerEventSubscriber($log);
+        $this->assertSame($log, $gitLoggerEventSubscriber->getLogger());
     }
 
     public function testSetLogLevelMapping(): void
     {
-        $listener = new GitLoggerEventSubscriber(new NullLogger());
-        $listener->setLogLevelMapping('test.event', 'test-level');
-        $this->assertSame('test-level', $listener->getLogLevelMapping('test.event'));
+        $gitLoggerEventSubscriber = new GitLoggerEventSubscriber(new NullLogger());
+        $gitLoggerEventSubscriber->setLogLevelMapping('test.event', 'test-level');
+        $this->assertSame('test-level', $gitLoggerEventSubscriber->getLogLevelMapping('test.event'));
     }
 
     public function testGetInvalidLogLevelMapping(): void
     {
         $this->expectException(GitException::class);
-        $listener = new GitLoggerEventSubscriber(new NullLogger());
-        $listener->getLogLevelMapping('bad.event');
+        $gitLoggerEventSubscriber = new GitLoggerEventSubscriber(new NullLogger());
+        $gitLoggerEventSubscriber->getLogLevelMapping('bad.event');
     }
 
     public function testRegisterLogger(): void
