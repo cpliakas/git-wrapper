@@ -2,14 +2,14 @@
 
 namespace GitWrapper\Test;
 
-use GitWrapper\Event\GitLoggerListener;
+use GitWrapper\Event\GitLoggerEventSubscriber;
 use GitWrapper\GitCommand;
 use GitWrapper\GitException;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
 use Throwable;
 
-final class GitLoggerListenerTest extends AbstractGitWrapperTestCase
+final class GitLoggerEventSubscriberTest extends AbstractGitWrapperTestCase
 {
     protected function tearDown(): void
     {
@@ -23,28 +23,28 @@ final class GitLoggerListenerTest extends AbstractGitWrapperTestCase
     public function testGetLogger(): void
     {
         $log = new NullLogger();
-        $listener = new GitLoggerListener($log);
-        $this->assertSame($log, $listener->getLogger());
+        $gitLoggerEventSubscriber = new GitLoggerEventSubscriber($log);
+        $this->assertSame($log, $gitLoggerEventSubscriber->getLogger());
     }
 
     public function testSetLogLevelMapping(): void
     {
-        $listener = new GitLoggerListener(new NullLogger());
-        $listener->setLogLevelMapping('test.event', 'test-level');
-        $this->assertSame('test-level', $listener->getLogLevelMapping('test.event'));
+        $gitLoggerEventSubscriber = new GitLoggerEventSubscriber(new NullLogger());
+        $gitLoggerEventSubscriber->setLogLevelMapping('test.event', 'test-level');
+        $this->assertSame('test-level', $gitLoggerEventSubscriber->getLogLevelMapping('test.event'));
     }
 
     public function testGetInvalidLogLevelMapping(): void
     {
         $this->expectException(GitException::class);
-        $listener = new GitLoggerListener(new NullLogger());
-        $listener->getLogLevelMapping('bad.event');
+        $gitLoggerEventSubscriber = new GitLoggerEventSubscriber(new NullLogger());
+        $gitLoggerEventSubscriber->getLogLevelMapping('bad.event');
     }
 
     public function testRegisterLogger(): void
     {
         $logger = new TestLogger();
-        $this->gitWrapper->addLoggerListener(new GitLoggerListener($logger));
+        $this->gitWrapper->addLoggerEventSubscriber(new GitLoggerEventSubscriber($logger));
         $git = $this->gitWrapper->init(self::REPO_DIR, ['bare' => true]);
 
         $this->assertSame('Git command preparing to run', $logger->messages[0]);
@@ -78,7 +78,7 @@ final class GitLoggerListenerTest extends AbstractGitWrapperTestCase
     public function testLogBypassedCommand(): void
     {
         $logger = new TestLogger();
-        $this->gitWrapper->addLoggerListener(new GitLoggerListener($logger));
+        $this->gitWrapper->addLoggerEventSubscriber(new GitLoggerEventSubscriber($logger));
 
         $command = new GitCommand('status', ['s' => true]);
         $command->bypass();

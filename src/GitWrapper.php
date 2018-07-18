@@ -3,7 +3,7 @@
 namespace GitWrapper;
 
 use GitWrapper\Event\GitEvents;
-use GitWrapper\Event\GitLoggerListener;
+use GitWrapper\Event\GitLoggerEventSubscriber;
 use GitWrapper\Event\GitOutputEvent;
 use GitWrapper\Event\GitOutputListenerInterface;
 use GitWrapper\Event\GitOutputStreamListener;
@@ -180,10 +180,10 @@ final class GitWrapper
             ->addListener(GitEvents::GIT_OUTPUT, [$gitOutputListener, 'handleOutput']);
     }
 
-    public function addLoggerListener(GitLoggerListener $gitLoggerListener): void
+    public function addLoggerEventSubscriber(GitLoggerEventSubscriber $gitLoggerEventSubscriber): void
     {
         $this->getDispatcher()
-            ->addSubscriber($gitLoggerListener);
+            ->addSubscriber($gitLoggerEventSubscriber);
     }
 
     public function removeOutputListener(GitOutputListenerInterface $gitOutputListener): void
