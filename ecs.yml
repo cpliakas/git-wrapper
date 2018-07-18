@@ -31,5 +31,3 @@ parameters:
         Symplify\CodingStandard\Sniffs\CleanCode\ForbiddenReferenceSniff:
             # native PHP api → nothing we can do about this
             - 'tests/StreamSuppressFilter.php'
-
-
