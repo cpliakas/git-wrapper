@@ -180,7 +180,7 @@ final class GitWrapper
             ->addListener(GitEvents::GIT_OUTPUT, [$gitOutputListener, 'handleOutput']);
     }
 
-    public function addLoggerListener(GitLoggerEventSubscriber $gitLoggerEventSubscriber): void
+    public function addLoggerEventSubscriber(GitLoggerEventSubscriber $gitLoggerEventSubscriber): void
     {
         $this->getDispatcher()
             ->addSubscriber($gitLoggerEventSubscriber);
