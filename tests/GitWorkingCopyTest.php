@@ -516,9 +516,7 @@ PATCH;
         $this->assertTrue($git->hasRemote('remote'));
         foreach ($asserts as $method => $parameters) {
             array_unshift($parameters, $git);
-            call_user_func_array(function ($parameter) use ($method) {
-                return $this->{$method};
-            }, $parameters);
+            call_user_func_array([$this, $method], $parameters);
         }
     }
 
