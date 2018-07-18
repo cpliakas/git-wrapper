@@ -25,24 +25,18 @@ final class GitProcess extends Process
         $this->gitCommand = $gitCommand;
 
         // Build the command line options, flags, and arguments.
-        $gitCommandLine = $gitCommand->getCommandLine();
-        $commandLine = array_merge([$gitWrapper->getGitBinary()], (array) $gitCommandLine);
-
-        // Support for executing an arbitrary git command.
-        if (is_string($gitCommandLine)) {
-            $commandLine = implode(' ', $commandLine);
+        $commandLine = $gitCommand->getCommandLine();
+        $gitBinary = $gitWrapper->getGitBinary();
+        if (is_string($commandLine)) {
+            // Support for executing an arbitrary git command.
+            $commandLine = '"' . $gitBinary . '" ' . $commandLine;
+        } else {
+            array_unshift($commandLine, $gitBinary);
         }
 
         // Resolve the working directory of the Git process. Use the directory
         // in the command object if it exists.
-        if ($cwd === null) {
-            $directory = $gitCommand->getDirectory();
-            if ($directory !== null) {
-                if (! $cwd = realpath($directory)) {
-                    throw new GitException('Path to working directory could not be resolved: ' . $directory);
-                }
-            }
-        }
+        $cwd = $this->resolveWorkingDirectory($cwd, $gitCommand);
 
         // Finalize the environment variables, an empty array is converted
         // to null which enherits the environment of the PHP process.
@@ -102,5 +96,23 @@ final class GitProcess extends Process
             $eventName,
             new GitEvent($this->gitWrapper, $this, $this->gitCommand)
         );
+    }
+
+    private function resolveWorkingDirectory(?string $cwd, GitCommand $gitCommand): ?string
+    {
+        if ($cwd !== null) {
+            return $cwd;
+        }
+
+        $directory = $gitCommand->getDirectory();
+        if ($directory === null) {
+            return $cwd;
+        }
+
+        if (! $cwd = realpath($directory)) {
+            throw new GitException('Path to working directory could not be resolved: ' . $directory);
+        }
+
+        return $cwd;
     }
 }
