@@ -100,14 +100,19 @@ final class GitProcess extends Process
 
     private function resolveWorkingDirectory(?string $cwd, GitCommand $gitCommand): ?string
     {
-        if ($cwd === null) {
-            $directory = $gitCommand->getDirectory();
-            if ($directory !== null) {
-                if (! $cwd = realpath($directory)) {
-                    throw new GitException('Path to working directory could not be resolved: ' . $directory);
-                }
-            }
+        if ($cwd !== null) {
+            return $cwd;
         }
+
+        $directory = $gitCommand->getDirectory();
+        if ($directory === null) {
+            return $cwd;
+        }
+
+        if (! $cwd = realpath($directory)) {
+            throw new GitException('Path to working directory could not be resolved: ' . $directory);
+        }
+
         return $cwd;
     }
 }
