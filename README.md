@@ -76,7 +76,7 @@ $options = [
 Use the logger listener with [PSR-3](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md) compatible loggers such as [Monolog](https://github.com/Seldaek/monolog) to log commands that are executed.
 
 ```php
-use GitWrapper\Event\GitLoggerListener;
+use GitWrapper\Event\GitLoggerEventSubscriber;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
@@ -84,9 +84,8 @@ use Monolog\Handler\StreamHandler;
 $log = new Logger('git');
 $log->pushHandler(new StreamHandler('git.log', Logger::DEBUG));
 
-// Instantiate the listener, add the logger to it, and register it.
-$listener = new GitLoggerListener($log);
-$wrapper->addLoggerListener($listener);
+// Instantiate the subscriber, add the logger to it, and register it.
+$wrapper->addLoggerEventSubscriber(new GitLoggerEventSubscriber($log));
 
 $git = $wrapper->cloneRepository('git://github.com/cpliakas/git-wrapper.git', '/path/to/working/copy');
 
