@@ -18,11 +18,11 @@
         "phpunit/phpunit": "^7.2",
         "symfony/filesystem": "^4.0",
         "psr/log": "1.0",
-        "symplify/easy-coding-standard": "^4.4",
+        "symplify/easy-coding-standard": "^4.5",
         "slam/php-cs-fixer-extensions": "^1.16",
         "nette/utils": "^2.5",
-        "phpstan/phpstan": "^0.9",
-        "symplify/changelog-linker": "^4.4"
+        "phpstan/phpstan": "^0.10.1",
+        "symplify/changelog-linker": "^4.5"
     },
     "autoload": {
         "psr-4": {
@@ -40,6 +40,7 @@
     "scripts": {
         "check-cs": "vendor/bin/ecs check src tests",
         "fix-cs": "vendor/bin/ecs check src tests --fix",
-        "phpstan": "vendor/bin/phpstan analyse src tests --level max --configuration phpstan.neon"
+        "phpstan": "vendor/bin/phpstan analyse src tests --level max",
+        "changelog": "vendor/bin/changelog-linker dump-merges --in-categories"
     }
 }
