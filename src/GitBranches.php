@@ -32,7 +32,7 @@ final class GitBranches implements IteratorAggregate
     {
         $options = ($onlyRemote) ? ['r' => true] : ['a' => true];
         $output = $this->gitWorkingCopy->branch($options);
-        $branches = preg_split("/\r\n|\n|\r/", rtrim($output));
+        $branches = (array) preg_split("/\r\n|\n|\r/", rtrim($output));
         return array_map([$this, 'trimBranch'], $branches);
     }
 
