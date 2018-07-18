@@ -1,7 +1,39 @@
 # Changelog
 
-## [v2.0.0]
+All notable changes to this project will be documented in this file.
 
+The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
+and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+
+PRs and issues are linked, so you can find more about it. Thanks to [ChangelogLinker](https://github.com/Symplify/ChangelogLinker).
+
+<!-- changelog-linker -->
+
+## Unreleased
+
+### Fixed
+
+- [#156] Fix a bug on windows, Thanks to [@wi1dcard]
+
+### Unknown Category
+
+- [#151] PHPUnit 7, Thanks to [@carusogabriel]
+
+## [v2.0.1] - 2018-01-30
+
+### Added
+
+- [#146] Add a test with lowest dependencies, Thanks to [@Soullivaneuh]
+
+### Changed
+
+- [#144] Symfony 4 compatibility improvement., Thanks to [@allansun]
+- [#139] Refactoring tests, Thanks to [@carusogabriel]
+- [#140] Use Symplify preset config file, Thanks to [@carusogabriel]
+- [#142] Pass the previous exception on git exception, Thanks to [@Soullivaneuh]
+- [#150] Do not override Process::run, Thanks to [@Soullivaneuh]
+
+## [v2.0.0] - 2017-12-31
 
 ### Added
 
@@ -93,3 +125,16 @@
 [@cpliakas]: https://github.com/cpliakas
 [@carusogabriel]: https://github.com/carusogabriel
 [@TomasVotruba]: https://github.com/TomasVotruba
+
+[#156]: https://github.com/cpliakas/git-wrapper/pull/156
+[#155]: https://github.com/cpliakas/git-wrapper/pull/155
+[#151]: https://github.com/cpliakas/git-wrapper/pull/151
+[#150]: https://github.com/cpliakas/git-wrapper/pull/150
+[#146]: https://github.com/cpliakas/git-wrapper/pull/146
+[#144]: https://github.com/cpliakas/git-wrapper/pull/144
+[#142]: https://github.com/cpliakas/git-wrapper/pull/142
+[#140]: https://github.com/cpliakas/git-wrapper/pull/140
+[#139]: https://github.com/cpliakas/git-wrapper/pull/139
+[@wi1dcard]: https://github.com/wi1dcard
+[@allansun]: https://github.com/allansun
+[@Soullivaneuh]: https://github.com/Soullivaneuh
