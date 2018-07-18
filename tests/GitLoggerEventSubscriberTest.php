@@ -9,7 +9,7 @@ use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
 use Throwable;
 
-final class GitLoggerListenerTest extends AbstractGitWrapperTestCase
+final class GitLoggerEventSubscriberTest extends AbstractGitWrapperTestCase
 {
     protected function tearDown(): void
     {
@@ -44,7 +44,7 @@ final class GitLoggerListenerTest extends AbstractGitWrapperTestCase
     public function testRegisterLogger(): void
     {
         $logger = new TestLogger();
-        $this->gitWrapper->addLoggerListener(new GitLoggerEventSubscriber($logger));
+        $this->gitWrapper->addLoggerEventSubscriber(new GitLoggerEventSubscriber($logger));
         $git = $this->gitWrapper->init(self::REPO_DIR, ['bare' => true]);
 
         $this->assertSame('Git command preparing to run', $logger->messages[0]);
@@ -78,7 +78,7 @@ final class GitLoggerListenerTest extends AbstractGitWrapperTestCase
     public function testLogBypassedCommand(): void
     {
         $logger = new TestLogger();
-        $this->gitWrapper->addLoggerListener(new GitLoggerEventSubscriber($logger));
+        $this->gitWrapper->addLoggerEventSubscriber(new GitLoggerEventSubscriber($logger));
 
         $command = new GitCommand('status', ['s' => true]);
         $command->bypass();
