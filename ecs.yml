@@ -22,7 +22,7 @@ parameters:
             # helper method
             - 'src/GitWrapper.php'
             # parent interface → nothing we can do about this
-            - 'src/Event/GitLoggerListener.php'
+            - 'src/Event/*EventSubscriber.php'
 
         SlamCsFixer\FinalInternalClassFixer:
             # class with children
@@ -31,3 +31,5 @@ parameters:
         Symplify\CodingStandard\Sniffs\CleanCode\ForbiddenReferenceSniff:
             # native PHP api → nothing we can do about this
             - 'tests/StreamSuppressFilter.php'
+
+
