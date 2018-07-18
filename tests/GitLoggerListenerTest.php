@@ -2,7 +2,7 @@
 
 namespace GitWrapper\Test;
 
-use GitWrapper\Event\GitLoggerListener;
+use GitWrapper\Event\GitLoggerEventSubscriber;
 use GitWrapper\GitCommand;
 use GitWrapper\GitException;
 use Psr\Log\LogLevel;
@@ -23,13 +23,13 @@ final class GitLoggerListenerTest extends AbstractGitWrapperTestCase
     public function testGetLogger(): void
     {
         $log = new NullLogger();
-        $listener = new GitLoggerListener($log);
+        $listener = new GitLoggerEventSubscriber($log);
         $this->assertSame($log, $listener->getLogger());
     }
 
     public function testSetLogLevelMapping(): void
     {
-        $listener = new GitLoggerListener(new NullLogger());
+        $listener = new GitLoggerEventSubscriber(new NullLogger());
         $listener->setLogLevelMapping('test.event', 'test-level');
         $this->assertSame('test-level', $listener->getLogLevelMapping('test.event'));
     }
@@ -37,14 +37,14 @@ final class GitLoggerListenerTest extends AbstractGitWrapperTestCase
     public function testGetInvalidLogLevelMapping(): void
     {
         $this->expectException(GitException::class);
-        $listener = new GitLoggerListener(new NullLogger());
+        $listener = new GitLoggerEventSubscriber(new NullLogger());
         $listener->getLogLevelMapping('bad.event');
     }
 
     public function testRegisterLogger(): void
     {
         $logger = new TestLogger();
-        $this->gitWrapper->addLoggerListener(new GitLoggerListener($logger));
+        $this->gitWrapper->addLoggerListener(new GitLoggerEventSubscriber($logger));
         $git = $this->gitWrapper->init(self::REPO_DIR, ['bare' => true]);
 
         $this->assertSame('Git command preparing to run', $logger->messages[0]);
@@ -78,7 +78,7 @@ final class GitLoggerListenerTest extends AbstractGitWrapperTestCase
     public function testLogBypassedCommand(): void
     {
         $logger = new TestLogger();
-        $this->gitWrapper->addLoggerListener(new GitLoggerListener($logger));
+        $this->gitWrapper->addLoggerListener(new GitLoggerEventSubscriber($logger));
 
         $command = new GitCommand('status', ['s' => true]);
         $command->bypass();
