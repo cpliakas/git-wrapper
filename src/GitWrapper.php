@@ -242,6 +242,7 @@ final class GitWrapper
             $path = substr($repositoryUrl, $strpos + 1);
         }
 
+        /** @var string $path */
         return basename($path, '.git');
     }
 

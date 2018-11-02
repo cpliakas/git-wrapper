@@ -117,7 +117,7 @@ final class GitCommand
         foreach ($this->options as $option => $values) {
             foreach ((array) $values as $value) {
                 // Render the option.
-                $prefix = (strlen($option) !== 1) ? '--' : '-';
+                $prefix = strlen($option) !== 1 ? '--' : '-';
                 $options[] = $prefix . $option;
 
                 // Render apend the value if the option isn't a flag.
