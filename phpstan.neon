@@ -1,5 +1,5 @@
 parameters:
     ignoreErrors:
         - '#Access to an undefined property object::\$data#'
-        # false positive, is array callable
-        - '#Parameter \#1 \$function of function call_user_func_array expects callable, array<int, \$this\(GitWrapper\\Test\\GitWorkingCopyTest\)\|int\|string> given#'
+        # false positive - ignored doc type
+        - '#Parameter \#1 \$path of function basename expects string, string\|false given#'

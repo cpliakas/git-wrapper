@@ -373,6 +373,7 @@ PATCH;
         // Capture output written to STDOUT and use echo so we can suppress and
         // capture it using normal output buffering.
         stream_filter_register('suppress', StreamSuppressFilter::class);
+        /** @var resource $stdoutSuppress */
         $stdoutSuppress = stream_filter_append(STDOUT, 'suppress');
 
         $git->getWrapper()->streamOutput(true);
@@ -516,7 +517,7 @@ PATCH;
         $this->assertTrue($git->hasRemote('remote'));
         foreach ($asserts as $method => $parameters) {
             array_unshift($parameters, $git);
-            call_user_func_array([$this, $method], $parameters);
+            $this->{$method}(...$parameters);
         }
     }
 

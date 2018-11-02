@@ -15,6 +15,10 @@ parameters:
         - 'Symplify\CodingStandard\Sniffs\DependencyInjection\NoClassInstantiationSniff'
 
     skip:
+        SlevomatCodingStandard\Sniffs\Variables\UnusedVariableSniff.UnusedVariable:
+            # required for counting of uncountable
+            - 'tests/GitWorkingCopyTest.php'
+
         SlevomatCodingStandard\Sniffs\TypeHints\TypeHintDeclarationSniff:
             - 'tests/TestLogger.php'
 
