@@ -90,14 +90,6 @@ final class GitProcess extends Process
         return $exitCode;
     }
 
-    private function dispatchGitEvent(string $eventName): void
-    {
-        $this->gitWrapper->getDispatcher()->dispatch(
-            $eventName,
-            new GitEvent($this->gitWrapper, $this, $this->gitCommand)
-        );
-    }
-
     private function resolveWorkingDirectory(?string $cwd, GitCommand $gitCommand): ?string
     {
         if ($cwd !== null) {
@@ -114,5 +106,13 @@ final class GitProcess extends Process
         }
 
         return $cwd;
+    }
+
+    private function dispatchGitEvent(string $eventName): void
+    {
+        $this->gitWrapper->getDispatcher()->dispatch(
+            $eventName,
+            new GitEvent($this->gitWrapper, $this, $this->gitCommand)
+        );
     }
 }

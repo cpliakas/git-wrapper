@@ -11,11 +11,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 final class GitLoggerEventSubscriber implements EventSubscriberInterface, LoggerAwareInterface
 {
     /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
      * Mapping of event to log level.
      *
      * @var string[]
@@ -27,6 +22,11 @@ final class GitLoggerEventSubscriber implements EventSubscriberInterface, Logger
         GitEvents::GIT_ERROR => LogLevel::ERROR,
         GitEvents::GIT_BYPASS => LogLevel::INFO,
     ];
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
     public function __construct(LoggerInterface $logger)
     {

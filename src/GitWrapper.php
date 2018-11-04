@@ -29,18 +29,18 @@ final class GitWrapper
     private $gitBinary;
 
     /**
-     * Environment variables defined in the scope of the Git command.
-     *
-     * @var string[]
-     */
-    private $env = [];
-
-    /**
      * The timeout of the Git command in seconds.
      *
      * @var int
      */
     private $timeout = 60;
+
+    /**
+     * Environment variables defined in the scope of the Git command.
+     *
+     * @var string[]
+     */
+    private $env = [];
 
     /**
      * @var GitOutputListenerInterface
