@@ -21,16 +21,6 @@ final class GitCommand
     private $command = '';
 
     /**
-     * @var mixed[]
-     */
-    private $options = [];
-
-    /**
-     * @var mixed[]
-     */
-    private $args = [];
-
-    /**
      * Whether command execution should be bypassed.
      *
      * @var bool
@@ -45,6 +35,16 @@ final class GitCommand
      * @var bool
      */
     private $executeRaw = false;
+
+    /**
+     * @var mixed[]
+     */
+    private $options = [];
+
+    /**
+     * @var mixed[]
+     */
+    private $args = [];
 
     /**
      * @param mixed ...$argsAndOptions
