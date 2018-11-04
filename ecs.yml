@@ -5,10 +5,6 @@ imports:
     - { resource: 'vendor/symplify/easy-coding-standard/config/clean-code.yml' }
     - { resource: 'vendor/symplify/easy-coding-standard/config/symplify.yml' }
 
-services:
-    # Class should be Final or Abstract
-    SlamCsFixer\FinalInternalClassFixer: ~
-
 parameters:
     exclude_checkers:
         - 'PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis\AssignmentInConditionSniff'
