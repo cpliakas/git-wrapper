@@ -11,11 +11,14 @@ namespace GitWrapper;
 final class GitWorkingCopy
 {
     /**
-     * The GitWrapper object that likely instantiated this class.
+     * A boolean flagging whether the repository is cloned.
      *
-     * @var GitWrapper
+     * If the variable is null, the a rudimentary check will be performed to see
+     * if the directory looks like it is a working copy.
+     *
+     * @var bool|null
      */
-    private $gitWrapper;
+    private $cloned;
 
     /**
      * Path to the directory containing the working copy.
@@ -25,14 +28,11 @@ final class GitWorkingCopy
     private $directory;
 
     /**
-     * A boolean flagging whether the repository is cloned.
+     * The GitWrapper object that likely instantiated this class.
      *
-     * If the variable is null, the a rudimentary check will be performed to see
-     * if the directory looks like it is a working copy.
-     *
-     * @var bool|null
+     * @var GitWrapper
      */
-    private $cloned;
+    private $gitWrapper;
 
     public function __construct(GitWrapper $gitWrapper, string $directory)
     {
