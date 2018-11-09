@@ -5,33 +5,35 @@ matrix:
     - php: 7.1
       env: COMPOSER_FLAGS=--prefer-lowest
     - php: 7.1
-      env: CODING_STANDARD=true
-    - php: 7.1
-      env: PHPSTAN=true
+      env: STATIC_ANALYSIS=true
     - php: 7.1
       env: PHPUNIT_FLAGS="--coverage-clover coverage.xml"
     - php: 7.2
 
 install:
-  - composer update --prefer-dist $COMPOSER_FLAGS
+  - composer update $COMPOSER_FLAGS
 
 before_script:
   - git --version
 
 script:
   - vendor/bin/phpunit $PHPUNIT_FLAGS
-  # disable xdebug
-  - phpenv config-rm xdebug.ini || return 0
-  - if [[ $CODING_STANDARD != "" ]]; then composer check-cs; fi
-  - if [[ $PHPSTAN != "" ]]; then composer phpstan; fi
+  # disable xdebug if not needed
+  - if [[ $PHPUNIT_FLAGS != "" ]]; then phpenv config-rm xdebug.ini; fi
+
+  - |
+    if [[ $STATIC_ANALYSIS == true ]]; then
+        composer check-cs
+        composer phpstan
+    fi
 
 after_script:
   # upload coverage.xml to Coveralls
   - |
     if [[ $PHPUNIT_FLAGS != "" ]]; then
-      wget https://github.com/satooshi/php-coveralls/releases/download/v1.0.1/coveralls.phar;
-      php coveralls.phar --verbose;
+        wget https://github.com/satooshi/php-coveralls/releases/download/v1.0.1/coveralls.phar;
+        php coveralls.phar --verbose;
     fi
 
 notifications:
-  email: never
+  email: false
