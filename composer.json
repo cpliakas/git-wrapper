@@ -4,7 +4,8 @@
     "keywords": ["git", "git wrapper", "cli"],
     "license": "MIT",
     "authors": [
-        { "name": "Chris Pliakas", "email": "opensource@chrispliakas.com" }
+        { "name": "Chris Pliakas", "email": "opensource@chrispliakas.com" },
+        { "name": "Tomas Votruba", "email": "tomas.vot@gmail.com" }
     ],
     "require": {
         "php": "^7.1.3",
