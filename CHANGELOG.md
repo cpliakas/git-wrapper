@@ -9,15 +9,17 @@ PRs and issues are linked, so you can find more about it. Thanks to [ChangelogLi
 
 <!-- changelog-linker -->
 
-## Unreleased
+## [v2.1.0] - 2018-11-09
+
+### Changed
+
+- [#160] bump Symfony to 4.1, ECS to 5.1, PHPStan
+- [#158] Bump dependencies, code styling and static analysis fixes
+- [#151] PHPUnit 7, Thanks to [@carusogabriel]
 
 ### Fixed
 
 - [#156] Fix a bug on windows, Thanks to [@wi1dcard]
-
-### Unknown Category
-
-- [#151] PHPUnit 7, Thanks to [@carusogabriel]
 
 ## [v2.0.1] - 2018-01-30
 
@@ -138,3 +140,5 @@ PRs and issues are linked, so you can find more about it. Thanks to [ChangelogLi
 [@wi1dcard]: https://github.com/wi1dcard
 [@allansun]: https://github.com/allansun
 [@Soullivaneuh]: https://github.com/Soullivaneuh
+[#160]: https://github.com/cpliakas/git-wrapper/pull/160
+[#158]: https://github.com/cpliakas/git-wrapper/pull/158
