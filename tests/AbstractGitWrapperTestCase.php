@@ -5,6 +5,7 @@ namespace GitWrapper\Test;
 use GitWrapper\Event\GitEvents;
 use GitWrapper\GitException;
 use GitWrapper\GitWrapper;
+use GitWrapper\GitWrapperInterface;
 use GitWrapper\Test\Event\TestBypassListener;
 use GitWrapper\Test\Event\TestListener;
 use Nette\Utils\Random;
@@ -39,7 +40,7 @@ abstract class AbstractGitWrapperTestCase extends TestCase
     protected $filesystem;
 
     /**
-     * @var GitWrapper
+     * @var GitWrapperInterface
      */
     protected $gitWrapper;
 

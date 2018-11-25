@@ -6,16 +6,16 @@ use ArrayIterator;
 use IteratorAggregate;
 
 /**
- * Class that parses and returnes an array of branches.
+ * Class that parses and returns an array of branches.
  */
-final class GitBranches implements IteratorAggregate
+final class GitBranches implements IteratorAggregate, GitBranchesInterface
 {
     /**
-     * @var GitWorkingCopy
+     * @var GitWorkingCopyInterface
      */
     private $gitWorkingCopy;
 
-    public function __construct(GitWorkingCopy $gitWorkingCopy)
+    public function __construct(GitWorkingCopyInterface $gitWorkingCopy)
     {
         $this->gitWorkingCopy = clone $gitWorkingCopy;
         $gitWorkingCopy->branch(['a' => true]);

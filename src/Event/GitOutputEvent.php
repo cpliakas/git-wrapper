@@ -4,6 +4,7 @@ namespace GitWrapper\Event;
 
 use GitWrapper\GitCommand;
 use GitWrapper\GitWrapper;
+use GitWrapper\GitWrapperInterface;
 use Symfony\Component\Process\Process;
 
 /**
@@ -22,7 +23,7 @@ final class GitOutputEvent extends GitEvent
     protected $buffer;
 
     public function __construct(
-        GitWrapper $gitWrapper,
+        GitWrapperInterface $gitWrapper,
         Process $process,
         GitCommand $gitCommand,
         string $type,

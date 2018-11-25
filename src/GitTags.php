@@ -6,16 +6,16 @@ use ArrayIterator;
 use IteratorAggregate;
 
 /**
- * Class that parses and returnes an array of Tags.
+ * Class that parses and returns an array of Tags.
  */
-final class GitTags implements IteratorAggregate
+final class GitTags implements IteratorAggregate, GitTagsInterface
 {
     /**
-     * @var GitWorkingCopy
+     * @var GitWorkingCopyInterface
      */
     private $gitWorkingCopy;
 
-    public function __construct(GitWorkingCopy $gitWorkingCopy)
+    public function __construct(GitWorkingCopyInterface $gitWorkingCopy)
     {
         $this->gitWorkingCopy = clone $gitWorkingCopy;
     }

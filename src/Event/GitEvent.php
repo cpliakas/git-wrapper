@@ -4,6 +4,7 @@ namespace GitWrapper\Event;
 
 use GitWrapper\GitCommand;
 use GitWrapper\GitWrapper;
+use GitWrapper\GitWrapperInterface;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Process\Process;
 
@@ -13,7 +14,7 @@ use Symfony\Component\Process\Process;
 class GitEvent extends Event
 {
     /**
-     * @var GitWrapper
+     * @var GitWrapperInterface
      */
     protected $gitWrapper;
 
@@ -27,14 +28,14 @@ class GitEvent extends Event
      */
     protected $gitCommand;
 
-    public function __construct(GitWrapper $gitWrapper, Process $process, GitCommand $gitCommand)
+    public function __construct(GitWrapperInterface $gitWrapper, Process $process, GitCommand $gitCommand)
     {
         $this->gitWrapper = $gitWrapper;
         $this->process = $process;
         $this->gitCommand = $gitCommand;
     }
 
-    public function getWrapper(): GitWrapper
+    public function getWrapper(): GitWrapperInterface
     {
         return $this->gitWrapper;
     }

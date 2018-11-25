@@ -8,7 +8,7 @@ namespace GitWrapper;
  * All commands executed via an instance of this class act on the working copy
  * that is set through the constructor.
  */
-final class GitWorkingCopy
+final class GitWorkingCopy implements GitWorkingCopyInterface
 {
     /**
      * A boolean flagging whether the repository is cloned.
@@ -30,17 +30,17 @@ final class GitWorkingCopy
     /**
      * The GitWrapper object that likely instantiated this class.
      *
-     * @var GitWrapper
+     * @var GitWrapperInterface
      */
     private $gitWrapper;
 
-    public function __construct(GitWrapper $gitWrapper, string $directory)
+    public function __construct(GitWrapperInterface $gitWrapper, string $directory)
     {
         $this->gitWrapper = $gitWrapper;
         $this->directory = $directory;
     }
 
-    public function getWrapper(): GitWrapper
+    public function getWrapper(): GitWrapperInterface
     {
         return $this->gitWrapper;
     }
@@ -195,7 +195,7 @@ final class GitWorkingCopy
      * Returns a GitBranches object containing information on the repository's
      * branches.
      */
-    public function getBranches(): GitBranches
+    public function getBranches(): GitBranchesInterface
     {
         return new GitBranches($this);
     }
@@ -653,7 +653,7 @@ final class GitWorkingCopy
     /**
      * Returns a GitTags object containing  information on the repository's tags.
      */
-    public function tags(): GitTags
+    public function tags(): GitTagsInterface
     {
         return new GitTags($this);
     }

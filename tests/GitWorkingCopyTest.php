@@ -5,6 +5,7 @@ namespace GitWrapper\Test;
 use GitWrapper\GitBranches;
 use GitWrapper\GitException;
 use GitWrapper\GitWorkingCopy;
+use GitWrapper\GitWorkingCopyInterface;
 use GitWrapper\Test\Event\TestOutputListener;
 use Symfony\Component\Process\Process;
 
@@ -84,7 +85,7 @@ final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
      *
      * @param string $directory The directory that the repository is being cloned to, defaults to "test/wc".
      */
-    public function getWorkingCopy(string $directory = self::WORKING_DIR): GitWorkingCopy
+    public function getWorkingCopy(string $directory = self::WORKING_DIR): GitWorkingCopyInterface
     {
         $git = $this->gitWrapper->workingCopy($directory);
         $git->cloneRepository('file://' . realpath(self::REPO_DIR));
@@ -684,12 +685,12 @@ PATCH;
         ];
     }
 
-    protected function assertGitTag(GitWorkingCopy $gitWorkingCopy, string $tag): void
+    protected function assertGitTag(GitWorkingCopyInterface $gitWorkingCopy, string $tag): void
     {
         $gitWorkingCopy->run('rev-parse', [$tag]);
     }
 
-    protected function assertNoGitTag(GitWorkingCopy $gitWorkingCopy, string $tag): void
+    protected function assertNoGitTag(GitWorkingCopyInterface $gitWorkingCopy, string $tag): void
     {
         try {
             $gitWorkingCopy->run('rev-parse', [$tag]);
@@ -701,12 +702,12 @@ PATCH;
         throw new GitException(sprintf('Tag "%s" should not exist', $tag));
     }
 
-    protected function assertRemoteMaster(GitWorkingCopy $gitWorkingCopy): void
+    protected function assertRemoteMaster(GitWorkingCopyInterface $gitWorkingCopy): void
     {
         $gitWorkingCopy->run('rev-parse', ['remote/HEAD']);
     }
 
-    protected function assertNoRemoteMaster(GitWorkingCopy $gitWorkingCopy): void
+    protected function assertNoRemoteMaster(GitWorkingCopyInterface $gitWorkingCopy): void
     {
         try {
             $gitWorkingCopy->run('rev-parse', ['remote/HEAD']);
@@ -721,14 +722,14 @@ PATCH;
     /**
      * @param string[] $branches
      */
-    protected function assertRemoteBranches(GitWorkingCopy $gitWorkingCopy, array $branches): void
+    protected function assertRemoteBranches(GitWorkingCopyInterface $gitWorkingCopy, array $branches): void
     {
         foreach ($branches as $branch) {
             $this->assertRemoteBranch($gitWorkingCopy, $branch);
         }
     }
 
-    protected function assertRemoteBranch(GitWorkingCopy $gitWorkingCopy, string $branch): void
+    protected function assertRemoteBranch(GitWorkingCopyInterface $gitWorkingCopy, string $branch): void
     {
         $branches = $gitWorkingCopy->getBranches()->remote();
         $this->assertArrayHasKey($branch, array_flip($branches));
@@ -737,14 +738,14 @@ PATCH;
     /**
      * @param string[] $branches
      */
-    protected function assertNoRemoteBranches(GitWorkingCopy $gitWorkingCopy, array $branches): void
+    protected function assertNoRemoteBranches(GitWorkingCopyInterface $gitWorkingCopy, array $branches): void
     {
         foreach ($branches as $branch) {
             $this->assertNoRemoteBranch($gitWorkingCopy, $branch);
         }
     }
 
-    protected function assertNoRemoteBranch(GitWorkingCopy $gitWorkingCopy, string $branch): void
+    protected function assertNoRemoteBranch(GitWorkingCopyInterface $gitWorkingCopy, string $branch): void
     {
         $branches = $gitWorkingCopy->getBranches()->remote();
         $this->assertArrayNotHasKey($branch, array_flip($branches));

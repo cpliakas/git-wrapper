@@ -10,16 +10,16 @@ use Symfony\Component\Process\Process;
 final class GitProcess extends Process
 {
     /**
-     * @var GitWrapper
+     * @var GitWrapperInterface
      */
-    protected $gitWrapper;
+    private $gitWrapper;
 
     /**
      * @var GitCommand
      */
-    protected $gitCommand;
+    private $gitCommand;
 
-    public function __construct(GitWrapper $gitWrapper, GitCommand $gitCommand, ?string $cwd = null)
+    public function __construct(GitWrapperInterface $gitWrapper, GitCommand $gitCommand, ?string $cwd = null)
     {
         $this->gitWrapper = $gitWrapper;
         $this->gitCommand = $gitCommand;

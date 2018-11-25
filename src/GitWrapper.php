@@ -19,7 +19,7 @@ use Symfony\Component\Process\ExecutableFinder;
  * helper methods to run Git commands as set up the connection to the GIT_SSH
  * wrapper script.
  */
-final class GitWrapper
+final class GitWrapper implements GitWrapperInterface
 {
     /**
      * Path to the Git binary.
@@ -213,7 +213,7 @@ final class GitWrapper
      *
      * @param string $directory Path to the directory containing the working copy.
      */
-    public function workingCopy(string $directory): GitWorkingCopy
+    public function workingCopy(string $directory): GitWorkingCopyInterface
     {
         return new GitWorkingCopy($this, $directory);
     }
@@ -253,7 +253,7 @@ final class GitWrapper
      *
      * @param mixed[] $options An associative array of command line options.
      */
-    public function init(string $directory, array $options = []): GitWorkingCopy
+    public function init(string $directory, array $options = []): GitWorkingCopyInterface
     {
         $git = $this->workingCopy($directory);
         $git->init($options);
@@ -274,7 +274,7 @@ final class GitWrapper
      *   the GitWrapper::parseRepositoryName() method.
      * @param mixed[] $options An associative array of command line options.
      */
-    public function cloneRepository(string $repository, ?string $directory = null, array $options = []): GitWorkingCopy
+    public function cloneRepository(string $repository, ?string $directory = null, array $options = []): GitWorkingCopyInterface
     {
         if ($directory === null) {
             $directory = self::parseRepositoryName($repository);
