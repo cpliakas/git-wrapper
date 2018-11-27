@@ -275,8 +275,11 @@ final class GitWrapper implements GitWrapperInterface
     /**
      * @inheritdoc
      */
-    public function cloneRepository(string $repository, ?string $directory = null, array $options = []): GitWorkingCopyInterface
-    {
+    public function cloneRepository(
+        string $repository,
+        ?string $directory = null,
+        array $options = []
+    ): GitWorkingCopyInterface {
         if ($directory === null) {
             $directory = self::parseRepositoryName($repository);
         }

@@ -8,6 +8,8 @@ use ArrayIterator;
 
 /**
  * Class that parses and returns an array of branches.
+ *
+ * This interface is meant to make mocking in testing context easier.
  */
 interface GitBranchesInterface extends IteratorAggregate
 {

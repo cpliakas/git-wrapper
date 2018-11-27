@@ -3,11 +3,12 @@ declare(strict_types=1);
 
 namespace GitWrapper;
 
-
 /**
  * Interacts with a working copy.
  * All commands executed via an instance of this class act on the working copy
  * that is set through the constructor.
+ *
+ * This interface is meant to make mocking in testing context easier.
  */
 interface GitWorkingCopyInterface
 {

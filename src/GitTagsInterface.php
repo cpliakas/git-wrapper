@@ -8,6 +8,8 @@ use ArrayIterator;
 
 /**
  * Class that parses and returns an array of Tags.
+ *
+ * This interface is meant to make mocking in testing context easier.
  */
 interface GitTagsInterface extends IteratorAggregate
 {
