@@ -45,7 +45,7 @@ interface GitWrapperInterface
     public function getEnvVar(
         string $var,
         $default = null
-    ): void;
+    );
 
     /**
      * @return mixed[]
