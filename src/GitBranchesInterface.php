@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace GitWrapper;
 
-
+use IteratorAggregate;
 use ArrayIterator;
 
 /**
  * Class that parses and returns an array of branches.
  */
-interface GitBranchesInterface
+interface GitBranchesInterface extends IteratorAggregate
 {
     /**
      * Fetches the branches via the `git branch` command.

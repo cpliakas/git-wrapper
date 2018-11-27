@@ -13,11 +13,13 @@ use Symfony\Component\Process\Process;
 final class GitOutputEvent extends GitEvent
 {
     /**
+     * *
      * @var string
      */
     protected $type;
 
     /**
+     * *
      * @var string
      */
     protected $buffer;

@@ -65,6 +65,9 @@ final class GitWrapper implements GitWrapperInterface
         $this->setGitBinary($gitBinary);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getDispatcher(): EventDispatcherInterface
     {
         if ($this->eventDispatcher === null) {
@@ -74,43 +77,48 @@ final class GitWrapper implements GitWrapperInterface
         return $this->eventDispatcher;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function setDispatcher(EventDispatcherInterface $eventDispatcher): void
     {
         $this->eventDispatcher = $eventDispatcher;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function setGitBinary(string $gitBinary): void
     {
         $this->gitBinary = $gitBinary;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getGitBinary(): string
     {
         return $this->gitBinary;
     }
 
     /**
-     * @param mixed $value
+     * @inheritdoc
      */
     public function setEnvVar(string $var, $value): void
     {
         $this->env[$var] = $value;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function unsetEnvVar(string $var): void
     {
         unset($this->env[$var]);
     }
 
     /**
-     * Returns an environment variable that is defined only in the scope of the
-     * Git command.
-     *
-     * @param string $var The name of the environment variable, e.g. "HOME", "GIT_SSH".
-     * @param mixed $default The value returned if the environment variable is not set, defaults to
-     *   null.
-     *
-     * @return mixed
+     * @inheritdoc
      */
     public function getEnvVar(string $var, $default = null)
     {
@@ -118,32 +126,31 @@ final class GitWrapper implements GitWrapperInterface
     }
 
     /**
-     * @return mixed[]
+     * @inheritdoc
      */
     public function getEnvVars(): array
     {
         return $this->env;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function setTimeout(int $timeout): void
     {
         $this->timeout = $timeout;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getTimeout(): int
     {
         return $this->timeout;
     }
 
     /**
-     * Set an alternate private key used to connect to the repository.
-     *
-     * This method sets the GIT_SSH environment variable to use the wrapper
-     * script included with this library. It also sets the custom GIT_SSH_KEY
-     * and GIT_SSH_PORT environment variables that are used by the script.
-     *
-     * @param string|null $wrapper Path the the GIT_SSH wrapper script, defaults to null which uses the
-     *   script included with this library.
+     * @inheritdoc
      */
     public function setPrivateKey(string $privateKey, int $port = 22, ?string $wrapper = null): void
     {
@@ -165,7 +172,7 @@ final class GitWrapper implements GitWrapperInterface
     }
 
     /**
-     * Unsets the private key by removing the appropriate environment variables.
+     * @inheritdoc
      */
     public function unsetPrivateKey(): void
     {
@@ -174,18 +181,27 @@ final class GitWrapper implements GitWrapperInterface
         $this->unsetEnvVar('GIT_SSH_PORT');
     }
 
+    /**
+     * @inheritdoc
+     */
     public function addOutputListener(GitOutputListenerInterface $gitOutputListener): void
     {
         $this->getDispatcher()
             ->addListener(GitEvents::GIT_OUTPUT, [$gitOutputListener, 'handleOutput']);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function addLoggerEventSubscriber(GitLoggerEventSubscriber $gitLoggerEventSubscriber): void
     {
         $this->getDispatcher()
             ->addSubscriber($gitLoggerEventSubscriber);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function removeOutputListener(GitOutputListenerInterface $gitOutputListener): void
     {
         $this->getDispatcher()
@@ -193,7 +209,7 @@ final class GitWrapper implements GitWrapperInterface
     }
 
     /**
-     * Set whether or not to stream real-time output to STDOUT and STDERR.
+     * @inheritdoc
      */
     public function streamOutput(bool $streamOutput = true): void
     {
@@ -209,9 +225,7 @@ final class GitWrapper implements GitWrapperInterface
     }
 
     /**
-     * Returns an object that interacts with a working copy.
-     *
-     * @param string $directory Path to the directory containing the working copy.
+     * @inheritdoc
      */
     public function workingCopy(string $directory): GitWorkingCopyInterface
     {
@@ -219,7 +233,7 @@ final class GitWrapper implements GitWrapperInterface
     }
 
     /**
-     * Returns the version of the installed Git client.
+     * @inheritdoc
      */
     public function version(): string
     {
@@ -247,11 +261,7 @@ final class GitWrapper implements GitWrapperInterface
     }
 
     /**
-     * Executes a `git init` command.
-     *
-     * Create an empty git repository or reinitialize an existing one.
-     *
-     * @param mixed[] $options An associative array of command line options.
+     * @inheritdoc
      */
     public function init(string $directory, array $options = []): GitWorkingCopyInterface
     {
@@ -263,16 +273,7 @@ final class GitWrapper implements GitWrapperInterface
     }
 
     /**
-     * Executes a `git clone` command and returns a working copy object.
-     *
-     * Clone a repository into a new directory. Use @see GitWorkingCopy::cloneRepository()
-     * instead for more readable code.
-     *
-     * @param string $repository The Git URL of the repository being cloned.
-     * @param string $directory The directory that the repository will be cloned into. If null is
-     *   passed, the directory will automatically be generated from the URL via
-     *   the GitWrapper::parseRepositoryName() method.
-     * @param mixed[] $options An associative array of command line options.
+     * @inheritdoc
      */
     public function cloneRepository(string $repository, ?string $directory = null, array $options = []): GitWorkingCopyInterface
     {
@@ -287,10 +288,7 @@ final class GitWrapper implements GitWrapperInterface
     }
 
     /**
-     * The command is simply a raw command line entry for everything after the Git binary.
-     * For example, a `git config -l` command would be passed as `config -l` via the first argument of this method.
-     *
-     * @return string The STDOUT returned by the Git command.
+     * @inheritdoc
      */
     public function git(string $commandLine, ?string $cwd = null): string
     {
@@ -301,7 +299,7 @@ final class GitWrapper implements GitWrapperInterface
     }
 
     /**
-     * @return string The STDOUT returned by the Git command.
+     * @inheritdoc
      */
     public function run(GitCommand $gitCommand, ?string $cwd = null): string
     {

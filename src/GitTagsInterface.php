@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace GitWrapper;
 
-
+use IteratorAggregate;
 use ArrayIterator;
 
 /**
  * Class that parses and returns an array of Tags.
  */
-interface GitTagsInterface
+interface GitTagsInterface extends IteratorAggregate
 {
     /**
      * Fetches the Tags via the `git branch` command.

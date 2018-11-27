@@ -8,7 +8,7 @@ use IteratorAggregate;
 /**
  * Class that parses and returns an array of branches.
  */
-final class GitBranches implements IteratorAggregate, GitBranchesInterface
+final class GitBranches implements GitBranchesInterface
 {
     /**
      * @var GitWorkingCopyInterface
@@ -22,25 +22,27 @@ final class GitBranches implements IteratorAggregate, GitBranchesInterface
     }
 
     /**
-     * Fetches the branches via the `git branch` command.
-     *
-     * @param bool $onlyRemote Whether to fetch only remote branches, defaults to false which returns all branches.
-     *
-     * @return mixed[]
+     * @inheritdoc
      */
     public function fetchBranches(bool $onlyRemote = false): array
     {
         $options = $onlyRemote ? ['r' => true] : ['a' => true];
         $output = $this->gitWorkingCopy->branch($options);
-        $branches = (array) preg_split("/\r\n|\n|\r/", rtrim($output));
+        $branches = (array)preg_split("/\r\n|\n|\r/", rtrim($output));
         return array_map([$this, 'trimBranch'], $branches);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function trimBranch(string $branch): string
     {
         return ltrim($branch, ' *');
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getIterator(): ArrayIterator
     {
         $branches = $this->all();
@@ -48,7 +50,7 @@ final class GitBranches implements IteratorAggregate, GitBranchesInterface
     }
 
     /**
-     * @return string[]
+     * @inheritdoc
      */
     public function all(): array
     {
@@ -56,7 +58,7 @@ final class GitBranches implements IteratorAggregate, GitBranchesInterface
     }
 
     /**
-     * @return string[]
+     * @inheritdoc
      */
     public function remote(): array
     {
@@ -64,7 +66,7 @@ final class GitBranches implements IteratorAggregate, GitBranchesInterface
     }
 
     /**
-     * Returns currently active branch (HEAD) of the working copy.
+     * @inheritdoc
      */
     public function head(): string
     {

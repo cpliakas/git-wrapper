@@ -3,12 +3,11 @@
 namespace GitWrapper;
 
 use ArrayIterator;
-use IteratorAggregate;
 
 /**
  * Class that parses and returns an array of Tags.
  */
-final class GitTags implements IteratorAggregate, GitTagsInterface
+final class GitTags implements GitTagsInterface
 {
     /**
      * @var GitWorkingCopyInterface
@@ -21,9 +20,7 @@ final class GitTags implements IteratorAggregate, GitTagsInterface
     }
 
     /**
-     * Fetches the Tags via the `git branch` command.
-     *
-     * @return mixed[]
+     * @inheritdoc
      */
     public function fetchTags(): array
     {
@@ -33,13 +30,16 @@ final class GitTags implements IteratorAggregate, GitTagsInterface
     }
 
     /**
-     * Strips unwanted characters from the branch
+     * @inheritdoc
      */
     public function trimTags(string $branch): string
     {
         return ltrim($branch, ' *');
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getIterator(): ArrayIterator
     {
         $tags = $this->all();
@@ -47,7 +47,7 @@ final class GitTags implements IteratorAggregate, GitTagsInterface
     }
 
     /**
-     * @return mixed[]
+     * @inheritdoc
      */
     public function all(): array
     {
