@@ -14,19 +14,16 @@ use Symfony\Component\Process\Process;
 class GitEvent extends Event
 {
     /**
-     * *
      * @var GitWrapperInterface
      */
     protected $gitWrapper;
 
     /**
-     * *
      * @var Process
      */
     protected $process;
 
     /**
-     * *
      * @var GitCommand
      */
     protected $gitCommand;
