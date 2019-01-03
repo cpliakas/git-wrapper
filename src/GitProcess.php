@@ -29,7 +29,7 @@ final class GitProcess extends Process
         $gitBinary = $gitWrapper->getGitBinary();
         if (is_string($commandLine)) {
             // Support for executing an arbitrary git command.
-            $commandLine = '"' . $gitBinary . '" ' . $commandLine;
+            $commandLine = ['"' . $gitBinary . '" ' . $commandLine];
         } else {
             array_unshift($commandLine, $gitBinary);
         }
