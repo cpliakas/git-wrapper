@@ -9,6 +9,10 @@ matrix:
     - php: 7.1
       env: PHPUNIT_FLAGS="--coverage-clover coverage.xml"
     - php: 7.2
+    - php: 7.3
+      env: COMPOSER_FLAGS=--ignore-platform-reqs
+    - php: nightly
+      env: COMPOSER_FLAGS=--ignore-platform-reqs
 
 install:
   - composer update $COMPOSER_FLAGS
