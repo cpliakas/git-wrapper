@@ -429,20 +429,20 @@ final class GitWorkingCopy
 
     /**
      * Record changes to the repository. If only one argument is passed, it is  assumed to be the commit message.
-     * Therefore `$git->commit('Message');` yields a `git commit -am "Message"` command.
+     * Therefore `$git->commit('Message');` yields a `git commit -m "Message"` command.
      *
      * @code $git->commit('My commit message');
-     * $git->commit('Makefile', ['m' => 'My commit message']);
+     * $git->commit('Makefile', [
+     *     'm' => 'My commit message',
+     *     'a' => true,
+     * ]);
      *
      * @param mixed ...$argsAndOptions
      */
     public function commit(...$argsAndOptions): string
     {
         if (isset($argsAndOptions[0]) && is_string($argsAndOptions[0]) && ! isset($argsAndOptions[1])) {
-            $argsAndOptions[0] = [
-                'm' => $argsAndOptions[0],
-                'a' => true,
-            ];
+            $argsAndOptions[0] = ['m' => $argsAndOptions[0]];
         }
 
         return $this->run('commit', $argsAndOptions);
