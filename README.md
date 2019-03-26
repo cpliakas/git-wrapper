@@ -138,3 +138,12 @@ On checkout, the bin/git-ssh-wrapper.sh script should be executable. If it is no
 ```bash
 $ chmod +x ./bin/git-ssh-wrapper.sh
 ```
+
+### Timeout
+
+There is a default timeout of 60 seconds. This might cause "issues" when you use the clone feature of bigger projects or with slow internet.
+
+```php
+$this->gitWrapper = new GitWrapper();
+$this->gitWrapper->setTimeout( 120 );
+```
