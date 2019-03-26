@@ -143,7 +143,7 @@ $ chmod +x ./bin/git-ssh-wrapper.sh
 
 There is a default timeout of 60 seconds. This might cause "issues" when you use the clone feature of bigger projects or with slow internet.
 
-```
-$this->git_wrapper = new GitWrapper();
-$this->git_wrapper->setTimeout( 120 );
+```php
+$this->gitWrapper = new GitWrapper();
+$this->gitWrapper->setTimeout( 120 );
 ```
