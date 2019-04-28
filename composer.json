@@ -16,10 +16,10 @@
         "phpunit/phpunit": "^7.4",
         "symfony/filesystem": "^4.1",
         "psr/log": "1.0",
-        "symplify/easy-coding-standard": "^5.2",
+        "symplify/easy-coding-standard": "^5.4",
         "nette/utils": "^2.5",
-        "phpstan/phpstan": "^0.10.5",
-        "symplify/changelog-linker": "^5.2"
+        "phpstan/phpstan": "^0.11",
+        "symplify/changelog-linker": "^5.4"
     },
     "autoload": {
         "psr-4": {
