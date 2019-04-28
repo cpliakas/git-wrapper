@@ -9,6 +9,14 @@ PRs and issues are linked, so you can find more about it. Thanks to [ChangelogLi
 
 <!-- changelog-linker -->
 
+## [v2.2.0] - 2019-04-29
+
+- [#171] Update documentation with timeout example, Thanks to [@kallehauge]
+- [#167] Update head method to seperate args, Thanks to [@Hodgy]
+- [#165] Update `GitProcess`, Thanks to [@Big-Shark]
+- [#164] Update testEvent for symfony process 3.4+, Thanks to [@Big-Shark]
+- [#163] Update .travis.yml, Thanks to [@Big-Shark]
+
 ## [v2.1.0] - 2018-11-09
 
 ### Changed
@@ -142,3 +150,11 @@ PRs and issues are linked, so you can find more about it. Thanks to [ChangelogLi
 [@Soullivaneuh]: https://github.com/Soullivaneuh
 [#160]: https://github.com/cpliakas/git-wrapper/pull/160
 [#158]: https://github.com/cpliakas/git-wrapper/pull/158
+[#171]: https://github.com/cpliakas/git-wrapper/pull/171
+[#167]: https://github.com/cpliakas/git-wrapper/pull/167
+[#165]: https://github.com/cpliakas/git-wrapper/pull/165
+[#164]: https://github.com/cpliakas/git-wrapper/pull/164
+[#163]: https://github.com/cpliakas/git-wrapper/pull/163
+[@kallehauge]: https://github.com/kallehauge
+[@Hodgy]: https://github.com/Hodgy
+[@Big-Shark]: https://github.com/Big-Shark
