@@ -6,11 +6,10 @@ imports:
     - { resource: 'vendor/symplify/easy-coding-standard/config/symplify.yml' }
 
 parameters:
-    exclude_checkers:
-        - 'PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis\AssignmentInConditionSniff'
-        - 'Symplify\CodingStandard\Sniffs\DependencyInjection\NoClassInstantiationSniff'
-
     skip:
+        PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis\AssignmentInConditionSniff: ~
+        Symplify\CodingStandard\Sniffs\DependencyInjection\NoClassInstantiationSniff: ~
+
         SlevomatCodingStandard\Sniffs\Variables\UnusedVariableSniff.UnusedVariable:
             # required for counting of uncountable
             - 'tests/GitWorkingCopyTest.php'
@@ -30,4 +29,7 @@ parameters:
 
         Symplify\CodingStandard\Sniffs\CleanCode\ForbiddenReferenceSniff:
             # native PHP api → nothing we can do about this
+            - 'tests/StreamSuppressFilter.php'
+
+        SlevomatCodingStandard\Sniffs\TypeHints\TypeHintDeclarationSniff.MissingParameterTypeHint:
             - 'tests/StreamSuppressFilter.php'
