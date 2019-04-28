@@ -3,3 +3,4 @@ parameters:
         - '#Access to an undefined property object::\$data#'
         # false positive - ignored doc type
         - '#Parameter \#1 \$path of function basename expects string, string\|false given#'
+        - '#should be compatible with return type \(null\) of method Psr\\Log\\Logger(.*?)Interface::(.*?)\(\)#'
