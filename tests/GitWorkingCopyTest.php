@@ -153,7 +153,7 @@ final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
 
         $git->add('add.me');
 
-        $match = (bool) preg_match('@A\\s+add\\.me@s', $git->getStatus());
+        $match = (bool) preg_match('#A\\s+add\\.me#s', $git->getStatus());
         $this->assertTrue($match);
     }
 
@@ -710,7 +710,7 @@ PATCH;
     {
         try {
             $gitWorkingCopy->run('rev-parse', ['remote/HEAD']);
-        } catch (GitException $e) {
+        } catch (GitException $gitException) {
             // Expected result. The remote master does not exist.
             return;
         }

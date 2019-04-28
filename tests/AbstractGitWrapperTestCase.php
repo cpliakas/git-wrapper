@@ -89,7 +89,7 @@ abstract class AbstractGitWrapperTestCase extends TestCase
      */
     public function assertGitVersion(string $version): void
     {
-        $match = preg_match('/^git version [.0-9]+/', $version);
+        $match = preg_match('#^git version [.0-9]+#', $version);
         $this->assertNotEmpty($match);
     }
 
