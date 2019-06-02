@@ -38,7 +38,7 @@ final class GitProcess extends Process
 
         // Support for executing an arbitrary git command.
         if (is_string($commandLine)) {
-            $commandLine = explode(" ", $commandLine);
+            $commandLine = explode(' ', $commandLine);
         }
 
         array_unshift($commandLine, $gitBinary);
