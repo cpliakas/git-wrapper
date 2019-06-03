@@ -63,8 +63,7 @@ final class DispatcherModeTraitTest extends AbstractGitWrapperTestCase
         $eventName = 'eventTest';
         $result = $this->arrangeDispatchArguments($event, $eventName);
 
-        $this->assertSame($event, $result[0]);
-        $this->assertSame($eventName, $result[1]);
+        $this->assertSame([$event, $eventName], $result);
     }
 
     /**
@@ -87,7 +86,6 @@ final class DispatcherModeTraitTest extends AbstractGitWrapperTestCase
         $eventName = 'eventTest';
         $result = $this->arrangeDispatchArguments($event, $eventName);
 
-        $this->assertSame($eventName, $result[0]);
-        $this->assertSame($event, $result[1]);
+        $this->assertSame([$eventName, $event], $result);
     }
 }
