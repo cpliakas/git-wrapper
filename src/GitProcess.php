@@ -4,13 +4,13 @@ namespace GitWrapper;
 
 use GitWrapper\Event\GitEvent;
 use GitWrapper\Event\GitEvents;
-use GitWrapper\Traits\PackageVersionTrait;
+use GitWrapper\Traits\DispatcherModeTrait;
 use RuntimeException;
 use Symfony\Component\Process\Process;
 
 final class GitProcess extends Process
 {
-    use PackageVersionTrait;
+    use DispatcherModeTrait;
 
     /**
      * @var GitWrapper
@@ -26,7 +26,6 @@ final class GitProcess extends Process
     {
         $this->gitWrapper = $gitWrapper;
         $this->gitCommand = $gitCommand;
-        $this->setLegacyModeFlag('symfony/event-dispatcher', 'v4.3.0');
 
         // Build the command line options, flags, and arguments.
         $commandLine = $gitCommand->getCommandLine();
@@ -115,7 +114,7 @@ final class GitProcess extends Process
     private function dispatchGitEvent(string $eventName): void
     {
         $event = new GitEvent($this->gitWrapper, $this, $this->gitCommand);
-        $eventInfo = $this->legacyMode ? [$eventName, $event] : [$event, $eventName];
-        $this->gitWrapper->getDispatcher()->dispatch(...$eventInfo);
+        $eventArgs = $this->arrangeDispatchArguments($event, $eventName);
+        $this->gitWrapper->getDispatcher()->dispatch(...$eventArgs);
     }
 }
