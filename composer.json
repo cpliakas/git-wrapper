@@ -19,6 +19,8 @@
         "symplify/easy-coding-standard": "^5.4",
         "nette/utils": "^2.5",
         "phpstan/phpstan": "^0.11",
+        "phpstan/extension-installer": "^1.0",
+        "phpstan/phpstan-phpunit": "^0.11.2",
         "symplify/changelog-linker": "^5.4"
     },
     "autoload": {

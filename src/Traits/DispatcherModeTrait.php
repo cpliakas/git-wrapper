@@ -9,6 +9,35 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 trait DispatcherModeTrait
 {
     /**
+     * @var ReflectionClass
+     */
+    private $reflectionClass;
+
+    /**
+     * Get an instance of ReflectionClass
+     *
+     * @return ReflectionClass
+     */
+    public function getReflectionClass(): ReflectionClass
+    {
+        if ($this->reflectionClass === null) {
+            $this->reflectionClass = new ReflectionClass(EventDispatcher::class);
+        }
+
+        return $this->reflectionClass;
+    }
+
+    /**
+     * Set ReflectionClass instance
+     *
+     * @param ReflectionClass $reflectionClass
+     */
+    public function setReflectionClass(ReflectionClass $reflectionClass): void
+    {
+        $this->reflectionClass = $reflectionClass;
+    }
+
+    /**
      * Determine the order of arguments for dispatch
      *
      * @param GitEvent $gitEvent
@@ -17,7 +46,7 @@ trait DispatcherModeTrait
      */
     protected function arrangeDispatchArguments(GitEvent $gitEvent, string $eventName): array
     {
-        $reflection = new ReflectionClass(EventDispatcher::class);
+        $reflection = $this->getReflectionClass();
         $parameters = $reflection->getMethod('dispatch')->getParameters();
         // Symfony versions less than 4.3
         if (is_array($parameters) && count($parameters) === 2) {
