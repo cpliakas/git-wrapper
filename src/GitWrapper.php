@@ -7,6 +7,7 @@ use GitWrapper\Event\GitLoggerEventSubscriber;
 use GitWrapper\Event\GitOutputEvent;
 use GitWrapper\Event\GitOutputListenerInterface;
 use GitWrapper\Event\GitOutputStreamListener;
+use GitWrapper\Traits\PackageVersionTrait;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Process\ExecutableFinder;
@@ -21,6 +22,8 @@ use Symfony\Component\Process\ExecutableFinder;
  */
 final class GitWrapper
 {
+    use PackageVersionTrait;
+
     /**
      * Path to the Git binary.
      *
@@ -63,6 +66,7 @@ final class GitWrapper
         }
 
         $this->setGitBinary($gitBinary);
+        $this->setLegacyModeFlag('symfony/event-dispatcher', 'v4.3.0');
     }
 
     public function getDispatcher(): EventDispatcherInterface
@@ -308,7 +312,8 @@ final class GitWrapper
         $process = new GitProcess($this, $gitCommand, $cwd);
         $process->run(function ($type, $buffer) use ($process, $gitCommand): void {
             $event = new GitOutputEvent($this, $process, $gitCommand, $type, $buffer);
-            $this->getDispatcher()->dispatch($event, GitEvents::GIT_OUTPUT);
+            $eventInfo = $this->legacyMode ? [GitEvents::GIT_OUTPUT, $event] : [$event, GitEvents::GIT_OUTPUT];
+            $this->getDispatcher()->dispatch(...$eventInfo);
         });
 
         return $gitCommand->notBypassed() ? $process->getOutput() : '';
