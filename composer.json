@@ -35,9 +35,10 @@
         "monolog/monolog": "Enables logging of executed git commands"
     },
     "scripts": {
-        "check-cs": "vendor/bin/ecs check src tests",
-        "fix-cs": "vendor/bin/ecs check src tests --fix",
-        "phpstan": "vendor/bin/phpstan analyse src tests --level max",
-        "changelog": "vendor/bin/changelog-linker dump-merges --in-categories"
+        "check-cs": "ecs check src tests",
+        "fix-cs": "ecs check src tests --fix",
+        "phpstan": "phpstan analyse src tests --level max",
+        "changelog": "changelog-linker dump-merges --in-categories",
+        "test": "phpunit --testdox"
     }
 }

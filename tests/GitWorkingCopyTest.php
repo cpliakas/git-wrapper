@@ -213,6 +213,8 @@ PATCH;
         $git = $this->getWorkingCopy();
         $output = $git->log();
         $this->assertContains('Initial commit.', $output);
+        $output = $git->log(['format' => '%ae']);
+        $this->assertContains('opensource@chrispliakas.com', $output);
     }
 
     public function testGitConfig(): void

@@ -115,15 +115,10 @@ final class GitCommand
     {
         $options = [];
         foreach ($this->options as $option => $values) {
+            // PHP always casts numeric array keys to integer
+            $option = (string) $option;
             foreach ((array) $values as $value) {
-                // Render the option.
-                $prefix = strlen($option) !== 1 ? '--' : '-';
-                $options[] = $prefix . $option;
-
-                // Render apend the value if the option isn't a flag.
-                if ($value !== true) {
-                    $options[] = $value;
-                }
+                $options = $this->renderOption($options, $option, $value);
             }
         }
 
@@ -186,5 +181,27 @@ final class GitCommand
         $command = array_merge([$this->getCommand()], $this->buildOptions(), $this->args);
 
         return array_filter($command, 'strlen');
+    }
+
+    /**
+     * Render the option.
+     *
+     * @param string[] $options
+     * @param string $option
+     * @param mixed $value
+     * @return string[]
+     */
+    private function renderOption(array $options, string $option, $value): array
+    {
+        if (strlen($option) > 1) {
+            $options[] = '--' . $option . ($value !== true ? '=' . $value : '');
+        } else {
+            $options[] = '-' . $option;
+            if ($value !== true) {
+                $options[] = $value;
+            }
+        }
+
+        return $options;
     }
 }

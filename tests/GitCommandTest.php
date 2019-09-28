@@ -10,16 +10,29 @@ final class GitCommandTest extends AbstractGitWrapperTestCase
     {
         $command = $this->randomString();
         $argument = $this->randomString();
+        $shortFlag = $this->randomString(1, 'a-z');
         $flag = $this->randomString();
         $optionName = $this->randomString();
         $optionValue = $this->randomString();
+        $shortOptionName = $this->randomString(1, 'a-z');
+        $shortOptionValue = $this->randomString();
 
         $git = new GitCommand($command);
         $git->addArgument($argument);
+        $git->setFlag($shortFlag);
         $git->setFlag($flag);
         $git->setOption($optionName, $optionValue);
+        $git->setOption($shortOptionName, $shortOptionValue);
 
-        $expected = [$command, "--${flag}", "--${optionName}", $optionValue, $argument];
+        $expected = [
+            $command,
+            "-${shortFlag}",
+            "--${flag}",
+            "--{$optionName}={$optionValue}",
+            "-${shortOptionName}",
+            $shortOptionValue,
+            $argument,
+        ];
         $commandLine = $git->getCommandLine();
 
         $this->assertSame($expected, $commandLine);
