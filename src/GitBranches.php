@@ -3,12 +3,13 @@
 namespace GitWrapper;
 
 use ArrayIterator;
+use Countable;
 use IteratorAggregate;
 
 /**
  * Class that parses and returnes an array of branches.
  */
-final class GitBranches implements IteratorAggregate
+final class GitBranches implements IteratorAggregate, Countable
 {
     /**
      * @var GitWorkingCopy
@@ -69,5 +70,19 @@ final class GitBranches implements IteratorAggregate
     public function head(): string
     {
         return trim($this->gitWorkingCopy->run('rev-parse', ['--abbrev-ref', 'HEAD']));
+    }
+
+    /**
+     * Count elements of an object
+     * @link https://php.net/manual/en/countable.count.php
+     * @return int The custom count as an integer.
+     * </p>
+     * <p>
+     * The return value is cast to an integer.
+     * @since 5.1.0
+     */
+    public function count(): int
+    {
+        return count($this->all());
     }
 }

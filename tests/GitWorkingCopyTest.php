@@ -125,13 +125,7 @@ final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
 
         $this->assertTrue($branches instanceof GitBranches);
 
-        // Dumb count checks. Is there a better way to do this?
-        $allBranches = 0;
-        foreach ($branches as $branch) {
-            ++$allBranches;
-        }
-
-        $this->assertSame($allBranches, 4);
+        $this->assertSame(count($branches), 4);
 
         $remoteBranches = $branches->remote();
         $this->assertSame(count($remoteBranches), 3);
