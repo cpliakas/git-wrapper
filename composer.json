@@ -17,8 +17,8 @@
         "symfony/filesystem": "^4.3|^5.0",
         "psr/log": "^1.1",
         "symplify/easy-coding-standard": "^6.1",
-        "nette/utils": "^2.5",
-        "phpstan/phpstan": "^0.11",
+        "nette/utils": "^3.0",
+        "phpstan/phpstan": "^0.11.19",
         "symplify/changelog-linker": "^6.1",
         "symplify/phpstan-extensions": "^6.1"
     },
