@@ -1,41 +1,64 @@
 language: php
 
-matrix:
-  include:
-    - php: '7.1'
-      env: COMPOSER_FLAGS=--prefer-lowest
-    - php: '7.1'
-      env: STATIC_ANALYSIS=true
-    - php: '7.1'
-      env: PHPUNIT_FLAGS="--coverage-clover coverage.xml"
-    - php: '7.2'
-    - php: '7.3'
-    - php: '7.4snapshot'
-
-install:
-  - composer update $COMPOSER_FLAGS
+php:
+    - '7.2'
+    - '7.3'
+    - '7.4snapshot'
 
 before_script:
-  - git --version
+    - git --version
+    # disable xdebug if not coverage
+    - phpenv config-rm xdebug.ini || echo "xdebug not available"
 
 script:
-  - vendor/bin/phpunit $PHPUNIT_FLAGS
-  # disable xdebug if not needed
-  - if [[ $PHPUNIT_FLAGS != "" ]]; then phpenv config-rm xdebug.ini; fi
+    - vendor/bin/phpunit
 
-  - |
-    if [[ $STATIC_ANALYSIS == true ]]; then
-        composer check-cs
-        composer phpstan
-    fi
+matrix:
+    fast_finish: true
 
-after_script:
-  # upload coverage.xml to Coveralls
-  - |
-    if [[ $PHPUNIT_FLAGS != "" ]]; then
-        wget https://github.com/satooshi/php-coveralls/releases/download/v1.0.1/coveralls.phar;
-        php coveralls.phar --verbose;
-    fi
+install:
+    - composer install
+
+jobs:
+    include:
+        -
+            stage: test
+            name: 'Lowest Dependencies'
+            php: 7.2
+            install:
+                # install lowest dependencies
+                - composer update --prefer-lowest --no-progress
+
+        -
+            stage: test
+            name: Unit Tests
+
+        -
+            stage: test
+            name: ECS
+            php: 7.3
+            script:
+                - composer check-cs
+
+        -
+            stage: test
+            name: PHPStan
+            php: 7.3
+            script:
+                - composer phpstan
+
+        -
+            stage: coverage
+            name: Test Coverage
+            if: branch = master AND type = push
+            php: 7.3
+            before_install:
+                - echo "keep xdebug"
+            script:
+                # code coverage run + upload to coveralls.io
+                - vendor/bin/phpunit --coverage-clover coverage.xml
+                - wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.1.0/php-coveralls.phar
+                - php php-coveralls.phar --verbose
 
 notifications:
-  email: false
+    email: false
