@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace GitWrapper\Event;
+namespace GitWrapper\Contract\Event;
 
-/**
- * Interface implemented by output listeners.
- */
+use GitWrapper\Event\GitOutputEvent;
+
 interface GitOutputListenerInterface
 {
     public function handleOutput(GitOutputEvent $gitOutputEvent): void;

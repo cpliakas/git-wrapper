@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace GitWrapper;
 
+use GitWrapper\Contract\Event\GitOutputListenerInterface;
 use GitWrapper\Event\GitLoggerEventSubscriber;
 use GitWrapper\Event\GitOutputEvent;
-use GitWrapper\Event\GitOutputListenerInterface;
 use GitWrapper\Event\GitOutputStreamListener;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
