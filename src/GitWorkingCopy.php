@@ -453,7 +453,7 @@ final class GitWorkingCopy
     }
 
     /**
-     * @code $git->config('user.email', 'opensource@chrispliakas.com');
+     * @code $git->config('user.email', 'testing@email.com');
      * $git->config('user.name', 'Chris Pliakas');
      *
      * @param mixed ...$argsAndOptions
