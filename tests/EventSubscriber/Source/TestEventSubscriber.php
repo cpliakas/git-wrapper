@@ -8,7 +8,6 @@ use GitWrapper\Event\GitBypassEvent;
 use GitWrapper\Event\GitErrorEvent;
 use GitWrapper\Event\GitPrepareEvent;
 use GitWrapper\Event\GitSuccessEvent;
-use Iterator;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 final class TestEventSubscriber implements EventSubscriberInterface
@@ -18,23 +17,14 @@ final class TestEventSubscriber implements EventSubscriberInterface
      */
     private $calledMethods = [];
 
-    public static function getSubscribedEvents(): Iterator
+    public static function getSubscribedEvents(): array
     {
-        yield GitPrepareEvent::class => function (): void {
-            $this->onPrepare();
-        };
-
-        yield GitSuccessEvent::class => function (): void {
-            $this->onSuccess();
-        };
-
-        yield GitErrorEvent::class => function (): void {
-            $this->onError();
-        };
-
-        yield GitBypassEvent::class => function (): void {
-            $this->onBypass();
-        };
+        return [
+            [GitPrepareEvent::class, 'onPrepare'],
+            [GitSuccessEvent::class, 'onSuccess'],
+            [GitErrorEvent::class, 'onError'],
+            [GitBypassEvent::class, 'onBypass'],
+        ];
     }
 
     public function wasMethodCalled(string $method): bool

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace GitWrapper\Tests\OutputListener;
+namespace GitWrapper\Tests\EventSubscriber;
 
 use GitWrapper\Tests\AbstractGitWrapperTestCase;
 
-final class GitListenerTest extends AbstractGitWrapperTestCase
+final class EventDispatchingTest extends AbstractGitWrapperTestCase
 {
     public function test(): void
     {

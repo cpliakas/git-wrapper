@@ -160,7 +160,7 @@ final class GitWrapperTest extends AbstractGitWrapperTestCase
         $this->assertSame($this->gitWrapper, $git->getWrapper());
     }
 
-    public function testCloneWothoutDirectory(): void
+    public function testCloneWithoutDirectory(): void
     {
         $this->createRegisterAndReturnBypassEventSubscriber();
         $git = $this->gitWrapper->cloneRepository('file:///' . $this->randomString());
