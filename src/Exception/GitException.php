@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace GitWrapper;
+namespace GitWrapper\Exception;
 
 use RuntimeException;
 

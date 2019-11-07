@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace GitWrapper;
 
+use GitWrapper\Exception\GitException;
+
 /**
  * Interacts with a working copy.
  *

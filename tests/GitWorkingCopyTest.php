@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace GitWrapper\Test;
 
+use GitWrapper\Exception\GitException;
 use GitWrapper\GitBranches;
-use GitWrapper\GitException;
 use GitWrapper\GitWorkingCopy;
 use GitWrapper\Test\Event\TestOutputListener;
 use Symfony\Component\Process\Process;
