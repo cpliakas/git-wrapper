@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace GitWrapper\Event;
+namespace GitWrapper\OutputListener;
 
 use GitWrapper\Contract\Event\GitOutputListenerInterface;
+use GitWrapper\Event\GitOutputEvent;
 
 /**
  * Event handler that streams real-time output from Git commands to STDOUT and

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace GitWrapper;
 
 use GitWrapper\Contract\Event\GitOutputListenerInterface;
-use GitWrapper\Event\GitLoggerEventSubscriber;
 use GitWrapper\Event\GitOutputEvent;
-use GitWrapper\Event\GitOutputStreamListener;
+use GitWrapper\EventSubscriber\GitLoggerEventSubscriber;
+use GitWrapper\OutputListener\GitOutputStreamListener;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Process\ExecutableFinder;

@@ -2,8 +2,14 @@
 
 declare(strict_types=1);
 
-namespace GitWrapper\Event;
+namespace GitWrapper\EventSubscriber;
 
+use GitWrapper\Event\AbstractGitEvent;
+use GitWrapper\Event\GitBypassEvent;
+use GitWrapper\Event\GitErrorEvent;
+use GitWrapper\Event\GitOutputEvent;
+use GitWrapper\Event\GitPrepareEvent;
+use GitWrapper\Event\GitSuccessEvent;
 use GitWrapper\GitException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
