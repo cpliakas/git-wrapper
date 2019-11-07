@@ -31,12 +31,12 @@ abstract class AbstractGitWrapperTestCase extends TestCase
     /**
      * @var string
      */
-    public const CONFIG_EMAIL = 'opensource@chrispliakas.com';
+    public const CONFIG_EMAIL = 'testing@email.com';
 
     /**
      * @var string
      */
-    public const CONFIG_NAME = 'Chris Pliakas';
+    public const CONFIG_NAME = 'Testing name';
 
     /**
      * @var Filesystem
