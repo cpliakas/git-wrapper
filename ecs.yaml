@@ -17,18 +17,9 @@ parameters:
             # required for counting of uncountable
             - 'tests/GitWorkingCopyTest.php'
 
-        SlevomatCodingStandard\Sniffs\TypeHints\TypeHintDeclarationSniff:
-            - 'tests/TestLogger.php'
-
         Symplify\CodingStandard\Sniffs\CleanCode\ForbiddenStaticFunctionSniff:
             # helper method
-            - 'src/GitWrapper.php'
-            # parent interface → nothing we can do about this
-            - 'src/Event/*EventSubscriber.php'
-
-        SlamCsFixer\FinalInternalClassFixer:
-            # class with children
-            - 'src/Event/GitEvent.php'
+            - 'src/Strings/GitStrings.php'
 
         Symplify\CodingStandard\Sniffs\CleanCode\ForbiddenReferenceSniff:
             # native PHP api → nothing we can do about this
