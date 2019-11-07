@@ -49,7 +49,7 @@ final class GitProcess extends Process
         // Finalize the environment variables, an empty array is converted
         // to null which enherits the environment of the PHP process.
         $env = $gitWrapper->getEnvVars();
-        if (! $env) {
+        if ($env === []) {
             $env = null;
         }
 

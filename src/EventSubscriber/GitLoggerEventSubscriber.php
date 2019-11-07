@@ -108,7 +108,7 @@ final class GitLoggerEventSubscriber implements EventSubscriberInterface, Logger
 
     public function handleOutput(GitOutputEvent $gitOutputEvent): void
     {
-        $context = ['error' => $gitOutputEvent->isError() ? true : false];
+        $context = ['error' => $gitOutputEvent->isError()];
         $this->log($gitOutputEvent, $gitOutputEvent->getBuffer(), $context);
     }
 
