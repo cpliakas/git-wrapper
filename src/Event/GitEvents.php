@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace GitWrapper\Event;
 
@@ -41,13 +43,4 @@ final class GitEvents
      * @var string
      */
     public const GIT_BYPASS = 'git.command.bypass';
-
-    /**
-     * Deprecated in favor of GitEvents::GIT_PREPARE.
-     *
-     * @var string
-     *
-     * @deprecated since version 1.0.0beta5
-     */
-    public const GIT_COMMAND = 'git.command.prepare';
 }
