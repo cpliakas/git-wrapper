@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace GitWrapper\Test;
 
 use GitWrapper\EventSubscriber\GitLoggerEventSubscriber;
+use GitWrapper\Exception\GitException;
 use GitWrapper\GitCommand;
-use GitWrapper\GitException;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
 use Throwable;

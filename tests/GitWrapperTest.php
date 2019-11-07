@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace GitWrapper\Test;
 
+use GitWrapper\Exception\GitException;
 use GitWrapper\GitCommand;
-use GitWrapper\GitException;
 use GitWrapper\GitWorkingCopy;
 use GitWrapper\GitWrapper;
 use GitWrapper\Test\Event\TestDispatcher;

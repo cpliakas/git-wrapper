@@ -10,7 +10,7 @@ use GitWrapper\Event\GitErrorEvent;
 use GitWrapper\Event\GitOutputEvent;
 use GitWrapper\Event\GitPrepareEvent;
 use GitWrapper\Event\GitSuccessEvent;
-use GitWrapper\GitException;
+use GitWrapper\Exception\GitException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
