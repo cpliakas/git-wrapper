@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace GitWrapper;
 
-use GitWrapper\Event\GitEvents;
 use GitWrapper\Event\GitLoggerEventSubscriber;
 use GitWrapper\Event\GitOutputEvent;
 use GitWrapper\Event\GitOutputListenerInterface;
@@ -179,7 +178,7 @@ final class GitWrapper
     public function addOutputListener(GitOutputListenerInterface $gitOutputListener): void
     {
         $this->getDispatcher()
-            ->addListener(GitEvents::GIT_OUTPUT, [$gitOutputListener, 'handleOutput']);
+            ->addListener(GitOutputEvent::class, [$gitOutputListener, 'handleOutput']);
     }
 
     public function addLoggerEventSubscriber(GitLoggerEventSubscriber $gitLoggerEventSubscriber): void
@@ -191,7 +190,7 @@ final class GitWrapper
     public function removeOutputListener(GitOutputListenerInterface $gitOutputListener): void
     {
         $this->getDispatcher()
-            ->removeListener(GitEvents::GIT_OUTPUT, [$gitOutputListener, 'handleOutput']);
+            ->removeListener(GitOutputEvent::class, [$gitOutputListener, 'handleOutput']);
     }
 
     /**
@@ -310,7 +309,7 @@ final class GitWrapper
         $process = new GitProcess($this, $gitCommand, $cwd);
         $process->run(function ($type, $buffer) use ($process, $gitCommand): void {
             $event = new GitOutputEvent($this, $process, $gitCommand, $type, $buffer);
-            $this->getDispatcher()->dispatch($event, GitEvents::GIT_OUTPUT);
+            $this->getDispatcher()->dispatch($event);
         });
 
         return $gitCommand->notBypassed() ? $process->getOutput() : '';
