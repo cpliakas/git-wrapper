@@ -10,6 +10,7 @@ use GitWrapper\EventSubscriber\GitLoggerEventSubscriber;
 use GitWrapper\Exception\GitException;
 use GitWrapper\OutputListener\GitOutputStreamListener;
 use GitWrapper\Process\GitProcess;
+use GitWrapper\Strings\GitStrings;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Process\ExecutableFinder;
@@ -230,26 +231,6 @@ final class GitWrapper
     }
 
     /**
-     * For example, passing the "git@github.com:cpliakas/git-wrapper.git"
-     * repository would return "git-wrapper".
-     */
-    public static function parseRepositoryName(string $repositoryUrl): string
-    {
-        $scheme = parse_url($repositoryUrl, PHP_URL_SCHEME);
-
-        if ($scheme === null) {
-            $parts = explode('/', $repositoryUrl);
-            $path = end($parts);
-        } else {
-            $strpos = strpos($repositoryUrl, ':');
-            $path = substr($repositoryUrl, $strpos + 1);
-        }
-
-        /** @var string $path */
-        return basename($path, '.git');
-    }
-
-    /**
      * Executes a `git init` command.
      *
      * Create an empty git repository or reinitialize an existing one.
@@ -271,16 +252,14 @@ final class GitWrapper
      * Clone a repository into a new directory. Use @see GitWorkingCopy::cloneRepository()
      * instead for more readable code.
      *
-     * @param string $repository The Git URL of the repository being cloned.
      * @param string $directory The directory that the repository will be cloned into. If null is
-     *   passed, the directory will automatically be generated from the URL via
-     *   the GitWrapper::parseRepositoryName() method.
-     * @param mixed[] $options An associative array of command line options.
+     *   passed, the directory will be generated from the URL with @see GitStrings::parseRepositoryName().
+     * @param mixed[] $options
      */
     public function cloneRepository(string $repository, ?string $directory = null, array $options = []): GitWorkingCopy
     {
         if ($directory === null) {
-            $directory = self::parseRepositoryName($repository);
+            $directory = GitStrings::parseRepositoryName($repository);
         }
 
         $git = $this->workingCopy($directory);

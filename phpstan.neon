@@ -12,3 +12,6 @@ parameters:
         - '#should be compatible with return type \(null\) of method Psr\\Log\\Logger(.*?)Interface::(.*?)\(\)#'
 
         - '#Unreachable statement \- code above always terminates#'
+
+        # allowed in EventSubscriber
+        - '#Using \$this in static method (.*?)\:\:getSubscribedEvents\(\)#'

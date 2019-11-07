@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace GitWrapper\Tests;
 
-use GitWrapper\Event\GitPrepareEvent;
 use GitWrapper\Exception\GitException;
 use GitWrapper\GitWrapper;
-use GitWrapper\Tests\Event\TestBypassListener;
+use GitWrapper\Tests\Event\TestBypassEventSubscriber;
 use GitWrapper\Tests\EventSubscriber\Source\TestEventSubscriber;
 use Nette\Utils\Random;
 use PHPUnit\Framework\TestCase;
@@ -61,20 +60,15 @@ abstract class AbstractGitWrapperTestCase extends TestCase
     }
 
     /**
-     * Adds the bypass listener so that Git commands are not run.
+     * Adds the bypass event subscriber so that Git commands are not run.
      */
-    public function addBypassListener(): TestBypassListener
+    public function createRegisterAndReturnBypassEventSubscriber(): TestBypassEventSubscriber
     {
-        $listener = new TestBypassListener();
-        $dispatcher = $this->gitWrapper->getDispatcher();
+        $testBypassEventSubscriber = new TestBypassEventSubscriber();
+        $eventDispatcher = $this->gitWrapper->getDispatcher();
+        $eventDispatcher->addSubscriber($testBypassEventSubscriber);
 
-        $dispatcher->addListener(GitPrepareEvent::class, function (GitPrepareEvent $gitPrepareEvent) use (
-            $listener
-        ): void {
-            $listener->onPrepare($gitPrepareEvent);
-        }, -5);
-
-        return $listener;
+        return $testBypassEventSubscriber;
     }
 
     /**

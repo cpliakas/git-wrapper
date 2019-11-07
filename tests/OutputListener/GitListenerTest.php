@@ -32,7 +32,7 @@ final class GitListenerTest extends AbstractGitWrapperTestCase
 
     public function testGitBypass(): void
     {
-        $this->addBypassListener();
+        $this->createRegisterAndReturnBypassEventSubscriber();
         $eventSubscriber = $this->registerAndReturnEventSubscriber();
 
         $output = $this->gitWrapper->version();
