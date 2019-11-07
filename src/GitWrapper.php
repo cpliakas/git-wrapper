@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace GitWrapper;
 
-use GitWrapper\Contract\Event\GitOutputListenerInterface;
 use GitWrapper\Event\GitOutputEvent;
+use GitWrapper\EventSubscriber\AbstractOutputEventSubscriber;
 use GitWrapper\EventSubscriber\GitLoggerEventSubscriber;
+use GitWrapper\EventSubscriber\StreamOutputEventSubscriber;
 use GitWrapper\Exception\GitException;
-use GitWrapper\OutputListener\GitOutputStreamListener;
 use GitWrapper\Process\GitProcess;
+use GitWrapper\Strings\GitStrings;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Process\ExecutableFinder;
@@ -46,9 +47,9 @@ final class GitWrapper
     private $env = [];
 
     /**
-     * @var GitOutputListenerInterface
+     * @var AbstractOutputEventSubscriber
      */
-    private $gitOutputListener;
+    private $outputEventSubscriber;
 
     /**
      * @var EventDispatcherInterface
@@ -66,14 +67,12 @@ final class GitWrapper
         }
 
         $this->setGitBinary($gitBinary);
+
+        $this->eventDispatcher = new EventDispatcher();
     }
 
     public function getDispatcher(): EventDispatcherInterface
     {
-        if ($this->eventDispatcher === null) {
-            $this->eventDispatcher = new EventDispatcher();
-        }
-
         return $this->eventDispatcher;
     }
 
@@ -177,22 +176,19 @@ final class GitWrapper
         $this->unsetEnvVar('GIT_SSH_PORT');
     }
 
-    public function addOutputListener(GitOutputListenerInterface $gitOutputListener): void
+    public function addOutputEventSubscriber(AbstractOutputEventSubscriber $gitOutputEventSubscriber): void
     {
-        $this->getDispatcher()
-            ->addListener(GitOutputEvent::class, [$gitOutputListener, 'handleOutput']);
+        $this->getDispatcher()->addSubscriber($gitOutputEventSubscriber);
     }
 
     public function addLoggerEventSubscriber(GitLoggerEventSubscriber $gitLoggerEventSubscriber): void
     {
-        $this->getDispatcher()
-            ->addSubscriber($gitLoggerEventSubscriber);
+        $this->getDispatcher()->addSubscriber($gitLoggerEventSubscriber);
     }
 
-    public function removeOutputListener(GitOutputListenerInterface $gitOutputListener): void
+    public function removeOutputEventSubscriber(AbstractOutputEventSubscriber $gitOutputEventSubscriber): void
     {
-        $this->getDispatcher()
-            ->removeListener(GitOutputEvent::class, [$gitOutputListener, 'handleOutput']);
+        $this->getDispatcher()->removeSubscriber($gitOutputEventSubscriber);
     }
 
     /**
@@ -200,14 +196,14 @@ final class GitWrapper
      */
     public function streamOutput(bool $streamOutput = true): void
     {
-        if ($streamOutput && ! isset($this->gitOutputListener)) {
-            $this->gitOutputListener = new GitOutputStreamListener();
-            $this->addOutputListener($this->gitOutputListener);
+        if ($streamOutput && ! isset($this->outputEventSubscriber)) {
+            $this->outputEventSubscriber = new StreamOutputEventSubscriber();
+            $this->addOutputEventSubscriber($this->outputEventSubscriber);
         }
 
-        if (! $streamOutput && isset($this->gitOutputListener)) {
-            $this->removeOutputListener($this->gitOutputListener);
-            unset($this->gitOutputListener);
+        if (! $streamOutput && isset($this->outputEventSubscriber)) {
+            $this->removeOutputEventSubscriber($this->outputEventSubscriber);
+            unset($this->outputEventSubscriber);
         }
     }
 
@@ -227,26 +223,6 @@ final class GitWrapper
     public function version(): string
     {
         return $this->git('--version');
-    }
-
-    /**
-     * For example, passing the "git@github.com:cpliakas/git-wrapper.git"
-     * repository would return "git-wrapper".
-     */
-    public static function parseRepositoryName(string $repositoryUrl): string
-    {
-        $scheme = parse_url($repositoryUrl, PHP_URL_SCHEME);
-
-        if ($scheme === null) {
-            $parts = explode('/', $repositoryUrl);
-            $path = end($parts);
-        } else {
-            $strpos = strpos($repositoryUrl, ':');
-            $path = substr($repositoryUrl, $strpos + 1);
-        }
-
-        /** @var string $path */
-        return basename($path, '.git');
     }
 
     /**
@@ -271,16 +247,14 @@ final class GitWrapper
      * Clone a repository into a new directory. Use @see GitWorkingCopy::cloneRepository()
      * instead for more readable code.
      *
-     * @param string $repository The Git URL of the repository being cloned.
      * @param string $directory The directory that the repository will be cloned into. If null is
-     *   passed, the directory will automatically be generated from the URL via
-     *   the GitWrapper::parseRepositoryName() method.
-     * @param mixed[] $options An associative array of command line options.
+     *   passed, the directory will be generated from the URL with @see GitStrings::parseRepositoryName().
+     * @param mixed[] $options
      */
     public function cloneRepository(string $repository, ?string $directory = null, array $options = []): GitWorkingCopy
     {
         if ($directory === null) {
-            $directory = self::parseRepositoryName($repository);
+            $directory = GitStrings::parseRepositoryName($repository);
         }
 
         $git = $this->workingCopy($directory);

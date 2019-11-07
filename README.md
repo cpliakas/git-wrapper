@@ -83,11 +83,11 @@ use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
 // Log to a file named "git.log"
-$log = new Logger('git');
-$log->pushHandler(new StreamHandler('git.log', Logger::DEBUG));
+$logger = new Logger('git');
+$logger->pushHandler(new StreamHandler('git.log', Logger::DEBUG));
 
 // Instantiate the subscriber, add the logger to it, and register it.
-$gitWrapper->addLoggerEventSubscriber(new GitLoggerEventSubscriber($log));
+$gitWrapper->addLoggerEventSubscriber(new GitLoggerEventSubscriber($logger));
 
 $git = $gitWrapper->cloneRepository('git://github.com/cpliakas/git-wrapper.git', '/path/to/working/copy');
 

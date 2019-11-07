@@ -43,16 +43,10 @@ final class GitLoggerEventSubscriber implements EventSubscriberInterface, Logger
 
     /**
      * Required by interface
-     * {@inheritDoc}
      */
     public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
-    }
-
-    public function getLogger(): LoggerInterface
-    {
-        return $this->logger;
     }
 
     public function setLogLevelMapping(string $eventName, string $logLevel): void
@@ -72,9 +66,6 @@ final class GitLoggerEventSubscriber implements EventSubscriberInterface, Logger
         return $this->logLevelMappings[$eventName];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static function getSubscribedEvents(): array
     {
         return [
@@ -108,7 +99,7 @@ final class GitLoggerEventSubscriber implements EventSubscriberInterface, Logger
 
     public function handleOutput(GitOutputEvent $gitOutputEvent): void
     {
-        $context = ['error' => $gitOutputEvent->isError() ? true : false];
+        $context = ['error' => $gitOutputEvent->isError()];
         $this->log($gitOutputEvent, $gitOutputEvent->getBuffer(), $context);
     }
 

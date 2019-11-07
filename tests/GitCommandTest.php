@@ -22,23 +22,8 @@ final class GitCommandTest extends AbstractGitWrapperTestCase
         $git->setOption($optionName, $optionValue);
 
         $expected = [$command, "--${flag}", "--${optionName}", $optionValue, $argument];
-        $commandLine = $git->getCommandLine();
 
-        $this->assertSame($expected, $commandLine);
-    }
-
-    public function testOption(): void
-    {
-        $optionName = $this->randomString();
-        $optionValue = $this->randomString();
-
-        $git = new GitCommand();
-        $git->setOption($optionName, $optionValue);
-
-        $this->assertSame($optionValue, $git->getOption($optionName));
-
-        $git->unsetOption($optionName);
-        $this->assertNull($git->getOption($optionName));
+        $this->assertSame($expected, $git->getCommandLine());
     }
 
     public function testMultiOption(): void

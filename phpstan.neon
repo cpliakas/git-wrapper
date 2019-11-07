@@ -12,3 +12,4 @@ parameters:
         - '#should be compatible with return type \(null\) of method Psr\\Log\\Logger(.*?)Interface::(.*?)\(\)#'
 
         - '#Unreachable statement \- code above always terminates#'
+        - '#Parameter \#2 \$haystack of method PHPUnit\\Framework\\Assert\:\:assertStringContainsString\(\) expects string, string\|false given#'

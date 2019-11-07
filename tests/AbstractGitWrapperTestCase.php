@@ -4,14 +4,10 @@ declare(strict_types=1);
 
 namespace GitWrapper\Tests;
 
-use GitWrapper\Event\GitBypassEvent;
-use GitWrapper\Event\GitErrorEvent;
-use GitWrapper\Event\GitPrepareEvent;
-use GitWrapper\Event\GitSuccessEvent;
 use GitWrapper\Exception\GitException;
 use GitWrapper\GitWrapper;
-use GitWrapper\Tests\Event\TestBypassListener;
-use GitWrapper\Tests\Event\TestListener;
+use GitWrapper\Tests\Event\TestBypassEventSubscriber;
+use GitWrapper\Tests\EventSubscriber\Source\TestEventSubscriber;
 use Nette\Utils\Random;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
@@ -54,36 +50,25 @@ abstract class AbstractGitWrapperTestCase extends TestCase
         $this->gitWrapper = new GitWrapper();
     }
 
-    public function randomString(): string
+    public function registerAndReturnEventSubscriber(): TestEventSubscriber
     {
-        return Random::generate();
+        $eventDispatcher = $this->gitWrapper->getDispatcher();
+        $testEventSubscriber = new TestEventSubscriber();
+        $eventDispatcher->addSubscriber($testEventSubscriber);
+
+        return $testEventSubscriber;
     }
 
     /**
-     * Adds the test listener for all events, returns the listener.
+     * Adds the bypass event subscriber so that Git commands are not run.
      */
-    public function addListener(): TestListener
+    public function createRegisterAndReturnBypassEventSubscriber(): TestBypassEventSubscriber
     {
-        $dispatcher = $this->gitWrapper->getDispatcher();
-        $listener = new TestListener();
+        $testBypassEventSubscriber = new TestBypassEventSubscriber();
+        $eventDispatcher = $this->gitWrapper->getDispatcher();
+        $eventDispatcher->addSubscriber($testBypassEventSubscriber);
 
-        $dispatcher->addListener(GitPrepareEvent::class, [$listener, 'onPrepare']);
-        $dispatcher->addListener(GitSuccessEvent::class, [$listener, 'onSuccess']);
-        $dispatcher->addListener(GitErrorEvent::class, [$listener, 'onError']);
-        $dispatcher->addListener(GitBypassEvent::class, [$listener, 'onBypass']);
-
-        return $listener;
-    }
-
-    /**
-     * Adds the bypass listener so that Git commands are not run.
-     */
-    public function addBypassListener(): TestBypassListener
-    {
-        $listener = new TestBypassListener();
-        $dispatcher = $this->gitWrapper->getDispatcher();
-        $dispatcher->addListener(GitPrepareEvent::class, [$listener, 'onPrepare'], -5);
-        return $listener;
+        return $testBypassEventSubscriber;
     }
 
     /**
@@ -97,17 +82,21 @@ abstract class AbstractGitWrapperTestCase extends TestCase
         $this->assertNotEmpty($match);
     }
 
-    /**
-     * @param bool $catchException Whether to catch the exception to continue script execution.
-     */
     public function runBadCommand(bool $catchException = false): void
     {
         try {
             $this->gitWrapper->git('a-bad-command');
         } catch (GitException $gitException) {
-            if (! $catchException) {
-                throw $gitException;
+            if ($catchException) {
+                return;
             }
+
+            throw $gitException;
         }
+    }
+
+    protected function randomString(): string
+    {
+        return Random::generate();
     }
 }

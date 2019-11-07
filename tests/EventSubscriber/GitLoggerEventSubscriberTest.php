@@ -8,7 +8,7 @@ use GitWrapper\EventSubscriber\GitLoggerEventSubscriber;
 use GitWrapper\Exception\GitException;
 use GitWrapper\GitCommand;
 use GitWrapper\Tests\AbstractGitWrapperTestCase;
-use GitWrapper\Tests\Log\TestLogger;
+use GitWrapper\Tests\EventSubscriber\Source\TestLogger;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
 use Throwable;
@@ -24,23 +24,18 @@ final class GitLoggerEventSubscriberTest extends AbstractGitWrapperTestCase
         }
     }
 
-    public function testGetLogger(): void
-    {
-        $log = new NullLogger();
-        $gitLoggerEventSubscriber = new GitLoggerEventSubscriber($log);
-        $this->assertSame($log, $gitLoggerEventSubscriber->getLogger());
-    }
-
     public function testSetLogLevelMapping(): void
     {
         $gitLoggerEventSubscriber = new GitLoggerEventSubscriber(new NullLogger());
         $gitLoggerEventSubscriber->setLogLevelMapping('test.event', 'test-level');
+
         $this->assertSame('test-level', $gitLoggerEventSubscriber->getLogLevelMapping('test.event'));
     }
 
     public function testGetInvalidLogLevelMapping(): void
     {
         $this->expectException(GitException::class);
+
         $gitLoggerEventSubscriber = new GitLoggerEventSubscriber(new NullLogger());
         $gitLoggerEventSubscriber->getLogLevelMapping('bad.event');
     }
