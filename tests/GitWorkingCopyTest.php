@@ -108,7 +108,7 @@ final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
 
         // Test getting output of a simple status command.
         $output = $git->status();
-        $this->assertContains('nothing to commit', $output);
+        $this->assertStringContainsString('nothing to commit', $output);
     }
 
     public function testHasChanges(): void
@@ -207,14 +207,14 @@ PATCH;
         $branches = $git->branch();
 
         // Check that our branch is there.
-        $this->assertContains($branchName, $branches);
+        $this->assertStringContainsString($branchName, $branches);
     }
 
     public function testGitLog(): void
     {
         $git = $this->getWorkingCopy();
         $output = $git->log();
-        $this->assertContains('Initial commit.', $output);
+        $this->assertStringContainsString('Initial commit.', $output);
     }
 
     public function testGitConfig(): void
@@ -233,7 +233,7 @@ PATCH;
         $git->pushTag($tag);
 
         $tags = $git->tag();
-        $this->assertContains($tag, $tags);
+        $this->assertStringContainsString($tag, $tags);
     }
 
     public function testGitClean(): void
@@ -365,7 +365,7 @@ PATCH;
         $expectedType = Process::OUT;
         $this->assertSame($expectedType, $event->getType());
 
-        $this->assertContains('nothing to commit', $event->getBuffer());
+        $this->assertStringContainsString('nothing to commit', $event->getBuffer());
     }
 
     public function testLiveOutput(): void
@@ -412,8 +412,8 @@ PATCH;
         ]);
 
         $output = $git->log();
-        $this->assertContains('Committed testing branch', $output);
-        $this->assertContains('Author: test <test@lol.com>', $output);
+        $this->assertStringContainsString('Committed testing branch', $output);
+        $this->assertStringContainsString('Author: test <test@lol.com>', $output);
     }
 
     public function testIsTracking(): void

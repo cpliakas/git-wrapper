@@ -87,7 +87,7 @@ abstract class AbstractGitWrapperTestCase extends TestCase
         try {
             $this->gitWrapper->git('a-bad-command');
         } catch (GitException $gitException) {
-            if (! $catchException) {
+            if ($catchException) {
                 return;
             }
 

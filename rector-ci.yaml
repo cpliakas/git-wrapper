@@ -2,4 +2,5 @@ parameters:
     sets:
         - 'dead-code'
         - 'code-quality'
-        - 'coding-style'
+        - 'phpunit80'
+#        - 'coding-style'
