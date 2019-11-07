@@ -221,7 +221,7 @@ PATCH;
     {
         $git = $this->getWorkingCopy();
         $email = rtrim($git->config('user.email'));
-        $this->assertSame('opensource@chrispliakas.com', $email);
+        $this->assertSame('testing@email.com', $email);
     }
 
     public function testGitTag(): void
