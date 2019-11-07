@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace GitWrapper;
 
@@ -308,7 +310,7 @@ final class GitWrapper
         $process = new GitProcess($this, $gitCommand, $cwd);
         $process->run(function ($type, $buffer) use ($process, $gitCommand): void {
             $event = new GitOutputEvent($this, $process, $gitCommand, $type, $buffer);
-            $this->getDispatcher()->dispatch(GitEvents::GIT_OUTPUT, $event);
+            $this->getDispatcher()->dispatch($event, GitEvents::GIT_OUTPUT);
         });
 
         return $gitCommand->notBypassed() ? $process->getOutput() : '';
