@@ -68,7 +68,7 @@ final class GitLoggerEventSubscriber implements EventSubscriberInterface, Logger
     /**
      * {@inheritDoc}
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             GitPrepareEvent::class => ['onPrepare', 0],

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace GitWrapper\Event;
 
+use GitWrapper\Contract\Event\GitOutputListenerInterface;
+
 /**
  * Event handler that streams real-time output from Git commands to STDOUT and
  * STDERR.
