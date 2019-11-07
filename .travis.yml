@@ -48,6 +48,13 @@ jobs:
                 - composer phpstan
 
         -
+            stage: test
+            name: Rector
+            php: 7.3
+            script:
+                - vendor/bin/rector process src tests --config rector-ci.yaml --dry-run
+
+        -
             stage: coverage
             name: Test Coverage
             if: branch = master AND type = push
