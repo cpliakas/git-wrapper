@@ -18,7 +18,7 @@ final class TestListener
         return in_array($method, $this->methods, true);
     }
 
-    public function onPrepare(AbstractGitEvent $gitEvent): void
+    public function onPrepare(): void
     {
         $this->methods[] = 'onPrepare';
     }
