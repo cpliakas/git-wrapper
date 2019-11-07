@@ -162,7 +162,7 @@ final class GitWrapperTest extends AbstractGitWrapperTestCase
 
     public function testCloneWothoutDirectory(): void
     {
-        $this->addBypassListener();
+        $this->createRegisterAndReturnBypassEventSubscriber();
         $git = $this->gitWrapper->cloneRepository('file:///' . $this->randomString());
         $this->assertTrue($git->isCloned());
     }

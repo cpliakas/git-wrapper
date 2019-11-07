@@ -14,4 +14,4 @@ parameters:
         - '#Unreachable statement \- code above always terminates#'
 
         # allowed in EventSubscriber
-        - '#Using \$this in static method GitWrapper\\Tests\\EventSubscriber\\Source\\TestEventSubscriber\:\:getSubscribedEvents\(\)#'
+        - '#Using \$this in static method (.*?)\:\:getSubscribedEvents\(\)#'
