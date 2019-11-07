@@ -270,7 +270,7 @@ final class GitWorkingCopy
      */
     public function addRemote(string $name, string $url, array $options = []): string
     {
-        $this->ensureAddRemoveArgsAreValid($name, $url);
+        $this->ensureAddRemoteArgsAreValid($name, $url);
 
         $args = ['add'];
 
@@ -658,7 +658,7 @@ final class GitWorkingCopy
         return new GitTags($this);
     }
 
-    private function ensureAddRemoveArgsAreValid(string $name, string $url): void
+    private function ensureAddRemoteArgsAreValid(string $name, string $url): void
     {
         if (empty($name)) {
             throw new GitException('Cannot add remote without a name.');
