@@ -59,7 +59,7 @@ jobs:
             name: Test Coverage
             if: branch = master AND type = push
             php: 7.3
-            before_install:
+            before_script:
                 - echo "keep xdebug"
             script:
                 # code coverage run + upload to coveralls.io
