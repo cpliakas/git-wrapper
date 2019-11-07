@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace GitWrapper\Test;
+namespace GitWrapper\Tests;
 
 use GitWrapper\Event\GitBypassEvent;
 use GitWrapper\Event\GitErrorEvent;
@@ -10,8 +10,8 @@ use GitWrapper\Event\GitPrepareEvent;
 use GitWrapper\Event\GitSuccessEvent;
 use GitWrapper\Exception\GitException;
 use GitWrapper\GitWrapper;
-use GitWrapper\Test\Event\TestBypassListener;
-use GitWrapper\Test\Event\TestListener;
+use GitWrapper\Tests\Event\TestBypassListener;
+use GitWrapper\Tests\Event\TestListener;
 use Nette\Utils\Random;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;

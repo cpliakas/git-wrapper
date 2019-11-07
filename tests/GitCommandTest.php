@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace GitWrapper\Test;
+namespace GitWrapper\Tests;
 
 use GitWrapper\GitCommand;
 
