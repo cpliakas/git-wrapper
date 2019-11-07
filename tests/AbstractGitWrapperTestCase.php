@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace GitWrapper\Test;
 
-use GitWrapper\Event\GitEvents;
+use GitWrapper\Event\GitBypassEvent;
+use GitWrapper\Event\GitErrorEvent;
+use GitWrapper\Event\GitPrepareEvent;
+use GitWrapper\Event\GitSuccessEvent;
 use GitWrapper\GitException;
 use GitWrapper\GitWrapper;
 use GitWrapper\Test\Event\TestBypassListener;
@@ -65,10 +68,10 @@ abstract class AbstractGitWrapperTestCase extends TestCase
         $dispatcher = $this->gitWrapper->getDispatcher();
         $listener = new TestListener();
 
-        $dispatcher->addListener(GitEvents::GIT_PREPARE, [$listener, 'onPrepare']);
-        $dispatcher->addListener(GitEvents::GIT_SUCCESS, [$listener, 'onSuccess']);
-        $dispatcher->addListener(GitEvents::GIT_ERROR, [$listener, 'onError']);
-        $dispatcher->addListener(GitEvents::GIT_BYPASS, [$listener, 'onBypass']);
+        $dispatcher->addListener(GitPrepareEvent::class, [$listener, 'onPrepare']);
+        $dispatcher->addListener(GitSuccessEvent::class, [$listener, 'onSuccess']);
+        $dispatcher->addListener(GitErrorEvent::class, [$listener, 'onError']);
+        $dispatcher->addListener(GitBypassEvent::class, [$listener, 'onBypass']);
 
         return $listener;
     }
@@ -80,7 +83,7 @@ abstract class AbstractGitWrapperTestCase extends TestCase
     {
         $listener = new TestBypassListener();
         $dispatcher = $this->gitWrapper->getDispatcher();
-        $dispatcher->addListener(GitEvents::GIT_PREPARE, [$listener, 'onPrepare'], -5);
+        $dispatcher->addListener(GitPrepareEvent::class, [$listener, 'onPrepare'], -5);
         return $listener;
     }
 

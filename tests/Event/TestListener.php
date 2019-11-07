@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace GitWrapper\Test\Event;
 
-use GitWrapper\Event\GitEvent;
+use GitWrapper\Event\AbstractGitEvent;
 
 final class TestListener
 {
@@ -18,7 +18,7 @@ final class TestListener
     /**
      * The event object passed to the onPrepare method.
      *
-     * @var GitEvent
+     * @var AbstractGitEvent
      */
     private $gitEvent;
 
@@ -27,12 +27,12 @@ final class TestListener
         return in_array($method, $this->methods, true);
     }
 
-    public function getEvent(): GitEvent
+    public function getEvent(): AbstractGitEvent
     {
         return $this->gitEvent;
     }
 
-    public function onPrepare(GitEvent $gitEvent): void
+    public function onPrepare(AbstractGitEvent $gitEvent): void
     {
         $this->methods[] = 'onPrepare';
         $this->gitEvent = $gitEvent;
