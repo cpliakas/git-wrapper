@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace GitWrapper\Test;
+namespace GitWrapper\Tests\OutputListener;
 
 use GitWrapper\Event\GitSuccessEvent;
 use GitWrapper\GitCommand;
+use GitWrapper\Tests\AbstractGitWrapperTestCase;
 use Symfony\Component\Process\Process;
 
 final class GitListenerTest extends AbstractGitWrapperTestCase

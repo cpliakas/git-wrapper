@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace GitWrapper\Test;
+namespace GitWrapper\Tests;
 
 use GitWrapper\Exception\GitException;
 use GitWrapper\GitBranches;
 use GitWrapper\GitWorkingCopy;
-use GitWrapper\Test\Event\TestOutputListener;
+use GitWrapper\Tests\Event\TestOutputListener;
 use Symfony\Component\Process\Process;
 
 final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
