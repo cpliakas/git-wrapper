@@ -2,3 +2,5 @@ build/
 composer.lock
 nbproject
 vendor/
+
+.phpunit.result.cache
