@@ -1,6 +1,8 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace GitWrapper\Test;
+declare(strict_types=1);
+
+namespace GitWrapper\Tests;
 
 use php_user_filter;
 

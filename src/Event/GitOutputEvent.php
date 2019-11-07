@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace GitWrapper\Event;
 
@@ -9,7 +11,7 @@ use Symfony\Component\Process\Process;
 /**
  * Event instance passed when output is returned from Git commands.
  */
-final class GitOutputEvent extends GitEvent
+final class GitOutputEvent extends AbstractGitEvent
 {
     /**
      * @var string

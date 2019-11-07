@@ -1,12 +1,15 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace GitWrapper;
 
-use GitWrapper\Event\GitEvents;
-use GitWrapper\Event\GitLoggerEventSubscriber;
+use GitWrapper\Contract\Event\GitOutputListenerInterface;
 use GitWrapper\Event\GitOutputEvent;
-use GitWrapper\Event\GitOutputListenerInterface;
-use GitWrapper\Event\GitOutputStreamListener;
+use GitWrapper\EventSubscriber\GitLoggerEventSubscriber;
+use GitWrapper\Exception\GitException;
+use GitWrapper\OutputListener\GitOutputStreamListener;
+use GitWrapper\Process\GitProcess;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Process\ExecutableFinder;
@@ -177,7 +180,7 @@ final class GitWrapper
     public function addOutputListener(GitOutputListenerInterface $gitOutputListener): void
     {
         $this->getDispatcher()
-            ->addListener(GitEvents::GIT_OUTPUT, [$gitOutputListener, 'handleOutput']);
+            ->addListener(GitOutputEvent::class, [$gitOutputListener, 'handleOutput']);
     }
 
     public function addLoggerEventSubscriber(GitLoggerEventSubscriber $gitLoggerEventSubscriber): void
@@ -189,7 +192,7 @@ final class GitWrapper
     public function removeOutputListener(GitOutputListenerInterface $gitOutputListener): void
     {
         $this->getDispatcher()
-            ->removeListener(GitEvents::GIT_OUTPUT, [$gitOutputListener, 'handleOutput']);
+            ->removeListener(GitOutputEvent::class, [$gitOutputListener, 'handleOutput']);
     }
 
     /**
@@ -308,7 +311,7 @@ final class GitWrapper
         $process = new GitProcess($this, $gitCommand, $cwd);
         $process->run(function ($type, $buffer) use ($process, $gitCommand): void {
             $event = new GitOutputEvent($this, $process, $gitCommand, $type, $buffer);
-            $this->getDispatcher()->dispatch(GitEvents::GIT_OUTPUT, $event);
+            $this->getDispatcher()->dispatch($event);
         });
 
         return $gitCommand->notBypassed() ? $process->getOutput() : '';

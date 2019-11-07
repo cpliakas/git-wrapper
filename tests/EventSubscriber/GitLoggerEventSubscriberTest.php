@@ -1,10 +1,14 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace GitWrapper\Test;
+declare(strict_types=1);
 
-use GitWrapper\Event\GitLoggerEventSubscriber;
+namespace GitWrapper\Tests\EventSubscriber;
+
+use GitWrapper\EventSubscriber\GitLoggerEventSubscriber;
+use GitWrapper\Exception\GitException;
 use GitWrapper\GitCommand;
-use GitWrapper\GitException;
+use GitWrapper\Tests\AbstractGitWrapperTestCase;
+use GitWrapper\Tests\Log\TestLogger;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
 use Throwable;

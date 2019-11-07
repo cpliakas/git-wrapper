@@ -1,6 +1,11 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace GitWrapper\Event;
+declare(strict_types=1);
+
+namespace GitWrapper\OutputListener;
+
+use GitWrapper\Contract\Event\GitOutputListenerInterface;
+use GitWrapper\Event\GitOutputEvent;
 
 /**
  * Event handler that streams real-time output from Git commands to STDOUT and

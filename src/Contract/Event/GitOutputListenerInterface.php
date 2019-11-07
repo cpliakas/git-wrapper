@@ -1,10 +1,11 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace GitWrapper\Event;
+declare(strict_types=1);
 
-/**
- * Interface implemented by output listeners.
- */
+namespace GitWrapper\Contract\Event;
+
+use GitWrapper\Event\GitOutputEvent;
+
 interface GitOutputListenerInterface
 {
     public function handleOutput(GitOutputEvent $gitOutputEvent): void;

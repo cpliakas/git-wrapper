@@ -1,16 +1,18 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace GitWrapper\Event;
 
 use GitWrapper\GitCommand;
 use GitWrapper\GitWrapper;
-use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Process\Process;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Event instance passed as a result of git.* commands.
  */
-class GitEvent extends Event
+abstract class AbstractGitEvent extends Event
 {
     /**
      * @var GitWrapper

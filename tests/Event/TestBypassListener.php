@@ -1,13 +1,15 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace GitWrapper\Test\Event;
+declare(strict_types=1);
 
-use GitWrapper\Event\GitEvent;
+namespace GitWrapper\Tests\Event;
+
+use GitWrapper\Event\GitPrepareEvent;
 
 final class TestBypassListener
 {
-    public function onPrepare(GitEvent $gitEvent): void
+    public function onPrepare(GitPrepareEvent $gitPrepareEvent): void
     {
-        $gitEvent->getCommand()->bypass();
+        $gitPrepareEvent->getCommand()->bypass();
     }
 }

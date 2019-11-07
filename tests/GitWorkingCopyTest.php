@@ -1,11 +1,13 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace GitWrapper\Test;
+declare(strict_types=1);
 
+namespace GitWrapper\Tests;
+
+use GitWrapper\Exception\GitException;
 use GitWrapper\GitBranches;
-use GitWrapper\GitException;
 use GitWrapper\GitWorkingCopy;
-use GitWrapper\Test\Event\TestOutputListener;
+use GitWrapper\Tests\Event\TestOutputListener;
 use Symfony\Component\Process\Process;
 
 final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
@@ -219,7 +221,7 @@ PATCH;
     {
         $git = $this->getWorkingCopy();
         $email = rtrim($git->config('user.email'));
-        $this->assertSame('opensource@chrispliakas.com', $email);
+        $this->assertSame('testing@email.com', $email);
     }
 
     public function testGitTag(): void

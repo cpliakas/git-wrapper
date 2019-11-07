@@ -1,6 +1,8 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace GitWrapper;
+declare(strict_types=1);
+
+namespace GitWrapper\Exception;
 
 use RuntimeException;
 

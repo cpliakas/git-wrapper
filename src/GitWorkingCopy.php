@@ -1,6 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace GitWrapper;
+
+use GitWrapper\Exception\GitException;
 
 /**
  * Interacts with a working copy.
@@ -449,7 +453,7 @@ final class GitWorkingCopy
     }
 
     /**
-     * @code $git->config('user.email', 'opensource@chrispliakas.com');
+     * @code $git->config('user.email', 'testing@email.com');
      * $git->config('user.name', 'Chris Pliakas');
      *
      * @param mixed ...$argsAndOptions

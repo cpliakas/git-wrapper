@@ -1,12 +1,14 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace GitWrapper\Test;
+declare(strict_types=1);
 
+namespace GitWrapper\Tests;
+
+use GitWrapper\Exception\GitException;
 use GitWrapper\GitCommand;
-use GitWrapper\GitException;
 use GitWrapper\GitWorkingCopy;
 use GitWrapper\GitWrapper;
-use GitWrapper\Test\Event\TestDispatcher;
+use GitWrapper\Tests\Event\TestDispatcher;
 
 final class GitWrapperTest extends AbstractGitWrapperTestCase
 {

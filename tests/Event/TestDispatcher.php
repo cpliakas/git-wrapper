@@ -1,6 +1,8 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace GitWrapper\Test\Event;
+declare(strict_types=1);
+
+namespace GitWrapper\Tests\Event;
 
 use Symfony\Component\EventDispatcher\EventDispatcher;
 

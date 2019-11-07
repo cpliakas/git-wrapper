@@ -1,6 +1,14 @@
+includes:
+    - vendor/symplify/phpstan-extensions/config/config.neon
+
 parameters:
+    level: max
+    reportUnmatchedIgnoredErrors: false
+
     ignoreErrors:
         - '#Access to an undefined property object::\$data#'
         # false positive - ignored doc type
         - '#Parameter \#1 \$path of function basename expects string, string\|false given#'
         - '#should be compatible with return type \(null\) of method Psr\\Log\\Logger(.*?)Interface::(.*?)\(\)#'
+
+        - '#Unreachable statement \- code above always terminates#'

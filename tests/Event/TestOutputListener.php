@@ -1,9 +1,11 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace GitWrapper\Test\Event;
+declare(strict_types=1);
 
+namespace GitWrapper\Tests\Event;
+
+use GitWrapper\Contract\Event\GitOutputListenerInterface;
 use GitWrapper\Event\GitOutputEvent;
-use GitWrapper\Event\GitOutputListenerInterface;
 
 final class TestOutputListener implements GitOutputListenerInterface
 {
