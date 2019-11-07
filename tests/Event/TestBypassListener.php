@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace GitWrapper\Test\Event;
 
-use GitWrapper\Event\GitEvent;
+use GitWrapper\Event\AbstractGitEvent;
 
 final class TestBypassListener
 {
-    public function onPrepare(GitEvent $gitEvent): void
+    public function onPrepare(AbstractGitEvent $gitEvent): void
     {
         $gitEvent->getCommand()->bypass();
     }

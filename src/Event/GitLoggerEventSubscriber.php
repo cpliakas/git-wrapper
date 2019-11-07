@@ -18,11 +18,11 @@ final class GitLoggerEventSubscriber implements EventSubscriberInterface, Logger
      * @var string[]
      */
     private $logLevelMappings = [
-        GitEvents::GIT_PREPARE => LogLevel::INFO,
-        GitEvents::GIT_OUTPUT => LogLevel::DEBUG,
-        GitEvents::GIT_SUCCESS => LogLevel::INFO,
-        GitEvents::GIT_ERROR => LogLevel::ERROR,
-        GitEvents::GIT_BYPASS => LogLevel::INFO,
+        GitPrepareEvent::class => LogLevel::INFO,
+        GitOutputEvent::class => LogLevel::DEBUG,
+        GitSuccessEvent::class => LogLevel::INFO,
+        GitErrorEvent::class => LogLevel::ERROR,
+        GitBypassEvent::class => LogLevel::INFO,
     ];
 
     /**
@@ -71,11 +71,11 @@ final class GitLoggerEventSubscriber implements EventSubscriberInterface, Logger
     public static function getSubscribedEvents()
     {
         return [
-            GitEvents::GIT_PREPARE => ['onPrepare', 0],
-            GitEvents::GIT_OUTPUT => ['handleOutput', 0],
-            GitEvents::GIT_SUCCESS => ['onSuccess', 0],
-            GitEvents::GIT_ERROR => ['onError', 0],
-            GitEvents::GIT_BYPASS => ['onBypass', 0],
+            GitPrepareEvent::class => ['onPrepare', 0],
+            GitOutputEvent::class => ['handleOutput', 0],
+            GitSuccessEvent::class => ['onSuccess', 0],
+            GitErrorEvent::class => ['onError', 0],
+            GitBypassEvent::class => ['onBypass', 0],
         ];
     }
 
@@ -84,8 +84,12 @@ final class GitLoggerEventSubscriber implements EventSubscriberInterface, Logger
      *
      * @param mixed[] $context
      */
-    public function log(GitEvent $gitEvent, string $message, array $context = [], ?string $eventName = null): void
-    {
+    public function log(
+        AbstractGitEvent $gitEvent,
+        string $message,
+        array $context = [],
+        ?string $eventName = null
+    ): void {
         // Provide backwards compatibility with Symfony 2.
         if ($eventName === null && method_exists($gitEvent, 'getName')) {
             $eventName = $gitEvent->getName();
@@ -96,7 +100,7 @@ final class GitLoggerEventSubscriber implements EventSubscriberInterface, Logger
         $this->logger->{$method}($message, $context);
     }
 
-    public function onPrepare(GitEvent $gitEvent, ?string $eventName = null): void
+    public function onPrepare(AbstractGitEvent $gitEvent, ?string $eventName = null): void
     {
         $this->log($gitEvent, 'Git command preparing to run', [], $eventName);
     }
@@ -107,17 +111,17 @@ final class GitLoggerEventSubscriber implements EventSubscriberInterface, Logger
         $this->log($gitOutputEvent, $gitOutputEvent->getBuffer(), $context, $eventName);
     }
 
-    public function onSuccess(GitEvent $gitEvent, ?string $eventName = null): void
+    public function onSuccess(AbstractGitEvent $gitEvent, ?string $eventName = null): void
     {
         $this->log($gitEvent, 'Git command successfully run', [], $eventName);
     }
 
-    public function onError(GitEvent $gitEvent, ?string $eventName = null): void
+    public function onError(AbstractGitEvent $gitEvent, ?string $eventName = null): void
     {
         $this->log($gitEvent, 'Error running Git command', [], $eventName);
     }
 
-    public function onBypass(GitEvent $gitEvent, ?string $eventName = null): void
+    public function onBypass(AbstractGitEvent $gitEvent, ?string $eventName = null): void
     {
         $this->log($gitEvent, 'Git command bypassed', [], $eventName);
     }
