@@ -8,7 +8,7 @@ use GitWrapper\Event\GitBypassEvent;
 use GitWrapper\Event\GitErrorEvent;
 use GitWrapper\Event\GitPrepareEvent;
 use GitWrapper\Event\GitSuccessEvent;
-use GitWrapper\GitException;
+use GitWrapper\Exception\GitException;
 use GitWrapper\GitWrapper;
 use GitWrapper\Test\Event\TestBypassListener;
 use GitWrapper\Test\Event\TestListener;

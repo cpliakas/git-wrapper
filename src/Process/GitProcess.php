@@ -2,12 +2,15 @@
 
 declare(strict_types=1);
 
-namespace GitWrapper;
+namespace GitWrapper\Process;
 
 use GitWrapper\Event\GitBypassEvent;
 use GitWrapper\Event\GitErrorEvent;
 use GitWrapper\Event\GitPrepareEvent;
 use GitWrapper\Event\GitSuccessEvent;
+use GitWrapper\Exception\GitException;
+use GitWrapper\GitCommand;
+use GitWrapper\GitWrapper;
 use RuntimeException;
 use Symfony\Component\Process\Process;
 use Symfony\Contracts\EventDispatcher\Event;
