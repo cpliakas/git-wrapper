@@ -20,10 +20,10 @@ final class TestEventSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            [GitPrepareEvent::class, 'onPrepare'],
-            [GitSuccessEvent::class, 'onSuccess'],
-            [GitErrorEvent::class, 'onError'],
-            [GitBypassEvent::class, 'onBypass'],
+            GitPrepareEvent::class => 'onPrepare',
+            GitSuccessEvent::class => 'onSuccess',
+            GitErrorEvent::class => 'onError',
+            GitBypassEvent::class => 'onBypass',
         ];
     }
 

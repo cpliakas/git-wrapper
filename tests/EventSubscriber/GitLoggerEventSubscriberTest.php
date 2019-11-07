@@ -8,7 +8,7 @@ use GitWrapper\EventSubscriber\GitLoggerEventSubscriber;
 use GitWrapper\Exception\GitException;
 use GitWrapper\GitCommand;
 use GitWrapper\Tests\AbstractGitWrapperTestCase;
-use GitWrapper\Tests\Log\TestLogger;
+use GitWrapper\Tests\EventSubscriber\Source\TestLogger;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
 use Throwable;

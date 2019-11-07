@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace GitWrapper;
 
-use GitWrapper\Contract\Event\GitOutputListenerInterface;
 use GitWrapper\Event\GitOutputEvent;
+use GitWrapper\EventSubscriber\AbstractOutputEventSubscriber;
 use GitWrapper\EventSubscriber\GitLoggerEventSubscriber;
+use GitWrapper\EventSubscriber\StreamOutputEventSubscriber;
 use GitWrapper\Exception\GitException;
-use GitWrapper\OutputListener\GitOutputStreamListener;
 use GitWrapper\Process\GitProcess;
 use GitWrapper\Strings\GitStrings;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -47,9 +47,9 @@ final class GitWrapper
     private $env = [];
 
     /**
-     * @var GitOutputListenerInterface
+     * @var AbstractOutputEventSubscriber
      */
-    private $gitOutputListener;
+    private $outputEventSubscriber;
 
     /**
      * @var EventDispatcherInterface
@@ -67,14 +67,12 @@ final class GitWrapper
         }
 
         $this->setGitBinary($gitBinary);
+
+        $this->eventDispatcher = new EventDispatcher();
     }
 
     public function getDispatcher(): EventDispatcherInterface
     {
-        if ($this->eventDispatcher === null) {
-            $this->eventDispatcher = new EventDispatcher();
-        }
-
         return $this->eventDispatcher;
     }
 
@@ -178,22 +176,19 @@ final class GitWrapper
         $this->unsetEnvVar('GIT_SSH_PORT');
     }
 
-    public function addOutputListener(GitOutputListenerInterface $gitOutputListener): void
+    public function addOutputEventSubscriber(AbstractOutputEventSubscriber $gitOutputEventSubscriber): void
     {
-        $this->getDispatcher()
-            ->addListener(GitOutputEvent::class, [$gitOutputListener, 'handleOutput']);
+        $this->getDispatcher()->addSubscriber($gitOutputEventSubscriber);
     }
 
     public function addLoggerEventSubscriber(GitLoggerEventSubscriber $gitLoggerEventSubscriber): void
     {
-        $this->getDispatcher()
-            ->addSubscriber($gitLoggerEventSubscriber);
+        $this->getDispatcher()->addSubscriber($gitLoggerEventSubscriber);
     }
 
-    public function removeOutputListener(GitOutputListenerInterface $gitOutputListener): void
+    public function removeOutputEventSubscriber(AbstractOutputEventSubscriber $gitOutputEventSubscriber): void
     {
-        $this->getDispatcher()
-            ->removeListener(GitOutputEvent::class, [$gitOutputListener, 'handleOutput']);
+        $this->getDispatcher()->removeSubscriber($gitOutputEventSubscriber);
     }
 
     /**
@@ -201,14 +196,14 @@ final class GitWrapper
      */
     public function streamOutput(bool $streamOutput = true): void
     {
-        if ($streamOutput && ! isset($this->gitOutputListener)) {
-            $this->gitOutputListener = new GitOutputStreamListener();
-            $this->addOutputListener($this->gitOutputListener);
+        if ($streamOutput && ! isset($this->outputEventSubscriber)) {
+            $this->outputEventSubscriber = new StreamOutputEventSubscriber();
+            $this->addOutputEventSubscriber($this->outputEventSubscriber);
         }
 
-        if (! $streamOutput && isset($this->gitOutputListener)) {
-            $this->removeOutputListener($this->gitOutputListener);
-            unset($this->gitOutputListener);
+        if (! $streamOutput && isset($this->outputEventSubscriber)) {
+            $this->removeOutputEventSubscriber($this->outputEventSubscriber);
+            unset($this->outputEventSubscriber);
         }
     }
 

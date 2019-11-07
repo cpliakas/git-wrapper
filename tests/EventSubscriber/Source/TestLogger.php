@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace GitWrapper\Tests\Log;
+namespace GitWrapper\Tests\EventSubscriber\Source;
 
 use Psr\Log\AbstractLogger;
 

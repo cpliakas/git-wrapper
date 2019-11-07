@@ -11,7 +11,9 @@ final class TestBypassEventSubscriber implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
-        return [GitPrepareEvent::class, 'onPrepare', -5];
+        return [
+            GitPrepareEvent::class => ['onPrepare', -5],
+        ];
     }
 
     public function onPrepare(GitPrepareEvent $gitPrepareEvent): void

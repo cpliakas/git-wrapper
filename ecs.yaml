@@ -23,7 +23,4 @@ parameters:
 
         Symplify\CodingStandard\Sniffs\CleanCode\ForbiddenReferenceSniff:
             # native PHP api → nothing we can do about this
-            - 'tests/StreamSuppressFilter.php'
-
-        SlevomatCodingStandard\Sniffs\TypeHints\TypeHintDeclarationSniff.MissingParameterTypeHint:
-            - 'tests/StreamSuppressFilter.php'
+            - 'tests/Source/StreamSuppressFilter.php'

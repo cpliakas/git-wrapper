@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace GitWrapper\Tests;
+namespace GitWrapper\Tests\Source;
 
 use php_user_filter;
 

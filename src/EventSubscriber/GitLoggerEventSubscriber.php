@@ -43,16 +43,10 @@ final class GitLoggerEventSubscriber implements EventSubscriberInterface, Logger
 
     /**
      * Required by interface
-     * {@inheritDoc}
      */
     public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
-    }
-
-    public function getLogger(): LoggerInterface
-    {
-        return $this->logger;
     }
 
     public function setLogLevelMapping(string $eventName, string $logLevel): void

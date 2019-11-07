@@ -7,7 +7,8 @@ namespace GitWrapper\Tests;
 use GitWrapper\Exception\GitException;
 use GitWrapper\GitBranches;
 use GitWrapper\GitWorkingCopy;
-use GitWrapper\Tests\Event\TestOutputListener;
+use GitWrapper\Tests\EventSubscriber\Source\TestGitOutputEventSubscriber;
+use GitWrapper\Tests\Source\StreamSuppressFilter;
 use Symfony\Component\Process\Process;
 
 final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
@@ -356,8 +357,8 @@ PATCH;
     {
         $git = $this->getWorkingCopy();
 
-        $listener = new TestOutputListener();
-        $git->getWrapper()->addOutputListener($listener);
+        $listener = new TestGitOutputEventSubscriber();
+        $git->getWrapper()->addOutputEventSubscriber($listener);
 
         $git->status();
         $event = $listener->getLastEvent();
@@ -384,7 +385,8 @@ PATCH;
         $contents = ob_get_contents();
         ob_end_clean();
 
-        $this->assertContains('nothing to commit', $contents);
+        /** @var string $contents */
+        $this->assertStringContainsString('nothing to commit', $contents);
 
         $git->getWrapper()->streamOutput(false);
         ob_start();

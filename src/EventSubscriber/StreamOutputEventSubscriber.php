@@ -2,16 +2,15 @@
 
 declare(strict_types=1);
 
-namespace GitWrapper\OutputListener;
+namespace GitWrapper\EventSubscriber;
 
-use GitWrapper\Contract\Event\GitOutputListenerInterface;
 use GitWrapper\Event\GitOutputEvent;
 
 /**
  * Event handler that streams real-time output from Git commands to STDOUT and
  * STDERR.
  */
-final class GitOutputStreamListener implements GitOutputListenerInterface
+final class StreamOutputEventSubscriber extends AbstractOutputEventSubscriber
 {
     public function handleOutput(GitOutputEvent $gitOutputEvent): void
     {
