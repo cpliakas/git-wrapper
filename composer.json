@@ -8,7 +8,7 @@
         { "name": "Tomas Votruba", "email": "tomas.vot@gmail.com" }
     ],
     "require": {
-        "php": "^7.1",
+        "php": "^7.2",
         "symfony/process": "^4.3|^5.0",
         "symfony/event-dispatcher": "^4.3|^5.0"
     },
