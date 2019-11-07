@@ -76,7 +76,7 @@ $options = [
 Use the logger listener with [PSR-3](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md) compatible loggers such as [Monolog](https://github.com/Seldaek/monolog) to log commands that are executed.
 
 ```php
-use GitWrapper\Event\GitLoggerEventSubscriber;
+use GitWrapper\EventSubscriber\GitLoggerEventSubscriber;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
