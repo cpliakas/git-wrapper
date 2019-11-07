@@ -59,14 +59,13 @@ final class GitProcess extends Process
     public function start(?callable $callback = null, array $env = []): void
     {
         $gitPrepareEvent = new GitPrepareEvent($this->gitWrapper, $this, $this->gitCommand);
-
-        $this->dispatchGitEvent($gitPrepareEvent);
+        $this->dispatchEvent($gitPrepareEvent);
 
         if ($this->gitCommand->notBypassed()) {
             parent::start($callback, $env);
         } else {
             $gitBypassEvent = new GitBypassEvent($this->gitWrapper, $this, $this->gitCommand);
-            $this->dispatchGitEvent($gitBypassEvent);
+            $this->dispatchEvent($gitBypassEvent);
         }
     }
 
@@ -81,7 +80,7 @@ final class GitProcess extends Process
 
             if ($this->isSuccessful()) {
                 $gitSuccessEvent = new GitSuccessEvent($this->gitWrapper, $this, $this->gitCommand);
-                $this->dispatchGitEvent($gitSuccessEvent);
+                $this->dispatchEvent($gitSuccessEvent);
             } else {
                 $output = $this->getErrorOutput();
 
@@ -93,7 +92,7 @@ final class GitProcess extends Process
             }
         } catch (RuntimeException $runtimeException) {
             $gitErrorEvent = new GitErrorEvent($this->gitWrapper, $this, $this->gitCommand);
-            $this->dispatchGitEvent($gitErrorEvent);
+            $this->dispatchEvent($gitErrorEvent);
 
             throw new GitException($runtimeException->getMessage(), $runtimeException->getCode(), $runtimeException);
         }
@@ -119,7 +118,7 @@ final class GitProcess extends Process
         return $cwd;
     }
 
-    private function dispatchGitEvent(Event $event): void
+    private function dispatchEvent(Event $event): void
     {
         $this->gitWrapper->getDispatcher()->dispatch($event);
     }
