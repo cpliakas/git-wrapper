@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace GitWrapper\Test;
 
-use GitWrapper\Event\GitLoggerEventSubscriber;
+use GitWrapper\EventSubscriber\GitLoggerEventSubscriber;
 use GitWrapper\GitCommand;
 use GitWrapper\GitException;
 use Psr\Log\LogLevel;
