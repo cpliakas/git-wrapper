@@ -7,7 +7,6 @@ namespace GitWrapper\Tests;
 use GitWrapper\Exception\GitException;
 use GitWrapper\GitCommand;
 use GitWrapper\GitWorkingCopy;
-use GitWrapper\GitWrapper;
 use GitWrapper\Tests\Event\TestDispatcher;
 
 final class GitWrapperTest extends AbstractGitWrapperTestCase
@@ -159,15 +158,6 @@ final class GitWrapperTest extends AbstractGitWrapperTestCase
         $this->assertInstanceOf(GitWorkingCopy::class, $git);
         $this->assertSame($directory, $git->getDirectory());
         $this->assertSame($this->gitWrapper, $git->getWrapper());
-    }
-
-    public function testParseRepositoryName(): void
-    {
-        $nameGit = GitWrapper::parseRepositoryName('git@github.com:cpliakas/git-wrapper.git');
-        $this->assertSame($nameGit, 'git-wrapper');
-
-        $nameHttps = GitWrapper::parseRepositoryName('https://github.com/cpliakas/git-wrapper.git');
-        $this->assertSame($nameHttps, 'git-wrapper');
     }
 
     public function testCloneWothoutDirectory(): void
