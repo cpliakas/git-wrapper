@@ -32,10 +32,11 @@ final class GitLoggerEventSubscriber implements EventSubscriberInterface, Logger
 
     public function __construct(LoggerInterface $logger)
     {
-        $this->setLogger($logger);
+        $this->logger = $logger;
     }
 
     /**
+     * Required by interface
      * {@inheritDoc}
      */
     public function setLogger(LoggerInterface $logger): void
@@ -100,9 +101,9 @@ final class GitLoggerEventSubscriber implements EventSubscriberInterface, Logger
         $this->logger->{$method}($message, $context);
     }
 
-    public function onPrepare(AbstractGitEvent $gitEvent, ?string $eventName = null): void
+    public function onPrepare(GitPrepareEvent $gitPrepareEvent, ?string $eventName = null): void
     {
-        $this->log($gitEvent, 'Git command preparing to run', [], $eventName);
+        $this->log($gitPrepareEvent, 'Git command preparing to run', [], $eventName);
     }
 
     public function handleOutput(GitOutputEvent $gitOutputEvent, ?string $eventName = null): void
@@ -111,18 +112,18 @@ final class GitLoggerEventSubscriber implements EventSubscriberInterface, Logger
         $this->log($gitOutputEvent, $gitOutputEvent->getBuffer(), $context, $eventName);
     }
 
-    public function onSuccess(AbstractGitEvent $gitEvent, ?string $eventName = null): void
+    public function onSuccess(GitSuccessEvent $gitSuccessEvent, ?string $eventName = null): void
     {
-        $this->log($gitEvent, 'Git command successfully run', [], $eventName);
+        $this->log($gitSuccessEvent, 'Git command successfully run', [], $eventName);
     }
 
-    public function onError(AbstractGitEvent $gitEvent, ?string $eventName = null): void
+    public function onError(GitErrorEvent $gitErrorEvent, ?string $eventName = null): void
     {
-        $this->log($gitEvent, 'Error running Git command', [], $eventName);
+        $this->log($gitErrorEvent, 'Error running Git command', [], $eventName);
     }
 
-    public function onBypass(AbstractGitEvent $gitEvent, ?string $eventName = null): void
+    public function onBypass(GitBypassEvent $gitBypassEvent, ?string $eventName = null): void
     {
-        $this->log($gitEvent, 'Git command bypassed', [], $eventName);
+        $this->log($gitBypassEvent, 'Git command bypassed', [], $eventName);
     }
 }
