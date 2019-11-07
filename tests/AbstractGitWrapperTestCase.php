@@ -50,7 +50,6 @@ abstract class AbstractGitWrapperTestCase extends TestCase
 
     protected function setUp(): void
     {
-        parent::setUp();
         $this->filesystem = new Filesystem();
         $this->gitWrapper = new GitWrapper();
     }
