@@ -9,6 +9,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 abstract class AbstractOutputEventSubscriber implements EventSubscriberInterface
 {
+    /**
+     * @return string[]
+     */
     public static function getSubscribedEvents(): array
     {
         return [

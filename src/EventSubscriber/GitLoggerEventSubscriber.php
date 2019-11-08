@@ -66,6 +66,9 @@ final class GitLoggerEventSubscriber implements EventSubscriberInterface, Logger
         return $this->logLevelMappings[$eventName];
     }
 
+    /**
+     * @return int[][]|string[][]
+     */
     public static function getSubscribedEvents(): array
     {
         return [
