@@ -132,6 +132,7 @@ final class GitWrapperTest extends AbstractGitWrapperTestCase
         $command->setFlag('version');
         // Directory has to exist
         $command->setDirectory('./tests');
+
         $version = $this->gitWrapper->run($command);
         $this->assertGitVersion($version);
     }

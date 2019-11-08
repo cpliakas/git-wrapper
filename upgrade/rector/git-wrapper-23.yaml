@@ -1,0 +1,15 @@
+# see https://github.com/cpliakas/git-wrapper/pull/182/files
+# see https://github.com/cpliakas/git-wrapper/pull/186/files
+services:
+    Rector\Renaming\Rector\Class_\RenameClassRector:
+        GitWrapper\Event\GitOutputListenerInterface: 'GitWrapper\EventSubscriber\AbstractOutputEventSubscriber'
+        GitWrapper\Event\Event: 'GitWrapper\Event\AbstractGitEvent'
+        GitWrapper\Event\GitLoggerEventSubscriber: 'GitWrapper\EventSubscriber\GitLoggerEventSubscriber'
+        GitWrapper\GitException: 'GitWrapper\Exception\GitException'
+        GitWrapper\Event\GitOutputStreamListener: 'GitWrapper\EventSubscriber\StreamOutputEventSubscriber'
+        GitWrapper\GitProcess: 'GitWrapper\Process\GitProcess'
+
+    Rector\Renaming\Rector\MethodCall\RenameStaticMethodRector:
+        GitWrapper\GitWrapper:
+            parseRepositoryName:
+                ['GitWrapper\Strings\GitStrings', 'parseRepositoryName']
