@@ -6,6 +6,7 @@ namespace GitWrapper;
 
 use ArrayIterator;
 use IteratorAggregate;
+use Nette\Utils\Strings;
 
 /**
  * Class that parses and returnes an array of Tags.
@@ -30,7 +31,7 @@ final class GitTags implements IteratorAggregate
     public function fetchTags(): array
     {
         $output = $this->gitWorkingCopy->tag(['l' => true]);
-        $tags = (array) preg_split("/\r\n|\n|\r/", rtrim($output));
+        $tags = (array) Strings::split(rtrim($output), "/\r\n|\n|\r/");
         return array_map([$this, 'trimTags'], $tags);
     }
 
