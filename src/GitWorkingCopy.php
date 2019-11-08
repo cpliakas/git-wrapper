@@ -328,7 +328,7 @@ final class GitWorkingCopy
     }
 
     /**
-     * @return mixed[] An associative array, keyed by remote name, containing an associative array with keys:
+     * @return string[][] An associative array, keyed by remote name, containing an associative array with keys
      *  - fetch: the fetch URL.
      *  - push: the push URL.
      */

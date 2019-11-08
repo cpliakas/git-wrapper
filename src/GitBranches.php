@@ -28,8 +28,7 @@ final class GitBranches implements IteratorAggregate
      * Fetches the branches via the `git branch` command.
      *
      * @param bool $onlyRemote Whether to fetch only remote branches, defaults to false which returns all branches.
-     *
-     * @return mixed[]
+     * @return string[]
      */
     public function fetchBranches(bool $onlyRemote = false): array
     {

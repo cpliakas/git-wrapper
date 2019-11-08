@@ -25,8 +25,7 @@ final class GitTags implements IteratorAggregate
 
     /**
      * Fetches the Tags via the `git branch` command.
-     *
-     * @return mixed[]
+     * @return string[]
      */
     public function fetchTags(): array
     {

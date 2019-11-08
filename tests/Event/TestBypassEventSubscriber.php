@@ -9,6 +9,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 final class TestBypassEventSubscriber implements EventSubscriberInterface
 {
+    /**
+     * @return int[][]|string[][]
+     */
     public static function getSubscribedEvents(): array
     {
         return [
