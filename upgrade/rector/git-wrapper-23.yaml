@@ -1,5 +1,9 @@
 # see https://github.com/cpliakas/git-wrapper/pull/182/files
 # see https://github.com/cpliakas/git-wrapper/pull/186/files
+#
+# run: vendor/bin/rector process src --config vendor/cpliakas/git-wrapper/upgrade/rector/git-wrapper-23.yaml
+#
+# (src = your project code)
 services:
     Rector\Renaming\Rector\Class_\RenameClassRector:
         GitWrapper\Event\GitOutputListenerInterface: 'GitWrapper\EventSubscriber\AbstractOutputEventSubscriber'
