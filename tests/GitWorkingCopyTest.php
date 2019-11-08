@@ -47,7 +47,7 @@ final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
 
         // Create a branch, add a file.
         $branch = 'test-branch';
-        file_put_contents($directory . '/branch.txt', "${branch}\n");
+        file_put_contents($directory . '/branch.txt', $branch . PHP_EOL);
         $git->checkoutNewBranch($branch);
         $git->add('branch.txt');
         $git->commit('Committed testing branch.');
@@ -768,7 +768,7 @@ PATCH;
 
         // Create a branch.
         $branch = 'remote-branch';
-        file_put_contents(self::REMOTE_REPO_DIR . '/remote-branch.txt', "${branch}\n");
+        file_put_contents(self::REMOTE_REPO_DIR . '/remote-branch.txt', $branch . PHP_EOL);
         $git->checkoutNewBranch($branch);
         $git->add('*');
         $git->commit('Commit remote testing branch.');

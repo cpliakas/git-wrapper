@@ -164,11 +164,6 @@ final class GitCommand
         return $this->options[$option] ?? $default;
     }
 
-    public function unsetOption(string $option): void
-    {
-        unset($this->options[$option]);
-    }
-
     public function addArgument(string $arg): void
     {
         $this->args[] = $arg;

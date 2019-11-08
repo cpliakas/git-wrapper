@@ -21,7 +21,7 @@ final class GitCommandTest extends AbstractGitWrapperTestCase
         $git->setFlag($flag);
         $git->setOption($optionName, $optionValue);
 
-        $expected = [$command, "--${flag}", "--${optionName}", $optionValue, $argument];
+        $expected = [$command, sprintf('--%s', $flag), sprintf('--%s', $optionName), $optionValue, $argument];
 
         $this->assertSame($expected, $git->getCommandLine());
     }
