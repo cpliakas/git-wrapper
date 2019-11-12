@@ -21,6 +21,16 @@ final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
     private const REMOTE_REPO_DIR = 'build/test/remote';
 
     /**
+     * @var string
+     */
+    private $currentUserName;
+
+    /**
+     * @var string
+     */
+    private $currentUserEmail;
+
+    /**
      * Creates and initializes the local repository used for testing.
      */
     protected function setUp(): void
@@ -33,6 +43,11 @@ final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
         // Clone the local repository.
         $directory = 'build/tests/wc_init';
         $git = $this->gitWrapper->cloneRepository('file://' . realpath(self::REPO_DIR), $directory);
+
+        // prevent local user.* override
+        $this->currentUserEmail = $git->config('user.email');
+        $this->currentUserName = $git->config('user.name');
+
         $git->config('user.email', self::CONFIG_EMAIL);
         $git->config('user.name', self::CONFIG_NAME);
 
@@ -67,7 +82,10 @@ final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
      */
     protected function tearDown(): void
     {
-        parent::tearDown();
+        // restore current user/email
+        $gitWorkingCopy = $this->gitWrapper->workingCopy(self::REPO_DIR);
+        $gitWorkingCopy->config('user.email', $this->currentUserEmail);
+        $gitWorkingCopy->config('user.name', $this->currentUserName);
 
         $this->filesystem->remove(self::REPO_DIR);
 
