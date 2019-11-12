@@ -39,9 +39,9 @@
         "monolog/monolog": "Enables logging of executed git commands"
     },
     "scripts": {
-        "check-cs": "vendor/bin/ecs check src tests",
-        "fix-cs": "vendor/bin/ecs check src tests --fix",
-        "phpstan": "vendor/bin/phpstan analyse src tests --error-format symplify",
-        "changelog": "vendor/bin/changelog-linker dump-merges --in-categories"
+        "check-cs": "vendor/bin/ecs check src tests --ansi",
+        "fix-cs": "vendor/bin/ecs check src tests --fix --ansi",
+        "phpstan": "vendor/bin/phpstan analyse src tests --error-format symplify --ansi",
+        "changelog": "vendor/bin/changelog-linker dump-merges --in-categories --ansi"
     }
 }
