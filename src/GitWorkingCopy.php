@@ -341,7 +341,7 @@ final class GitWorkingCopy
         }
 
         $remotes = [];
-        foreach (Strings::split($result, '#(\r\n|\r|\n)#') as $remote) {
+        foreach ($this->splitByNewline($result) as $remote) {
             $remotes[$remote]['fetch'] = $this->getRemoteUrl($remote);
             $remotes[$remote]['push'] = $this->getRemoteUrl($remote, 'push');
         }
@@ -672,5 +672,10 @@ final class GitWorkingCopy
         if (empty($url)) {
             throw new GitException('Cannot add remote without a URL.');
         }
+    }
+
+    private function splitByNewline($string): array
+    {
+        return Strings::split($string, '#(\r\n|\r|\n)#');
     }
 }
