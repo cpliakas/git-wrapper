@@ -340,7 +340,7 @@ final class GitWorkingCopy
         }
 
         $remotes = [];
-        foreach (explode(PHP_EOL, $result) as $remote) {
+        foreach (preg_split('/(\r\n|\r|\n)/', $result) as $remote) {
             $remotes[$remote]['fetch'] = $this->getRemoteUrl($remote);
             $remotes[$remote]['push'] = $this->getRemoteUrl($remote, 'push');
         }
