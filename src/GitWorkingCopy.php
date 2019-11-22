@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace GitWrapper;
 
 use GitWrapper\Exception\GitException;
-use Nette\Utils\Strings;
+use RuntimeException;
 
 /**
  * Interacts with a working copy.
@@ -674,8 +674,14 @@ final class GitWorkingCopy
         }
     }
 
-    private function splitByNewline($string): array
+    private function splitByNewline(string $string): array
     {
-        return Strings::split($string, '#(\r\n|\r|\n)#');
+        $result = preg_split('#(\r\n|\r|\n)#', $string);
+
+        if ($result === false) {
+            throw new RuntimeException(sprintf('Cannot split string "%s" by newline.', $string));
+        }
+
+        return $result;
     }
 }
