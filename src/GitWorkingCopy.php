@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace GitWrapper;
 
 use GitWrapper\Exception\GitException;
+use Nette\Utils\Strings;
 
 /**
  * Interacts with a working copy.
@@ -340,7 +341,7 @@ final class GitWorkingCopy
         }
 
         $remotes = [];
-        foreach (preg_split('/(\r\n|\r|\n)/', $result) as $remote) {
+        foreach (Strings::split($result, '#(\r\n|\r|\n)#') as $remote) {
             $remotes[$remote]['fetch'] = $this->getRemoteUrl($remote);
             $remotes[$remote]['push'] = $this->getRemoteUrl($remote, 'push');
         }
