@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace GitWrapper;
 
 use GitWrapper\Exception\GitException;
+use Nette\Utils\Strings;
 
 /**
  * Interacts with a working copy.
@@ -340,7 +341,7 @@ final class GitWorkingCopy
         }
 
         $remotes = [];
-        foreach (explode(PHP_EOL, $result) as $remote) {
+        foreach ($this->splitByNewline($result) as $remote) {
             $remotes[$remote]['fetch'] = $this->getRemoteUrl($remote);
             $remotes[$remote]['push'] = $this->getRemoteUrl($remote, 'push');
         }
@@ -671,5 +672,10 @@ final class GitWorkingCopy
         if (empty($url)) {
             throw new GitException('Cannot add remote without a URL.');
         }
+    }
+
+    private function splitByNewline(string $string): array
+    {
+        return Strings::split($string, '#\R#');
     }
 }
