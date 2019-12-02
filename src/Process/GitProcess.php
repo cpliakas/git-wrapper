@@ -35,12 +35,13 @@ final class GitProcess extends Process
         // Build the command line options, flags, and arguments.
         $commandLine = $gitCommand->getCommandLine();
         $gitBinary = $gitWrapper->getGitBinary();
+
+        // Support for executing an arbitrary git command.
         if (is_string($commandLine)) {
-            // Support for executing an arbitrary git command.
-            $commandLine = [$gitBinary, $commandLine];
-        } else {
-            array_unshift($commandLine, $gitBinary);
+            $commandLine = explode(' ', $commandLine);
         }
+
+        array_unshift($commandLine, $gitBinary);
 
         // Resolve the working directory of the Git process. Use the directory
         // in the command object if it exists.
@@ -56,9 +57,6 @@ final class GitProcess extends Process
         parent::__construct($commandLine, $cwd, $env, null, (float) $gitWrapper->getTimeout());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function start(?callable $callback = null, array $env = []): void
     {
         $gitPrepareEvent = new GitPrepareEvent($this->gitWrapper, $this, $this->gitCommand);

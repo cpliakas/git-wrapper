@@ -120,6 +120,12 @@ final class GitWrapperTest extends AbstractGitWrapperTestCase
         $this->assertGitVersion($version);
     }
 
+    public function testGitCommandWithMultipleArguments(): void
+    {
+        $options = $this->gitWrapper->git('--version --build-options');
+        $this->assertNotEmpty($options);
+    }
+
     public function testGitCommandError(): void
     {
         $this->expectException(GitException::class);
