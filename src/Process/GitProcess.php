@@ -57,9 +57,6 @@ final class GitProcess extends Process
         parent::__construct($commandLine, $cwd, $env, null, (float) $gitWrapper->getTimeout());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function start(?callable $callback = null, array $env = []): void
     {
         $gitPrepareEvent = new GitPrepareEvent($this->gitWrapper, $this, $this->gitCommand);
