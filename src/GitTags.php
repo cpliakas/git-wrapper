@@ -10,6 +10,8 @@ use Nette\Utils\Strings;
 
 /**
  * Class that parses and returnes an array of Tags.
+ *
+ * @implements IteratorAggregate<int,string>
  */
 final class GitTags implements IteratorAggregate
 {
@@ -42,6 +44,9 @@ final class GitTags implements IteratorAggregate
         return ltrim($branch, ' *');
     }
 
+    /**
+     * @return ArrayIterator<int,string>
+     */
     public function getIterator(): ArrayIterator
     {
         $tags = $this->all();

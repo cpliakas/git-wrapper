@@ -5,6 +5,7 @@ includes:
 parameters:
     level: max
     reportUnmatchedIgnoredErrors: false
+    checkMissingIterableValueType: false
 
     ignoreErrors:
         - '#Access to an undefined property object::\$data#'

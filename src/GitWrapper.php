@@ -91,6 +91,9 @@ final class GitWrapper
         return $this->gitBinary;
     }
 
+    /**
+     * @param mixed $value
+     */
     public function setEnvVar(string $var, $value): void
     {
         $this->env[$var] = $value;
@@ -108,6 +111,7 @@ final class GitWrapper
      * @param string $var The name of the environment variable, e.g. "HOME", "GIT_SSH".
      * @param mixed $default The value returned if the environment variable is not set, defaults to
      *   null.
+     * @return mixed
      */
     public function getEnvVar(string $var, $default = null)
     {

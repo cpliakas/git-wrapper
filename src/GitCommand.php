@@ -155,6 +155,10 @@ final class GitCommand
         $this->setOption($option, true);
     }
 
+    /**
+     * @param mixed $default
+     * @return mixed
+     */
     public function getOption(string $option, $default = null)
     {
         return $this->options[$option] ?? $default;
