@@ -16,14 +16,14 @@
         "phpunit/phpunit": "^8.4",
         "symfony/filesystem": "^4.3|^5.0",
         "psr/log": "^1.1",
-        "symplify/easy-coding-standard": "^7.0",
+        "symplify/easy-coding-standard": "^7.1",
         "nette/utils": "^3.0",
-        "phpstan/phpstan": "^0.11.19",
-        "symplify/changelog-linker": "^7.0",
-        "symplify/phpstan-extensions": "^7.0",
+        "phpstan/phpstan": "^0.12",
+        "symplify/changelog-linker": "^7.1",
+        "symplify/phpstan-extensions": "^7.1",
         "rector/rector": "dev-master",
         "tracy/tracy": "^2.7",
-        "phpstan/phpstan-phpunit": "^0.11.2"
+        "phpstan/phpstan-phpunit": "^0.12"
     },
     "autoload": {
         "psr-4": {
