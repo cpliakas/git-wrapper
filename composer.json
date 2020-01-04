@@ -18,12 +18,12 @@
         "psr/log": "^1.1",
         "symplify/easy-coding-standard": "^7.1",
         "nette/utils": "^3.0",
-        "phpstan/phpstan": "^0.12",
+        "phpstan/phpstan": "^0.12.3",
         "symplify/changelog-linker": "^7.1",
         "symplify/phpstan-extensions": "^7.1",
-        "rector/rector": "dev-master",
+        "rector/rector": "^0.6.2",
         "tracy/tracy": "^2.7",
-        "phpstan/phpstan-phpunit": "^0.12"
+        "phpstan/phpstan-phpunit": "^0.12.3"
     },
     "autoload": {
         "psr-4": {
