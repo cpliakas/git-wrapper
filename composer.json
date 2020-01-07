@@ -9,19 +9,19 @@
     ],
     "require": {
         "php": "^7.2",
-        "symfony/process": "^4.3|^5.0",
-        "symfony/event-dispatcher": "^4.3|^5.0"
+        "symfony/process": "^4.4|^5.0",
+        "symfony/event-dispatcher": "^4.4|^5.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.4",
-        "symfony/filesystem": "^4.3|^5.0",
+        "phpunit/phpunit": "^8.5",
+        "symfony/filesystem": "^4.4|^5.0",
         "psr/log": "^1.1",
-        "symplify/easy-coding-standard": "^7.1",
+        "symplify/easy-coding-standard": "^7.2",
         "nette/utils": "^3.0",
-        "phpstan/phpstan": "^0.12",
-        "symplify/changelog-linker": "^7.1",
-        "symplify/phpstan-extensions": "^7.1",
-        "rector/rector": "dev-master",
+        "phpstan/phpstan": "^0.12.4",
+        "symplify/changelog-linker": "^7.2",
+        "symplify/phpstan-extensions": "^7.2",
+        "rector/rector": "^0.6.7",
         "tracy/tracy": "^2.7",
         "phpstan/phpstan-phpunit": "^0.12"
     },
@@ -42,6 +42,7 @@
         "check-cs": "vendor/bin/ecs check src tests --ansi",
         "fix-cs": "vendor/bin/ecs check src tests --fix --ansi",
         "phpstan": "vendor/bin/phpstan analyse src tests --error-format symplify --ansi",
-        "changelog": "vendor/bin/changelog-linker dump-merges --in-categories --ansi"
+        "changelog": "vendor/bin/changelog-linker dump-merges --in-categories --ansi",
+        "rector": "vendor/bin/rector process src tests --config rector-ci.yaml"
     }
 }

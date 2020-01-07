@@ -289,17 +289,20 @@ final class GitWorkingCopy
         // Add tracking branches.
         if (! empty($options['-t'])) {
             foreach ($options['-t'] as $branch) {
-                array_push($args, '-t', $branch);
+                $args[] = '-t';
+                $args[] = $branch;
             }
         }
 
         // Add master branch.
         if (! empty($options['-m'])) {
-            array_push($args, '-m', $options['-m']);
+            $args[] = '-m';
+            $args[] = $options['-m'];
         }
 
         // Add remote name and URL.
-        array_push($args, $name, $url);
+        $args[] = $name;
+        $args[] = $url;
 
         return $this->remote(...$args);
     }
