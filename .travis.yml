@@ -10,7 +10,7 @@ php:
 before_script:
     - git --version
     # disable xdebug if not coverage
-    - phpenv config-rm xdebug.ini || echo "xdebug not available"
+    - phpenv config-rm xdebug.ini
 
 script:
     - vendor/bin/phpunit
@@ -52,7 +52,6 @@ jobs:
         -
             stage: coverage
             name: Test Coverage
-            if: branch = master AND type = push
             php: 7.3
             before_script:
                 - echo "keep xdebug"
