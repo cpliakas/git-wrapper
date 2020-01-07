@@ -1,11 +1,11 @@
-imports:
-    - { resource: 'vendor/symplify/easy-coding-standard/config/set/psr12.yaml' }
-    - { resource: 'vendor/symplify/easy-coding-standard/config/set/php71.yaml' }
-    - { resource: 'vendor/symplify/easy-coding-standard/config/set/common.yaml' }
-    - { resource: 'vendor/symplify/easy-coding-standard/config/set/clean-code.yaml' }
-    - { resource: 'vendor/symplify/easy-coding-standard/config/set/symplify.yaml' }
-
 parameters:
+    sets:
+        - 'psr12'
+        - 'php71'
+        - 'common'
+        - 'clean-code'
+        - 'symplify'
+
     skip:
         PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis\AssignmentInConditionSniff: ~
         Symplify\CodingStandard\Sniffs\DependencyInjection\NoClassInstantiationSniff: ~
