@@ -1,0 +1,43 @@
+language: php
+
+php:
+    - 7.2
+    - 7.3
+    - 7.4
+
+before_script:
+    - git --version
+    # disable xdebug if not coverage
+    - phpenv config-rm xdebug.ini
+
+script:
+    - vendor/bin/phpunit
+
+install:
+    - composer install
+
+jobs:
+    include:
+        -
+            stage: test
+            name: 'Lowest Dependencies'
+            php: 7.2
+            install:
+                # install lowest dependencies
+                - composer update --prefer-lowest --no-progress
+
+        -
+            name: Unit Tests
+
+        -
+            name: Test Coverage
+            php: 7.3
+            script:
+                # code coverage run + upload to coveralls.io
+                - phpdbg -qrr -d memory_limit=-1 vendor/bin/phpunit --coverage-clover coverage.xml
+                # Coveralls.io
+                - wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.1.0/php-coveralls.phar
+                - php php-coveralls.phar --verbose
+
+notifications:
+    email: false
