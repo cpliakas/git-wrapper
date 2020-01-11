@@ -6,8 +6,6 @@ php:
     - 7.4
 
 before_script:
-    - git --version
-    # disable xdebug if not coverage
     - phpenv config-rm xdebug.ini
 
 script:
