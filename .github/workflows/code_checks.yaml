@@ -27,7 +27,7 @@ jobs:
                     coverage: none
 
             -   run: composer install --no-progress
-            -   run: vendor/bin/phpunit
+            -   run: vendor/bin/phpunit --stop-on-failure
 
     test_lowest_dependencies:
         runs-on: ubuntu-latest
