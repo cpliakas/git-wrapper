@@ -89,16 +89,16 @@ final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
 
         $this->filesystem->remove(self::REPO_DIR);
 
-        if (is_dir('build/tests/wc_init')) {
-            $this->filesystem->remove('build/tests/wc_init');
-        }
+        $dirsToRemove = [
+            'build/tests/wc_init',
+            self::WORKING_DIR,
+            self::REMOTE_REPO_DIR,
+        ];
 
-        if (is_dir(self::WORKING_DIR)) {
-            $this->filesystem->remove(self::WORKING_DIR);
-        }
-
-        if (is_dir(self::REMOTE_REPO_DIR)) {
-            $this->filesystem->remove(self::REMOTE_REPO_DIR);
+        foreach ($dirsToRemove as $dirToRemove) {
+            if (is_dir($dirToRemove)) {
+                $this->filesystem->remove($dirToRemove);
+            }
         }
     }
 
@@ -110,6 +110,7 @@ final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
     public function getWorkingCopy(string $directory = self::WORKING_DIR): GitWorkingCopy
     {
         $git = $this->gitWrapper->workingCopy($directory);
+
         $git->cloneRepository('file://' . realpath(self::REPO_DIR));
         $git->config('user.email', self::CONFIG_EMAIL);
         $git->config('user.name', self::CONFIG_NAME);
