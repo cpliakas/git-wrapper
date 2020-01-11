@@ -17,8 +17,8 @@ jobs:
         name: PHP ${{ matrix.php }} tests
         steps:
             -   uses: actions/checkout@v2
-            # required for "git tag" presence for MonorepoBuilder split and ChangelogLinker git tags resolver; default is 1
-            -   run: git fetch --depth=100000 origin
+#            # required for "git tag" presence for MonorepoBuilder split and ChangelogLinker git tags resolver; default is 1
+#            -   run: git fetch --depth=100000 origin
 
             # see https://github.com/shivammathur/setup-php
             -   uses: shivammathur/setup-php@v1
@@ -33,7 +33,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             -   uses: actions/checkout@v2
-            -   run: git fetch --depth=100000 origin
+#            -   run: git fetch --depth=100000 origin
 
             # see https://github.com/shivammathur/setup-php
             -   uses: shivammathur/setup-php@v1
