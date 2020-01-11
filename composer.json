@@ -21,7 +21,7 @@
         "phpstan/phpstan": "^0.12.4",
         "symplify/changelog-linker": "^7.2",
         "symplify/phpstan-extensions": "^7.2",
-        "rector/rector": "^0.6.7",
+        "rector/rector": "^0.6.9",
         "tracy/tracy": "^2.7",
         "phpstan/phpstan-phpunit": "^0.12"
     },
@@ -43,6 +43,6 @@
         "fix-cs": "vendor/bin/ecs check src tests --fix --ansi",
         "phpstan": "vendor/bin/phpstan analyse src tests --error-format symplify --ansi",
         "changelog": "vendor/bin/changelog-linker dump-merges --in-categories --ansi",
-        "rector": "vendor/bin/rector process src tests --config rector-ci.yaml"
+        "rector": "vendor/bin/rector process src tests --config rector-ci.yaml --ansi"
     }
 }
