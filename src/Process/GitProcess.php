@@ -95,6 +95,8 @@ final class GitProcess extends Process
             $gitErrorEvent = new GitErrorEvent($this->gitWrapper, $this, $this->gitCommand);
             $this->dispatchEvent($gitErrorEvent);
 
+            dump($runtimeException);
+
             throw new GitException($runtimeException->getMessage(), $runtimeException->getCode(), $runtimeException);
         }
 
