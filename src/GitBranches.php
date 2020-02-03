@@ -33,7 +33,7 @@ final class GitBranches implements IteratorAggregate
     {
         $options = $onlyRemote ? ['r' => true] : ['a' => true];
         $output = $this->gitWorkingCopy->branch($options);
-        $branches = preg_split('~\R~', rtrim($output), PREG_SPLIT_NO_EMPTY);
+        $branches = $this->splitByNewline(rtrim($output));
         return array_map([$this, 'trimBranch'], $branches);
     }
 
@@ -70,5 +70,10 @@ final class GitBranches implements IteratorAggregate
     public function head(): string
     {
         return trim($this->gitWorkingCopy->run('rev-parse', ['--abbrev-ref', 'HEAD']));
+    }
+
+    private function splitByNewline(string $string): array
+    {
+        return (array)preg_split('#\R#', $string, PREG_SPLIT_NO_EMPTY);
     }
 }

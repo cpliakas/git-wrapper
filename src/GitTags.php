@@ -29,7 +29,7 @@ final class GitTags implements IteratorAggregate
     public function fetchTags(): array
     {
         $output = $this->gitWorkingCopy->tag(['l' => true]);
-        $tags = preg_split('~\R~', rtrim($output), PREG_SPLIT_NO_EMPTY);
+        $tags = $this->splitByNewline(rtrim($output));
         return array_map([$this, 'trimTags'], $tags);
     }
 
@@ -53,5 +53,10 @@ final class GitTags implements IteratorAggregate
     public function all(): array
     {
         return $this->fetchTags();
+    }
+
+    private function splitByNewline(string $string): array
+    {
+        return (array)preg_split('#\R#', $string, PREG_SPLIT_NO_EMPTY);
     }
 }

@@ -678,6 +678,6 @@ final class GitWorkingCopy
 
     private function splitByNewline(string $string): array
     {
-        return preg_split('~\R~', $string, PREG_SPLIT_NO_EMPTY);
+        return (array)preg_split('#\R#', $string, PREG_SPLIT_NO_EMPTY);
     }
 }
