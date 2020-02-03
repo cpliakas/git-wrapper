@@ -57,6 +57,6 @@ final class GitTags implements IteratorAggregate
 
     private function splitByNewline(string $string): array
     {
-        return (array)preg_split('#\R#', $string, PREG_SPLIT_NO_EMPTY);
+        return (array) preg_split('#\R#', $string, PREG_SPLIT_NO_EMPTY);
     }
 }
