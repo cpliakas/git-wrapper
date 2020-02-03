@@ -6,7 +6,6 @@ namespace GitWrapper;
 
 use ArrayIterator;
 use IteratorAggregate;
-use Nette\Utils\Strings;
 
 /**
  * Class that parses and returnes an array of branches.
@@ -34,7 +33,7 @@ final class GitBranches implements IteratorAggregate
     {
         $options = $onlyRemote ? ['r' => true] : ['a' => true];
         $output = $this->gitWorkingCopy->branch($options);
-        $branches = (array) Strings::split(rtrim($output), "/\r\n|\n|\r/");
+        $branches = preg_split('~\R~', rtrim($output), PREG_SPLIT_NO_EMPTY);
         return array_map([$this, 'trimBranch'], $branches);
     }
 

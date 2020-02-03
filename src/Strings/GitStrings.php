@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace GitWrapper\Strings;
 
-use Nette\Utils\Strings;
-
 final class GitStrings
 {
     /**
@@ -21,7 +19,7 @@ final class GitStrings
             $path = end($parts);
         } else {
             $strpos = strpos($repositoryUrl, ':');
-            $path = Strings::substring($repositoryUrl, $strpos + 1);
+            $path = mb_substr($repositoryUrl, $strpos + 1);
         }
 
         /** @var string $path */

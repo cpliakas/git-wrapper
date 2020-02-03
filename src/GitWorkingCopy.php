@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace GitWrapper;
 
 use GitWrapper\Exception\GitException;
-use Nette\Utils\Strings;
 
 /**
  * Interacts with a working copy.
@@ -679,6 +678,6 @@ final class GitWorkingCopy
 
     private function splitByNewline(string $string): array
     {
-        return Strings::split($string, '#\R#');
+        return preg_split('~\R~', $string, PREG_SPLIT_NO_EMPTY);
     }
 }
