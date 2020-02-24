@@ -10,7 +10,7 @@
     "require": {
         "php": "^7.2",
         "symfony/process": "^4.4|^5.0",
-        "symfony/event-dispatcher": "^4.4|^5.0",
+        "symfony/event-dispatcher": "^3.4",
         "nette/utils": "^3.0"
     },
     "require-dev": {
@@ -19,8 +19,6 @@
         "psr/log": "^1.1",
         "symplify/easy-coding-standard": "^7.2",
         "phpstan/phpstan": "^0.12.4",
-        "symplify/changelog-linker": "^7.2",
-        "symplify/phpstan-extensions": "^7.2",
         "rector/rector": "^0.6.7",
         "tracy/tracy": "^2.7",
         "phpstan/phpstan-phpunit": "^0.12"
