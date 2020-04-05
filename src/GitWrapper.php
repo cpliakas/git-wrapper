@@ -142,7 +142,7 @@ final class GitWrapper
      * @param string|null $wrapper Path the the GIT_SSH wrapper script, defaults to null which uses the
      *   script included with this library.
      */
-    public function setPrivateKey(string $privateKey, int $port = 22, ?string $wrapper = null): void
+    public function setPrivateKey(string $privateKey, int $port = 22, ?string $wrapper = null, ?string $UserKnownHostsFile = null): void
     {
         if ($wrapper === null) {
             $wrapper = __DIR__ . '/../bin/git-ssh-wrapper.sh';
@@ -156,9 +156,20 @@ final class GitWrapper
             throw new GitException('Path private key could not be resolved: ' . $privateKey);
         }
 
+        if ($UserKnownHostsFile === null ) {
+            $optUserKnownHostsFile = '';
+        }
+        else {
+            if (! $UserKnownHostsFilePath = realpath($UserKnownHostsFile)) {
+                throw new GitException('Path to UserKnownHostsFile  could not be resolved: ' . $UserKnownHostsFile);
+            }
+            $optUserKnownHostsFile = '-o UserKnownHostsFile=' . $UserKnownHostsFile;
+        }
+
         $this->setEnvVar('GIT_SSH', $wrapperPath);
         $this->setEnvVar('GIT_SSH_KEY', $privateKeyPath);
         $this->setEnvVar('GIT_SSH_PORT', $port);
+        $this->setEnvVar('GIT_SSH_OPT_UserKnownHostsFile',  $optUserKnownHostsFile);
     }
 
     /**
@@ -169,6 +180,7 @@ final class GitWrapper
         $this->unsetEnvVar('GIT_SSH');
         $this->unsetEnvVar('GIT_SSH_KEY');
         $this->unsetEnvVar('GIT_SSH_PORT');
+        $this->unsetEnvVar('GIT_SSH_OPT_UserKnownHostsFile');
     }
 
     public function addOutputEventSubscriber(AbstractOutputEventSubscriber $gitOutputEventSubscriber): void
