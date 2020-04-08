@@ -110,30 +110,6 @@ final class GitCommand
     }
 
     /**
-     * Builds the command line options for use in the Git command.
-     *
-     * @return mixed[]
-     */
-    private function buildOptions(): array
-    {
-        $options = [];
-        foreach ($this->options as $option => $values) {
-            foreach ((array) $values as $value) {
-                // Render the option.
-                $prefix = strlen($option) !== 1 ? '--' : '-';
-                $options[] = $prefix . $option;
-
-                // Render apend the value if the option isn't a flag.
-                if ($value !== true) {
-                    $options[] = $value;
-                }
-            }
-        }
-
-        return $options;
-    }
-
-    /**
      * @param mixed[]|string|true $value The option's value, pass true if the options is a flag.
      */
     public function setOption(string $option, $value): void
@@ -182,5 +158,29 @@ final class GitCommand
         return array_filter($command, function ($value): bool {
             return strlen($value) > 0;
         });
+    }
+
+    /**
+     * Builds the command line options for use in the Git command.
+     *
+     * @return mixed[]
+     */
+    private function buildOptions(): array
+    {
+        $options = [];
+        foreach ($this->options as $option => $values) {
+            foreach ((array) $values as $value) {
+                // Render the option.
+                $prefix = strlen($option) !== 1 ? '--' : '-';
+                $options[] = $prefix . $option;
+
+                // Render apend the value if the option isn't a flag.
+                if ($value !== true) {
+                    $options[] = $value;
+                }
+            }
+        }
+
+        return $options;
     }
 }
