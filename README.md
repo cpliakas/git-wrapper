@@ -1,6 +1,5 @@
 # PHP Wrapper around GIT
 
-[![Build Status Github Actions](https://img.shields.io/github/workflow/status/cpliakas/git-wrapper/Code_Checks?style=flat-square)](https://github.com/cpliakas/git-wrapper/actions)
 [![Build Travis CI Status](https://img.shields.io/travis/cpliakas/git-wrapper/master.svg?style=flat-square)](https://travis-ci.org/cpliakas/git-wrapper)
 [![Coverage Status](https://img.shields.io/coveralls/cpliakas/git-wrapper/master.svg?style=flat-square)](https://coveralls.io/github/cpliakas/git-wrapper?branch=master)
 [![Total Downloads](https://img.shields.io/packagist/dt/cpliakas/git-wrapper.svg?style=flat-square)](https://packagist.org/packages/cpliakas/git-wrapper)
