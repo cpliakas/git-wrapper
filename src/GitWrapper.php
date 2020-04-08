@@ -171,6 +171,9 @@ final class GitWrapper
         $this->unsetEnvVar('GIT_SSH_PORT');
     }
 
+    /**
+     * @api
+     */
     public function addOutputEventSubscriber(AbstractOutputEventSubscriber $gitOutputEventSubscriber): void
     {
         $this->eventDispatcher->addSubscriber($gitOutputEventSubscriber);
@@ -181,6 +184,9 @@ final class GitWrapper
         $this->eventDispatcher->addSubscriber($gitLoggerEventSubscriber);
     }
 
+    /**
+     * @api
+     */
     public function removeOutputEventSubscriber(AbstractOutputEventSubscriber $gitOutputEventSubscriber): void
     {
         $this->eventDispatcher->removeSubscriber($gitOutputEventSubscriber);
@@ -280,7 +286,7 @@ final class GitWrapper
         $process = new GitProcess($this, $gitCommand, $cwd);
         $process->run(function ($type, $buffer) use ($process, $gitCommand): void {
             $event = new GitOutputEvent($this, $process, $gitCommand, $type, $buffer);
-            $this->getDispatcher()->dispatch($event);
+            $this->eventDispatcher->dispatch($event);
         });
 
         return $gitCommand->notBypassed() ? $process->getOutput() : '';
