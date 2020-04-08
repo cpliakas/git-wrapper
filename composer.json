@@ -14,14 +14,14 @@
         "nette/utils": "^3.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.5",
+        "phpunit/phpunit": "^8.5|^9.0",
         "symfony/filesystem": "^4.4|^5.0",
         "psr/log": "^1.1",
         "symplify/easy-coding-standard": "^7.2",
-        "phpstan/phpstan": "^0.12.4",
+        "phpstan/phpstan": "^0.12.18",
         "symplify/changelog-linker": "^7.2",
         "symplify/phpstan-extensions": "^7.2",
-        "rector/rector": "^0.6.7",
+        "rector/rector": "^0.7.10",
         "tracy/tracy": "^2.7",
         "phpstan/phpstan-phpunit": "^0.12"
     },
@@ -39,10 +39,10 @@
         "monolog/monolog": "Enables logging of executed git commands"
     },
     "scripts": {
-        "check-cs": "vendor/bin/ecs check src tests --ansi",
-        "fix-cs": "vendor/bin/ecs check src tests --fix --ansi",
-        "phpstan": "vendor/bin/phpstan analyse src tests --error-format symplify --ansi",
+        "check-cs": "vendor/bin/ecs check --ansi",
+        "fix-cs": "vendor/bin/ecs check --fix --ansi",
+        "phpstan": "vendor/bin/phpstan analyse --error-format symplify --ansi",
         "changelog": "vendor/bin/changelog-linker dump-merges --in-categories --ansi",
-        "rector": "vendor/bin/rector process src tests --config rector-ci.yaml"
+        "rector": "vendor/bin/rector process --config rector-ci.yaml --dry-run --ansi"
     }
 }

@@ -171,22 +171,29 @@ final class GitWrapper
         $this->unsetEnvVar('GIT_SSH_PORT');
     }
 
+    /**
+     * @api
+     */
     public function addOutputEventSubscriber(AbstractOutputEventSubscriber $gitOutputEventSubscriber): void
     {
-        $this->getDispatcher()->addSubscriber($gitOutputEventSubscriber);
+        $this->eventDispatcher->addSubscriber($gitOutputEventSubscriber);
     }
 
     public function addLoggerEventSubscriber(GitLoggerEventSubscriber $gitLoggerEventSubscriber): void
     {
-        $this->getDispatcher()->addSubscriber($gitLoggerEventSubscriber);
-    }
-
-    public function removeOutputEventSubscriber(AbstractOutputEventSubscriber $gitOutputEventSubscriber): void
-    {
-        $this->getDispatcher()->removeSubscriber($gitOutputEventSubscriber);
+        $this->eventDispatcher->addSubscriber($gitLoggerEventSubscriber);
     }
 
     /**
+     * @api
+     */
+    public function removeOutputEventSubscriber(AbstractOutputEventSubscriber $gitOutputEventSubscriber): void
+    {
+        $this->eventDispatcher->removeSubscriber($gitOutputEventSubscriber);
+    }
+
+    /**
+     * @api
      * Set whether or not to stream real-time output to STDOUT and STDERR.
      */
     public function streamOutput(bool $streamOutput = true): void
@@ -280,7 +287,7 @@ final class GitWrapper
         $process = new GitProcess($this, $gitCommand, $cwd);
         $process->run(function ($type, $buffer) use ($process, $gitCommand): void {
             $event = new GitOutputEvent($this, $process, $gitCommand, $type, $buffer);
-            $this->getDispatcher()->dispatch($event);
+            $this->eventDispatcher->dispatch($event);
         });
 
         return $gitCommand->notBypassed() ? $process->getOutput() : '';

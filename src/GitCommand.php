@@ -68,6 +68,7 @@ final class GitCommand
 
     /**
      * Returns Git command being run, e.g. "clone", "commit", etc.
+     * @api
      */
     public function getCommand(): string
     {
@@ -109,30 +110,6 @@ final class GitCommand
     }
 
     /**
-     * Builds the command line options for use in the Git command.
-     *
-     * @return mixed[]
-     */
-    public function buildOptions(): array
-    {
-        $options = [];
-        foreach ($this->options as $option => $values) {
-            foreach ((array) $values as $value) {
-                // Render the option.
-                $prefix = strlen($option) !== 1 ? '--' : '-';
-                $options[] = $prefix . $option;
-
-                // Render apend the value if the option isn't a flag.
-                if ($value !== true) {
-                    $options[] = $value;
-                }
-            }
-        }
-
-        return $options;
-    }
-
-    /**
      * @param mixed[]|string|true $value The option's value, pass true if the options is a flag.
      */
     public function setOption(string $option, $value): void
@@ -141,6 +118,7 @@ final class GitCommand
     }
 
     /**
+     * @api
      * @param mixed[] $options
      */
     public function setOptions(array $options): void
@@ -155,6 +133,9 @@ final class GitCommand
         $this->setOption($option, true);
     }
 
+    /**
+     * @api
+     */
     public function getOption(string $option, $default = null)
     {
         return $this->options[$option] ?? $default;
@@ -173,13 +154,37 @@ final class GitCommand
     public function getCommandLine()
     {
         if ($this->executeRaw) {
-            return $this->getCommand();
+            return $this->command;
         }
 
-        $command = array_merge([$this->getCommand()], $this->buildOptions(), $this->args);
+        $command = array_merge([$this->command], $this->buildOptions(), $this->args);
 
         return array_filter($command, function ($value): bool {
             return strlen($value) > 0;
         });
+    }
+
+    /**
+     * Builds the command line options for use in the Git command.
+     *
+     * @return mixed[]
+     */
+    private function buildOptions(): array
+    {
+        $options = [];
+        foreach ($this->options as $option => $values) {
+            foreach ((array) $values as $value) {
+                // Render the option.
+                $prefix = strlen($option) !== 1 ? '--' : '-';
+                $options[] = $prefix . $option;
+
+                // Render apend the value if the option isn't a flag.
+                if ($value !== true) {
+                    $options[] = $value;
+                }
+            }
+        }
+
+        return $options;
     }
 }

@@ -20,12 +20,12 @@ final class GitProcess extends Process
     /**
      * @var GitWrapper
      */
-    protected $gitWrapper;
+    private $gitWrapper;
 
     /**
      * @var GitCommand
      */
-    protected $gitCommand;
+    private $gitCommand;
 
     public function __construct(GitWrapper $gitWrapper, GitCommand $gitCommand, ?string $cwd = null)
     {

@@ -482,6 +482,7 @@ final class GitWorkingCopy
      * @code $git->fetch('origin');
      * $git->fetch(['all' => true]);
      *
+     * @api
      * @param mixed ...$argsAndOptions
      */
     public function fetch(...$argsAndOptions): string
@@ -659,6 +660,7 @@ final class GitWorkingCopy
     }
 
     /**
+     * @api
      * Returns a GitTags object containing  information on the repository's tags.
      */
     public function tags(): GitTags

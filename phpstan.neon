@@ -6,6 +6,10 @@ parameters:
     level: max
     reportUnmatchedIgnoredErrors: false
 
+    paths:
+        - src
+        - tests
+
     ignoreErrors:
         - '#Access to an undefined property object::\$data#'
         # false positive - ignored doc type

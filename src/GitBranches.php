@@ -27,6 +27,7 @@ final class GitBranches implements IteratorAggregate
     /**
      * Fetches the branches via the `git branch` command.
      *
+     * @api
      * @param bool $onlyRemote Whether to fetch only remote branches, defaults to false which returns all branches.
      * @return string[]
      */
@@ -50,6 +51,7 @@ final class GitBranches implements IteratorAggregate
     }
 
     /**
+     * @api
      * @return string[]
      */
     public function all(): array
@@ -66,6 +68,7 @@ final class GitBranches implements IteratorAggregate
     }
 
     /**
+     * @api
      * Returns currently active branch (HEAD) of the working copy.
      */
     public function head(): string
