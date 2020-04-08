@@ -16,12 +16,12 @@ final class GitOutputEvent extends AbstractGitEvent
     /**
      * @var string
      */
-    protected $type;
+    private $type;
 
     /**
      * @var string
      */
-    protected $buffer;
+    private $buffer;
 
     public function __construct(
         GitWrapper $gitWrapper,
