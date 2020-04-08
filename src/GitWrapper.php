@@ -193,6 +193,7 @@ final class GitWrapper
     }
 
     /**
+     * @api
      * Set whether or not to stream real-time output to STDOUT and STDERR.
      */
     public function streamOutput(bool $streamOutput = true): void

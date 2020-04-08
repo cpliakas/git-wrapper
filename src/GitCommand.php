@@ -118,6 +118,7 @@ final class GitCommand
     }
 
     /**
+     * @api
      * @param mixed[] $options
      */
     public function setOptions(array $options): void
@@ -132,6 +133,9 @@ final class GitCommand
         $this->setOption($option, true);
     }
 
+    /**
+     * @api
+     */
     public function getOption(string $option, $default = null)
     {
         return $this->options[$option] ?? $default;
