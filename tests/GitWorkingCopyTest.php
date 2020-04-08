@@ -196,7 +196,8 @@ index 0000000..dfe437b
 PATCH;
         FileSystem::write(self::WORKING_DIR . '/patch.txt', $patch);
         $git->apply('patch.txt');
-        $this->assertRegExp('@\?\?\\s+FileCreatedByPatch\\.txt@s', $git->getStatus());
+
+        $this->assertMatchesRegularExpression('#\?\?\\s+FileCreatedByPatch\\.txt#s', $git->getStatus());
         $this->assertStringEqualsFile(self::WORKING_DIR . '/FileCreatedByPatch.txt', "contents\n");
     }
 
@@ -266,7 +267,14 @@ PATCH;
         $result = $git->clean('-d', '-f');
 
         $this->assertSame('Removing untracked.file' . PHP_EOL, $result);
-        $this->assertFileNotExists(self::WORKING_DIR . '/untracked.file');
+
+        $expectedFileNameToExist = self::WORKING_DIR . '/untracked.file';
+        // PHPUnit 10+ future compact
+        if (method_exists($this, 'assertFileDoesNotExist')) {
+            $this->assertFileDoesNotExist($expectedFileNameToExist);
+        } else {
+            $this->assertFileNotExists($expectedFileNameToExist);
+        }
     }
 
     public function testGitReset(): void
@@ -291,7 +299,7 @@ PATCH;
     {
         $git = $this->getWorkingCopy();
         $output = $git->pull();
-        $this->assertRegExp("/^Already up[- ]to[ -]date\.$/", rtrim($output));
+        $this->assertMatchesRegularExpression("/^Already up[- ]to[ -]date\.$/", rtrim($output));
     }
 
     public function testGitArchive(): void
@@ -314,7 +322,7 @@ PATCH;
     {
         $git = $this->getWorkingCopy();
 
-        $this->expectExceptionMessageRegExp("/Your branch is up[- ]to[- ]date with 'origin\\/master'./");
+        $this->expectExceptionMessageMatches("/Your branch is up[- ]to[- ]date with 'origin\\/master'./");
         $git->commit('Nothing to commit so generates an error / not error');
     }
 
@@ -323,6 +331,7 @@ PATCH;
         $git = $this->getWorkingCopy();
         FileSystem::write(self::WORKING_DIR . '/change.me', "changed\n");
         $output = $git->diff();
+
         $this->assertStringStartsWith('diff --git a/change.me b/change.me', $output);
     }
 
@@ -330,6 +339,7 @@ PATCH;
     {
         $git = $this->getWorkingCopy();
         $output = $git->grep('changed', '--', '*.me');
+
         $this->assertStringStartsWith('change.me', $output);
     }
 
@@ -337,6 +347,7 @@ PATCH;
     {
         $git = $this->getWorkingCopy();
         $output = $git->show('test-tag');
+
         $this->assertStringStartsWith('commit ', $output);
     }
 
@@ -344,6 +355,7 @@ PATCH;
     {
         $git = $this->getWorkingCopy();
         $output = $git->bisect('help');
+
         $this->assertStringStartsWith('usage: git bisect', $output);
     }
 
@@ -360,6 +372,7 @@ PATCH;
         $git->checkout('test-branch');
 
         $output = $git->rebase('test-branch', 'master');
+
         $this->assertStringStartsWith('First, rewinding head', $output);
     }
 
@@ -370,6 +383,7 @@ PATCH;
         $git->checkout('master');
 
         $output = $git->merge('test-branch');
+
         $this->assertStringStartsWith('Updating ', $output);
     }
 
