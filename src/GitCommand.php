@@ -68,6 +68,7 @@ final class GitCommand
 
     /**
      * Returns Git command being run, e.g. "clone", "commit", etc.
+     * @api
      */
     public function getCommand(): string
     {
@@ -113,7 +114,7 @@ final class GitCommand
      *
      * @return mixed[]
      */
-    public function buildOptions(): array
+    private function buildOptions(): array
     {
         $options = [];
         foreach ($this->options as $option => $values) {
