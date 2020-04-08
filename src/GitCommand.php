@@ -173,10 +173,10 @@ final class GitCommand
     public function getCommandLine()
     {
         if ($this->executeRaw) {
-            return $this->getCommand();
+            return $this->command;
         }
 
-        $command = array_merge([$this->getCommand()], $this->buildOptions(), $this->args);
+        $command = array_merge([$this->command], $this->buildOptions(), $this->args);
 
         return array_filter($command, function ($value): bool {
             return strlen($value) > 0;

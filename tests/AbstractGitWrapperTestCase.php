@@ -17,22 +17,22 @@ abstract class AbstractGitWrapperTestCase extends TestCase
     /**
      * @var string
      */
-    public const REPO_DIR = 'build/test/repo';
+    protected const REPO_DIR = 'build/test/repo';
 
     /**
      * @var string
      */
-    public const WORKING_DIR = 'build/tests/wc';
+    protected const WORKING_DIR = 'build/tests/wc';
 
     /**
      * @var string
      */
-    public const CONFIG_EMAIL = 'testing@email.com';
+    protected const CONFIG_EMAIL = 'testing@email.com';
 
     /**
      * @var string
      */
-    public const CONFIG_NAME = 'Testing name';
+    protected const CONFIG_NAME = 'Testing name';
 
     /**
      * @var Filesystem

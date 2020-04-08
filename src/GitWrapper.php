@@ -173,17 +173,17 @@ final class GitWrapper
 
     public function addOutputEventSubscriber(AbstractOutputEventSubscriber $gitOutputEventSubscriber): void
     {
-        $this->getDispatcher()->addSubscriber($gitOutputEventSubscriber);
+        $this->eventDispatcher->addSubscriber($gitOutputEventSubscriber);
     }
 
     public function addLoggerEventSubscriber(GitLoggerEventSubscriber $gitLoggerEventSubscriber): void
     {
-        $this->getDispatcher()->addSubscriber($gitLoggerEventSubscriber);
+        $this->eventDispatcher->addSubscriber($gitLoggerEventSubscriber);
     }
 
     public function removeOutputEventSubscriber(AbstractOutputEventSubscriber $gitOutputEventSubscriber): void
     {
-        $this->getDispatcher()->removeSubscriber($gitOutputEventSubscriber);
+        $this->eventDispatcher->removeSubscriber($gitOutputEventSubscriber);
     }
 
     /**
