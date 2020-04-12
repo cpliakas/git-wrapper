@@ -158,8 +158,9 @@ final class GitCommand
         }
 
         $command = [];
+        $parts = array_merge([$this->command], $this->buildOptions(), $this->args);
 
-        foreach (array_merge([$this->command], $this->buildOptions(), $this->args) as $part) {
+        foreach ($parts as $part) {
             $value = (string) $part;
             if (strlen($value) > 0) {
                 $command[] = $value;
