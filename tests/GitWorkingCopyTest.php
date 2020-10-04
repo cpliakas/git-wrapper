@@ -203,7 +203,12 @@ CODE_SAMPLE;
         FileSystem::write(self::WORKING_DIR . '/patch.txt', $patch);
         $git->apply('patch.txt');
 
-        $this->assertMatchesRegularExpression('#\?\?\\s+FileCreatedByPatch\\.txt#s', $git->getStatus());
+        // PHPUnit 8.5 compatible
+        if (method_exists($this, 'assertRegExp')) {
+            $this->assertRegExp('#\?\?\\s+FileCreatedByPatch\\.txt#s', $git->getStatus());
+        } else {
+            $this->assertMatchesRegularExpression('#\?\?\\s+FileCreatedByPatch\\.txt#s', $git->getStatus());
+        }
         $this->assertStringEqualsFile(self::WORKING_DIR . '/FileCreatedByPatch.txt', "contents\n");
     }
 
@@ -817,7 +822,7 @@ CODE_SAMPLE;
         $this->assertArrayNotHasKey($branch, array_flip($branches));
     }
 
-    protected function createRemote(): void
+    private function createRemote(): void
     {
         // Create a clone of the working copy that will serve as a remote.
         $git = $this->gitWrapper->cloneRepository('file://' . realpath(self::REPO_DIR), self::REMOTE_REPO_DIR);

@@ -34,7 +34,9 @@ final class GitTags implements IteratorAggregate
             'l' => true,
         ]);
         $tags = (array) Strings::split(rtrim($output), "/\r\n|\n|\r/");
-        return array_map([$this, 'trimTags'], $tags);
+        return array_map(function (string $branch): string {
+            return $this->trimTags($branch);
+        }, $tags);
     }
 
     /**
