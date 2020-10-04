@@ -10,9 +10,6 @@ before_script:
     # disable xdebug if not coverage
     - phpenv config-rm xdebug.ini
 
-script:
-    - vendor/bin/phpunit
-
 install:
     - composer install
 
@@ -28,6 +25,7 @@ jobs:
 
         -
             name: Unit Tests
+            script: vendor/bin/phpunit
 
         -
             name: Test Coverage
