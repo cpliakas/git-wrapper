@@ -8,7 +8,7 @@
         { "name": "Tomas Votruba", "email": "tomas.vot@gmail.com" }
     ],
     "require": {
-        "php": "^7.2",
+        "php": ">=7.2",
         "symfony/process": "^4.4|^5.0",
         "symfony/event-dispatcher": "^4.4|^5.0",
         "nette/utils": "^3.0"
@@ -17,13 +17,14 @@
         "phpunit/phpunit": "^8.5|^9.0",
         "symfony/filesystem": "^4.4|^5.0",
         "psr/log": "^1.1",
-        "symplify/easy-coding-standard": "^7.2",
+        "symplify/easy-coding-standard": "^8.3",
         "phpstan/phpstan": "^0.12.18",
-        "symplify/changelog-linker": "^7.2",
-        "symplify/phpstan-extensions": "^7.2",
+        "symplify/changelog-linker": "^8.3",
+        "symplify/phpstan-extensions": "^8.3",
         "rector/rector": "^0.7.10",
         "tracy/tracy": "^2.7",
-        "phpstan/phpstan-phpunit": "^0.12"
+        "phpstan/phpstan-phpunit": "^0.12",
+        "migrify/config-transformer": "^0.3.48"
     },
     "autoload": {
         "psr-4": {
