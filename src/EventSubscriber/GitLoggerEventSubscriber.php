@@ -89,7 +89,8 @@ final class GitLoggerEventSubscriber implements EventSubscriberInterface, Logger
     {
         $method = $this->getLogLevelMapping(get_class($gitEvent));
         $context += [
-            'command' => $gitEvent->getProcess()->getCommandLine(),
+            'command' => $gitEvent->getProcess()
+                ->getCommandLine(),
         ];
 
         $this->logger->{$method}($message, $context);
@@ -102,7 +103,9 @@ final class GitLoggerEventSubscriber implements EventSubscriberInterface, Logger
 
     public function handleOutput(GitOutputEvent $gitOutputEvent): void
     {
-        $context = ['error' => $gitOutputEvent->isError()];
+        $context = [
+            'error' => $gitOutputEvent->isError(),
+        ];
         $this->log($gitOutputEvent, $gitOutputEvent->getBuffer(), $context);
     }
 

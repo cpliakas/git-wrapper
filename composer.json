@@ -44,6 +44,6 @@
         "fix-cs": "vendor/bin/ecs check --fix --ansi",
         "phpstan": "vendor/bin/phpstan analyse --error-format symplify --ansi",
         "changelog": "vendor/bin/changelog-linker dump-merges --in-categories --ansi",
-        "rector": "vendor/bin/rector process --config rector-ci.yaml --dry-run --ansi"
+        "rector": "vendor/bin/rector process --config rector-ci.php --dry-run --ansi"
     }
 }

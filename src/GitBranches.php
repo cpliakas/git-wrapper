@@ -21,7 +21,9 @@ final class GitBranches implements IteratorAggregate
     public function __construct(GitWorkingCopy $gitWorkingCopy)
     {
         $this->gitWorkingCopy = clone $gitWorkingCopy;
-        $gitWorkingCopy->branch(['a' => true]);
+        $gitWorkingCopy->branch([
+            'a' => true,
+        ]);
     }
 
     /**
@@ -33,7 +35,11 @@ final class GitBranches implements IteratorAggregate
      */
     public function fetchBranches(bool $onlyRemote = false): array
     {
-        $options = $onlyRemote ? ['r' => true] : ['a' => true];
+        $options = $onlyRemote ? [
+            'r' => true,
+        ] : [
+            'a' => true,
+        ];
         $output = $this->gitWorkingCopy->branch($options);
         $branches = (array) Strings::split(rtrim($output), "/\r\n|\n|\r/");
         return array_map([$this, 'trimBranch'], $branches);
