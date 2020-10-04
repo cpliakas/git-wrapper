@@ -15,6 +15,6 @@ final class StreamOutputEventSubscriber extends AbstractOutputEventSubscriber
     public function handleOutput(GitOutputEvent $gitOutputEvent): void
     {
         $handler = $gitOutputEvent->isError() ? STDERR : STDOUT;
-        fputs($handler, $gitOutputEvent->getBuffer());
+        fwrite($handler, $gitOutputEvent->getBuffer());
     }
 }

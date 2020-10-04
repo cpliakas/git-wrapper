@@ -31,6 +31,7 @@ final class GitOutputEvent extends AbstractGitEvent
         string $buffer
     ) {
         parent::__construct($gitWrapper, $process, $gitCommand);
+
         $this->type = $type;
         $this->buffer = $buffer;
     }

@@ -121,6 +121,7 @@ final class GitProcess extends Process
 
     private function dispatchEvent(Event $event): void
     {
-        $this->gitWrapper->getDispatcher()->dispatch($event);
+        $this->gitWrapper->getDispatcher()
+            ->dispatch($event);
     }
 }

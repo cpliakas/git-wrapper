@@ -38,7 +38,9 @@ final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
         parent::setUp();
 
         // Create the local repository.
-        $this->gitWrapper->init(self::REPO_DIR, ['bare' => true]);
+        $this->gitWrapper->init(self::REPO_DIR, [
+            'bare' => true,
+        ]);
 
         // Clone the local repository.
         $directory = 'build/tests/wc_init';
@@ -60,7 +62,9 @@ final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
         // Initial commit.
         $git->add('*');
         $git->commit('Initial commit.');
-        $git->push('origin', 'master', ['u' => true]);
+        $git->push('origin', 'master', [
+            'u' => true,
+        ]);
 
         // Create a branch, add a file.
         $branch = 'test-branch';
@@ -68,7 +72,9 @@ final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
         $git->checkoutNewBranch($branch);
         $git->add('branch.txt');
         $git->commit('Committed testing branch.');
-        $git->push('origin', $branch, ['u' => true]);
+        $git->push('origin', $branch, [
+            'u' => true,
+        ]);
 
         // Create a tag of the branch.
         $git->tag('test-tag');
@@ -184,7 +190,7 @@ final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
     {
         $git = $this->getWorkingCopy();
 
-        $patch = <<<PATCH
+        $patch = <<<CODE_SAMPLE
 diff --git a/FileCreatedByPatch.txt b/FileCreatedByPatch.txt
 new file mode 100644
 index 0000000..dfe437b
@@ -193,11 +199,16 @@ index 0000000..dfe437b
 @@ -0,0 +1 @@
 +contents
 
-PATCH;
+CODE_SAMPLE;
         FileSystem::write(self::WORKING_DIR . '/patch.txt', $patch);
         $git->apply('patch.txt');
 
-        $this->assertMatchesRegularExpression('#\?\?\\s+FileCreatedByPatch\\.txt#s', $git->getStatus());
+        // PHPUnit 8.5 compatible
+        if (method_exists($this, 'assertRegExp')) {
+            $this->assertRegExp('#\?\?\\s+FileCreatedByPatch\\.txt#s', $git->getStatus());
+        } else {
+            $this->assertMatchesRegularExpression('#\?\?\\s+FileCreatedByPatch\\.txt#s', $git->getStatus());
+        }
         $this->assertStringEqualsFile(self::WORKING_DIR . '/FileCreatedByPatch.txt', "contents\n");
     }
 
@@ -283,7 +294,9 @@ PATCH;
         FileSystem::write(self::WORKING_DIR . '/change.me', "changed\n");
 
         $this->assertTrue($git->hasChanges());
-        $git->reset(['hard' => true]);
+        $git->reset([
+            'hard' => true,
+        ]);
         $this->assertFalse($git->hasChanges());
     }
 
@@ -291,7 +304,9 @@ PATCH;
     {
         $git = $this->getWorkingCopy();
         FileSystem::write(self::WORKING_DIR . '/change.me', "changed\n");
-        $output = $git->status(['s' => true]);
+        $output = $git->status([
+            's' => true,
+        ]);
         $this->assertSame(" M change.me\n", $output);
     }
 
@@ -307,7 +322,9 @@ PATCH;
         $archiveName = uniqid() . '.tar';
         $archivePath = '/tmp/' . $archiveName;
         $git = $this->getWorkingCopy();
-        $output = $git->archive('HEAD', ['o' => $archivePath]);
+        $output = $git->archive('HEAD', [
+            'o' => $archivePath,
+        ]);
         $this->assertSame('', $output);
         $this->assertFileExists($archivePath);
     }
@@ -392,7 +409,8 @@ PATCH;
         $git = $this->getWorkingCopy();
 
         $listener = new TestGitOutputEventSubscriber();
-        $git->getWrapper()->addOutputEventSubscriber($listener);
+        $git->getWrapper()
+            ->addOutputEventSubscriber($listener);
 
         $git->status();
         $event = $listener->getLastEvent();
@@ -413,7 +431,8 @@ PATCH;
         /** @var resource $stdoutSuppress */
         $stdoutSuppress = stream_filter_append(STDOUT, 'suppress');
 
-        $git->getWrapper()->streamOutput(true);
+        $git->getWrapper()
+            ->streamOutput(true);
         ob_start();
         $git->status();
         $contents = ob_get_contents();
@@ -422,7 +441,8 @@ PATCH;
         /** @var string $contents */
         $this->assertStringContainsString('nothing to commit', $contents);
 
-        $git->getWrapper()->streamOutput(false);
+        $git->getWrapper()
+            ->streamOutput(false);
         ob_start();
         $git->status();
         $empty = ob_get_contents();
@@ -482,7 +502,9 @@ PATCH;
         $this->assertTrue($git->isUpToDate());
 
         // Reset the branch to its first commit, so that it is 1 commit behind.
-        $git->reset('HEAD~2', ['hard' => true]);
+        $git->reset('HEAD~2', [
+            'hard' => true,
+        ]);
 
         $this->assertFalse($git->isUpToDate());
     }
@@ -497,7 +519,9 @@ PATCH;
         // Create a new commit, so that the branch is 1 commit ahead.
         FileSystem::write(self::WORKING_DIR . '/commit.txt', "created\n");
         $git->add('commit.txt');
-        $git->commit(['m' => '1 commit ahead.']);
+        $git->commit([
+            'm' => '1 commit ahead.',
+        ]);
 
         $this->assertTrue($git->isAhead());
     }
@@ -511,7 +535,9 @@ PATCH;
         $this->assertFalse($git->isBehind());
 
         // Reset the branch to its parent commit, so that it is 1 commit behind.
-        $git->reset('HEAD^', ['hard' => true]);
+        $git->reset('HEAD^', [
+            'hard' => true,
+        ]);
 
         $this->assertTrue($git->isBehind());
     }
@@ -526,14 +552,18 @@ PATCH;
 
         // Reset the branch to its parent commit, so that it is 1 commit behind.
         // This does not require the branches to be merged.
-        $git->reset('HEAD^', ['hard' => true]);
+        $git->reset('HEAD^', [
+            'hard' => true,
+        ]);
         $this->assertFalse($git->needsMerge());
 
         // Create a new commit, so that the branch is also 1 commit ahead. Now a
         // merge is needed.
         FileSystem::write(self::WORKING_DIR . '/commit.txt', "created\n");
         $git->add('commit.txt');
-        $git->commit(['m' => '1 commit ahead.']);
+        $git->commit([
+            'm' => '1 commit ahead.',
+        ]);
         $this->assertTrue($git->needsMerge());
 
         // Merge the remote, so that we are no longer behind, but only ahead. A
@@ -577,7 +607,9 @@ PATCH;
             // The fetch option should retrieve the remote branches and tags,
             // but not set up a master branch.
             [
-                ['-f' => true],
+                [
+                    '-f' => true,
+                ],
                 [
                     'assertRemoteBranches' => [['remote/master', 'remote/remote-branch']],
                     'assertGitTag' => ['remote-tag'],
@@ -768,7 +800,8 @@ PATCH;
 
     protected function assertRemoteBranch(GitWorkingCopy $gitWorkingCopy, string $branch): void
     {
-        $branches = $gitWorkingCopy->getBranches()->remote();
+        $branches = $gitWorkingCopy->getBranches()
+            ->remote();
         $this->assertArrayHasKey($branch, array_flip($branches));
     }
 
@@ -784,11 +817,12 @@ PATCH;
 
     protected function assertNoRemoteBranch(GitWorkingCopy $gitWorkingCopy, string $branch): void
     {
-        $branches = $gitWorkingCopy->getBranches()->remote();
+        $branches = $gitWorkingCopy->getBranches()
+            ->remote();
         $this->assertArrayNotHasKey($branch, array_flip($branches));
     }
 
-    protected function createRemote(): void
+    private function createRemote(): void
     {
         // Create a clone of the working copy that will serve as a remote.
         $git = $this->gitWrapper->cloneRepository('file://' . realpath(self::REPO_DIR), self::REMOTE_REPO_DIR);

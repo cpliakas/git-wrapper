@@ -149,6 +149,7 @@ final class GitWrapperTest extends AbstractGitWrapperTestCase
         $command = new GitCommand();
         $command->setFlag('version');
         $command->setDirectory('/some/bad/directory');
+
         $this->gitWrapper->run($command);
     }
 

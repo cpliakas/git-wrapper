@@ -44,7 +44,9 @@ final class GitLoggerEventSubscriberTest extends AbstractGitWrapperTestCase
     {
         $logger = new TestLogger();
         $this->gitWrapper->addLoggerEventSubscriber(new GitLoggerEventSubscriber($logger));
-        $git = $this->gitWrapper->init(self::REPO_DIR, ['bare' => true]);
+        $git = $this->gitWrapper->init(self::REPO_DIR, [
+            'bare' => true,
+        ]);
 
         $this->assertSame('Git command preparing to run', $logger->messages[0]);
         $this->assertSame(
@@ -79,7 +81,9 @@ final class GitLoggerEventSubscriberTest extends AbstractGitWrapperTestCase
         $logger = new TestLogger();
         $this->gitWrapper->addLoggerEventSubscriber(new GitLoggerEventSubscriber($logger));
 
-        $command = new GitCommand('status', ['s' => true]);
+        $command = new GitCommand('status', [
+            's' => true,
+        ]);
         $command->bypass();
 
         $this->gitWrapper->run($command);

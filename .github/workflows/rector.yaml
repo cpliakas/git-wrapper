@@ -17,5 +17,5 @@ jobs:
                     php-version: 7.3
                     coverage: none
 
-            -   run: composer install --no-progress
-            -   run: composer rector
+            -   run: composer install --no-progress --ansi
+            -   run: composer rector --ansi

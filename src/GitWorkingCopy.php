@@ -436,7 +436,7 @@ final class GitWorkingCopy
     }
 
     /**
-     * Record changes to the repository. If only one argument is passed, it is  assumed to be the commit message.
+     * Record changes to the repository. If only one argument is passed, it is assumed to be the commit message.
      * Therefore `$git->commit('Message');` yields a `git commit -am "Message"` command.
      *
      * @code $git->commit('My commit message');
@@ -661,7 +661,7 @@ final class GitWorkingCopy
 
     /**
      * @api
-     * Returns a GitTags object containing  information on the repository's tags.
+     * Returns a GitTags object containing information on the repository's tags.
      */
     public function tags(): GitTags
     {

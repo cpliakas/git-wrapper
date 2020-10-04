@@ -21,6 +21,7 @@ final class TestBypassEventSubscriber implements EventSubscriberInterface
 
     public function onPrepare(GitPrepareEvent $gitPrepareEvent): void
     {
-        $gitPrepareEvent->getCommand()->bypass();
+        $gitPrepareEvent->getCommand()
+            ->bypass();
     }
 }
