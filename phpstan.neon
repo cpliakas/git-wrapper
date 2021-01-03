@@ -30,9 +30,23 @@ parameters:
             paths:
                  - "src/Process/GitProcess.php"
                  - "src/GitWrapper.php"
+                 - "src/GitBranches.php"
 
         -
             message: '#Do not use scalar or array as constructor parameter\. Use "Symplify\\PackageBuilder\\Parameter\\ParameterProvider" service instead#'
             paths:
                  - "src/Process/GitProcess.php"
                  - "src/GitWrapper.php"
+                 - "src/GitCommand.php"
+                 - "src/GitBranches.php"
+                 - "src/GitWorkingCopy.php"
+
+        # fix after tests are running in CI
+        - '#Spread operator is not allowed#'
+
+        - '#Method "needsMerge\(\)" returns bool type, so the name should start with is/has/was#'
+
+        -
+             message: '#Unreachable statement \- code above always terminates#'
+             paths:
+                 - tests/Source/StreamSuppressFilter.php

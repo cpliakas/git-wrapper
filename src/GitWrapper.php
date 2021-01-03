@@ -292,6 +292,6 @@ final class GitWrapper
             $this->eventDispatcher->dispatch($event);
         });
 
-        return $gitCommand->notBypassed() ? $process->getOutput() : '';
+        return $gitCommand->isBypassed() ? '' : $process->getOutput();
     }
 }
