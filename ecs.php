@@ -17,6 +17,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         __DIR__ . '/ecs.php',
         __DIR__ . '/rector.php',
         __DIR__ . '/changelog-linker.php',
+        __DIR__ . '/upgrade/rector/git-wrapper-30.php',
     ]);
 
     $parameters->set(Option::SETS, [
