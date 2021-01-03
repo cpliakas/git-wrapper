@@ -9,6 +9,8 @@ use GitWrapper\GitBranches;
 use GitWrapper\GitWorkingCopy;
 use GitWrapper\Tests\EventSubscriber\Source\TestGitOutputEventSubscriber;
 use GitWrapper\Tests\Source\StreamSuppressFilter;
+use GitWrapper\ValueObject\CommandName;
+use Iterator;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 use Symfony\Component\Process\Process;
@@ -124,7 +126,7 @@ CODE_SAMPLE;
     public function getWorkingCopy(string $directory = self::WORKING_DIR): GitWorkingCopy
     {
         $git = $this->gitWrapper->workingCopy($directory);
-        $git->cloneRepository('file://' . realpath(self::REPO_DIR));
+        $git->cloneRepository('file://' . self::REPO_DIR);
         $git->config('user.email', self::CONFIG_EMAIL);
         $git->config('user.name', self::CONFIG_NAME);
 
@@ -380,8 +382,9 @@ CODE_SAMPLE;
         $git = $this->getWorkingCopy();
         $git->checkout('test-branch');
 
-        $output = $git->rebase('test-branch', 'master');
-
+        $output = $git->rebase('test-branch', [
+            'onto' => 'master',
+        ]);
         $this->assertStringStartsWith('First, rewinding head', $output);
     }
 
@@ -573,7 +576,7 @@ CODE_SAMPLE;
     {
         $this->createRemote();
         $git = $this->getWorkingCopy();
-        $git->addRemote('remote', 'file://' . realpath(self::REMOTE_REPO_DIR), $options);
+        $git->addRemote('remote', 'file://' . self::REMOTE_REPO_DIR, $options);
         $this->assertTrue($git->hasRemote('remote'));
         foreach ($asserts as $method => $parameters) {
             array_unshift($parameters, $git);
@@ -670,7 +673,7 @@ CODE_SAMPLE;
     {
         $this->createRemote();
         $git = $this->getWorkingCopy();
-        $git->addRemote('remote', 'file://' . realpath(self::REMOTE_REPO_DIR));
+        $git->addRemote('remote', 'file://' . self::REMOTE_REPO_DIR);
         $this->assertTrue($git->hasRemote('remote'));
 
         // The remote should be gone after it is removed.
@@ -684,7 +687,7 @@ CODE_SAMPLE;
         $git = $this->getWorkingCopy();
         // The remote should be absent before it is added.
         $this->assertFalse($git->hasRemote('remote'));
-        $git->addRemote('remote', 'file://' . realpath(self::REMOTE_REPO_DIR));
+        $git->addRemote('remote', 'file://' . self::REMOTE_REPO_DIR);
         // The remote should be present after it is added.
         $this->assertTrue($git->hasRemote('remote'));
     }
@@ -693,7 +696,7 @@ CODE_SAMPLE;
     {
         $this->createRemote();
         $git = $this->getWorkingCopy();
-        $path = 'file://' . realpath(self::REMOTE_REPO_DIR);
+        $path = 'file://' . self::REMOTE_REPO_DIR;
         $git->addRemote('remote', $path);
 
         // Both the 'fetch' and 'push' URIs should be populated and point to the
@@ -716,7 +719,7 @@ CODE_SAMPLE;
 
         // If we add a second remote, both it and the 'origin' remotes should be
         // present.
-        $git->addRemote('remote', 'file://' . realpath(self::REMOTE_REPO_DIR));
+        $git->addRemote('remote', 'file://' . self::REMOTE_REPO_DIR);
         $remotes = $git->getRemotes();
         $this->assertArrayHasKey('origin', $remotes);
         $this->assertArrayHasKey('remote', $remotes);
@@ -725,36 +728,36 @@ CODE_SAMPLE;
     /**
      * @dataProvider getRemoteUrlDataProvider
      */
-    public function testGetRemoteUrl(string $remote, string $operation, string $expected): void
+    public function testGetRemoteUrl(string $remote, string $operation, string $expectedRemoteUrl): void
     {
         $this->createRemote();
         $git = $this->getWorkingCopy();
-        $git->addRemote('remote', 'file://' . realpath(self::REMOTE_REPO_DIR));
-        $this->assertSame('file://' . realpath($expected), $git->getRemoteUrl($remote, $operation));
+        $git->addRemote('remote', 'file://' . self::REMOTE_REPO_DIR);
+
+        $resolveRemoveUrl = $git->getRemoteUrl($remote, $operation);
+        $this->assertSame('file://' . $expectedRemoteUrl, $resolveRemoveUrl);
     }
 
     /**
-     * @return string[][]
+     * @return Iterator<string[]>
      */
-    public function getRemoteUrlDataProvider(): array
+    public function getRemoteUrlDataProvider(): Iterator
     {
-        return [
-            ['origin', 'fetch', self::REPO_DIR],
-            ['origin', 'push', self::REPO_DIR],
-            ['remote', 'fetch', self::REMOTE_REPO_DIR],
-            ['remote', 'push', self::REMOTE_REPO_DIR],
-        ];
+        yield ['origin', 'fetch', self::REPO_DIR];
+        yield ['origin', 'push', self::REPO_DIR];
+        yield ['remote', 'fetch', self::REMOTE_REPO_DIR];
+        yield ['remote', 'push', self::REMOTE_REPO_DIR];
     }
 
     protected function assertGitTag(GitWorkingCopy $gitWorkingCopy, string $tag): void
     {
-        $gitWorkingCopy->run('rev-parse', [$tag]);
+        $gitWorkingCopy->run(CommandName::REV_PARSE, [$tag]);
     }
 
     protected function assertNoGitTag(GitWorkingCopy $gitWorkingCopy, string $tag): void
     {
         try {
-            $gitWorkingCopy->run('rev-parse', [$tag]);
+            $gitWorkingCopy->run(CommandName::REV_PARSE, [$tag]);
         } catch (GitException $gitException) {
             // Expected result. The tag does not exist.
             return;
@@ -765,13 +768,13 @@ CODE_SAMPLE;
 
     protected function assertRemoteMaster(GitWorkingCopy $gitWorkingCopy): void
     {
-        $gitWorkingCopy->run('rev-parse', ['remote/HEAD']);
+        $gitWorkingCopy->run(CommandName::REV_PARSE, ['remote/HEAD']);
     }
 
     protected function assertNoRemoteMaster(GitWorkingCopy $gitWorkingCopy): void
     {
         try {
-            $gitWorkingCopy->run('rev-parse', ['remote/HEAD']);
+            $gitWorkingCopy->run(CommandName::REV_PARSE, ['remote/HEAD']);
         } catch (GitException $gitException) {
             // Expected result. The remote master does not exist.
             return;

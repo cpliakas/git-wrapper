@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace GitWrapper;
 
 use ArrayIterator;
+use GitWrapper\ValueObject\CommandName;
 use IteratorAggregate;
 use Nette\Utils\Strings;
 
@@ -81,6 +82,7 @@ final class GitBranches implements IteratorAggregate
      */
     public function head(): string
     {
-        return trim($this->gitWorkingCopy->run('rev-parse', ['--abbrev-ref', 'HEAD']));
+        $output = $this->gitWorkingCopy->run(CommandName::REV_PARSE, ['--abbrev-ref', 'HEAD']);
+        return trim($output);
     }
 }
