@@ -11,8 +11,8 @@ use GitWrapper\Tests\EventSubscriber\Source\TestGitOutputEventSubscriber;
 use GitWrapper\Tests\Source\StreamSuppressFilter;
 use GitWrapper\ValueObject\CommandName;
 use Iterator;
-use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
+use OndraM\CiDetector\CiDetector;
 use Symfony\Component\Process\Process;
 
 final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
@@ -76,7 +76,7 @@ CODE_SAMPLE;
         $git->config('user.name', self::CONFIG_NAME);
 
         // Create the initial structure.
-        FileSystem::write(self::DIRECTORY . '/change.me', "unchanged\n");
+        $this->filesystem->dumpFile(self::DIRECTORY . '/change.me', "unchanged\n");
         $this->filesystem->touch(self::DIRECTORY . '/move.me');
         $this->filesystem->mkdir(self::DIRECTORY . '/a.directory', 0755);
         $this->filesystem->touch(self::DIRECTORY . '/a.directory/remove.me');
@@ -90,7 +90,7 @@ CODE_SAMPLE;
 
         // Create a branch, add a file.
         $branch = 'test-branch';
-        FileSystem::write(self::DIRECTORY . '/branch.txt', $branch . PHP_EOL);
+        $this->filesystem->dumpFile(self::DIRECTORY . '/branch.txt', $branch . PHP_EOL);
         $git->checkoutNewBranch($branch);
         $git->add('branch.txt');
         $git->commit('Committed testing branch.');
@@ -153,7 +153,7 @@ CODE_SAMPLE;
         $gitWorkingCopy = $this->getWorkingCopy();
         $this->assertFalse($gitWorkingCopy->hasChanges());
 
-        FileSystem::write(self::WORKING_DIR . '/change.me', "changed\n");
+        $this->filesystem->dumpFile(self::WORKING_DIR . '/change.me', "changed\n");
         $this->assertTrue($gitWorkingCopy->hasChanges());
     }
 
@@ -199,7 +199,7 @@ CODE_SAMPLE;
     public function testGitApply(): void
     {
         $git = $this->getWorkingCopy();
-        FileSystem::write(self::WORKING_DIR . '/patch.txt', self::PATCH);
+        $this->filesystem->dumpFile(self::WORKING_DIR . '/patch.txt', self::PATCH);
         $git->apply('patch.txt');
 
         $this->assertMatchesRegularExpression('#\?\?\\s+FileCreatedByPatch\\.txt#s', $git->getStatus());
@@ -267,7 +267,7 @@ CODE_SAMPLE;
     {
         $git = $this->getWorkingCopy();
 
-        FileSystem::write(self::WORKING_DIR . '/untracked.file', "untracked\n");
+        $this->filesystem->dumpFile(self::WORKING_DIR . '/untracked.file', "untracked\n");
 
         $result = $git->clean('-d', '-f');
 
@@ -285,7 +285,7 @@ CODE_SAMPLE;
     public function testGitReset(): void
     {
         $git = $this->getWorkingCopy();
-        FileSystem::write(self::WORKING_DIR . '/change.me', "changed\n");
+        $this->filesystem->dumpFile(self::WORKING_DIR . '/change.me', "changed\n");
 
         $this->assertTrue($git->hasChanges());
         $git->reset([
@@ -297,7 +297,7 @@ CODE_SAMPLE;
     public function testGitStatus(): void
     {
         $git = $this->getWorkingCopy();
-        FileSystem::write(self::WORKING_DIR . '/change.me', "changed\n");
+        $this->filesystem->dumpFile(self::WORKING_DIR . '/change.me', "changed\n");
         $output = $git->status([
             's' => true,
         ]);
@@ -340,7 +340,7 @@ CODE_SAMPLE;
     public function testGitDiff(): void
     {
         $git = $this->getWorkingCopy();
-        FileSystem::write(self::WORKING_DIR . '/change.me', "changed\n");
+        $this->filesystem->dumpFile(self::WORKING_DIR . '/change.me', "changed\n");
         $output = $git->diff();
 
         $this->assertStringStartsWith('diff --git a/change.me b/change.me', $output);
@@ -385,7 +385,9 @@ CODE_SAMPLE;
         $output = $git->rebase('test-branch', [
             'onto' => 'master',
         ]);
-        $this->assertStringStartsWith('First, rewinding head', $output);
+
+        // nothing to rebase
+        $this->assertSame('', $output);
     }
 
     public function testMerge(): void
@@ -451,7 +453,7 @@ CODE_SAMPLE;
     public function testCommitWithAuthor(): void
     {
         $git = $this->getWorkingCopy();
-        FileSystem::write(self::WORKING_DIR . '/commit.txt', "created\n");
+        $this->filesystem->dumpFile(self::WORKING_DIR . '/commit.txt', "created\n");
 
         $this->assertTrue($git->hasChanges());
 
@@ -488,7 +490,7 @@ CODE_SAMPLE;
         $this->assertTrue($git->isUpToDate());
 
         // If we create a new commit, we are still up-to-date.
-        FileSystem::write(self::WORKING_DIR . '/commit.txt', "created\n");
+        $this->filesystem->dumpFile(self::WORKING_DIR . '/commit.txt', "created\n");
         $git->add('commit.txt');
         $git->commit([
             'm' => '1 commit ahead. Still up-to-date.',
@@ -512,7 +514,7 @@ CODE_SAMPLE;
         $this->assertFalse($git->isAhead());
 
         // Create a new commit, so that the branch is 1 commit ahead.
-        FileSystem::write(self::WORKING_DIR . '/commit.txt', "created\n");
+        $this->filesystem->dumpFile(self::WORKING_DIR . '/commit.txt', "created\n");
         $git->add('commit.txt');
         $git->commit([
             'm' => '1 commit ahead.',
@@ -554,7 +556,7 @@ CODE_SAMPLE;
 
         // Create a new commit, so that the branch is also 1 commit ahead. Now a
         // merge is needed.
-        FileSystem::write(self::WORKING_DIR . '/commit.txt', "created\n");
+        $this->filesystem->dumpFile(self::WORKING_DIR . '/commit.txt', "created\n");
         $git->add('commit.txt');
         $git->commit([
             'm' => '1 commit ahead.',
@@ -825,13 +827,13 @@ CODE_SAMPLE;
         $git->config('user.name', self::CONFIG_NAME);
 
         // Make a change to the remote repo.
-        FileSystem::write(self::REMOTE_REPO_DIR . '/remote.file', "remote code\n");
+        $this->filesystem->dumpFile(self::REMOTE_REPO_DIR . '/remote.file', "remote code\n");
         $git->add('*');
         $git->commit('Remote change.');
 
         // Create a branch.
         $branch = 'remote-branch';
-        FileSystem::write(self::REMOTE_REPO_DIR . '/remote-branch.txt', $branch . PHP_EOL);
+        $this->filesystem->dumpFile(self::REMOTE_REPO_DIR . '/remote-branch.txt', $branch . PHP_EOL);
         $git->checkoutNewBranch($branch);
         $git->add('*');
         $git->commit('Commit remote testing branch.');
@@ -840,17 +842,29 @@ CODE_SAMPLE;
         $git->tag('remote-tag');
     }
 
+    private function storeCurrentGitUserEmail(GitWorkingCopy $gitWorkingCopy): void
+    {
+        // relevant only locally
+        $ciDetector = new CiDetector();
+        if ($ciDetector->isCiDetected()) {
+            return;
+        }
+
+        // prevent local user.* override
+        $this->currentUserEmail = $gitWorkingCopy->config('user.email');
+        $this->currentUserName = $gitWorkingCopy->config('user.name');
+    }
+
     private function restoreCurrentGitUserEmail(): void
     {
+        // relevant only locally
+        $ciDetector = new CiDetector();
+        if ($ciDetector->isCiDetected()) {
+            return;
+        }
+
         $gitWorkingCopy = $this->gitWrapper->workingCopy(self::REPO_DIR);
         $gitWorkingCopy->config('user.email', $this->currentUserEmail);
         $gitWorkingCopy->config('user.name', $this->currentUserName);
-    }
-
-    private function storeCurrentGitUserEmail(GitWorkingCopy $git): void
-    {
-        // prevent local user.* override
-        $this->currentUserEmail = $git->config('user.email');
-        $this->currentUserName = $git->config('user.name');
     }
 }

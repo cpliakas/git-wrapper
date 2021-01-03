@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Rector\CodingStyle\Rector\ClassMethod\UnSpreadOperatorRector;
 use Rector\Core\Configuration\Option;
 use Rector\Privatization\Rector\ClassMethod\PrivatizeFinalClassMethodRector;
 use Rector\Set\ValueObject\SetList;
@@ -27,5 +28,8 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
     $parameters->set(Option::SKIP, [
         PrivatizeFinalClassMethodRector::class => [__DIR__ . '/tests/GitWorkingCopyTest.php'],
+
+        // run after CI is setup
+        UnSpreadOperatorRector::class,
     ]);
 };
