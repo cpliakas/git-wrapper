@@ -102,11 +102,11 @@ final class GitCommand
     }
 
     /**
-     * Returns true if the Git command should be run.
+     * Returns true if the Git command should be skipped
      */
-    public function notBypassed(): bool
+    public function isBypassed(): bool
     {
-        return ! $this->bypass;
+        return $this->bypass;
     }
 
     /**

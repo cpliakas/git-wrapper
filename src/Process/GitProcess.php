@@ -62,7 +62,7 @@ final class GitProcess extends Process
         $gitPrepareEvent = new GitPrepareEvent($this->gitWrapper, $this, $this->gitCommand);
         $this->dispatchEvent($gitPrepareEvent);
 
-        if ($this->gitCommand->notBypassed()) {
+        if (! $this->gitCommand->isBypassed()) {
             parent::start($callback, $env);
         } else {
             $gitBypassEvent = new GitBypassEvent($this->gitWrapper, $this, $this->gitCommand);
@@ -72,7 +72,7 @@ final class GitProcess extends Process
 
     public function wait(?callable $callback = null): int
     {
-        if (! $this->gitCommand->notBypassed()) {
+        if ($this->gitCommand->isBypassed()) {
             return -1;
         }
 
