@@ -11,11 +11,25 @@ use GitWrapper\Tests\Event\TestDispatcher;
 
 final class GitWrapperTest extends AbstractGitWrapperTestCase
 {
+    /**
+     * @var string
+     */
+    private const BINARY = '/path/to/binary';
+
+    /**
+     * @var string
+     */
+    private const BAD_KEY = './tests/id_rsa_bad';
+
+    /**
+     * @var string
+     */
+    private const BAD_WRAPPER = './tests/dummy-wrapper-bad.sh';
+
     public function testSetGitBinary(): void
     {
-        $binary = '/path/to/binary';
-        $this->gitWrapper->setGitBinary($binary);
-        $this->assertSame($binary, $this->gitWrapper->getGitBinary());
+        $this->gitWrapper->setGitBinary(self::BINARY);
+        $this->assertSame(self::BINARY, $this->gitWrapper->getGitBinary());
     }
 
     public function testSetDispatcher(): void
@@ -90,15 +104,13 @@ final class GitWrapperTest extends AbstractGitWrapperTestCase
     public function testSetPrivateKeyError(): void
     {
         $this->expectException(GitException::class);
-        $badKey = './tests/id_rsa_bad';
-        $this->gitWrapper->setPrivateKey($badKey);
+        $this->gitWrapper->setPrivateKey(self::BAD_KEY);
     }
 
     public function testSetPrivateKeyWrapperError(): void
     {
         $this->expectException(GitException::class);
-        $badWrapper = './tests/dummy-wrapper-bad.sh';
-        $this->gitWrapper->setPrivateKey('./tests/id_rsa', 22, $badWrapper);
+        $this->gitWrapper->setPrivateKey('./tests/id_rsa', 22, self::BAD_WRAPPER);
     }
 
     public function testUnsetPrivateKey(): void
