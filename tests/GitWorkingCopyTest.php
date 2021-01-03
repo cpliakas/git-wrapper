@@ -18,12 +18,12 @@ final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
     /**
      * @var string
      */
-    private const REMOTE_REPO_DIR = 'build/test/remote';
+    private const REMOTE_REPO_DIR = __DIR__ . '/build/tests/remote';
 
     /**
      * @var string
      */
-    private const DIRECTORY = 'build/tests/wc_init';
+    private const DIRECTORY = __DIR__ . '/build/tests/wc_init';
 
     /**
      * @var string
@@ -60,7 +60,13 @@ CODE_SAMPLE;
         $this->gitWrapper->init(self::REPO_DIR, [
             'bare' => true,
         ]);
-        $git = $this->gitWrapper->cloneRepository('file://' . realpath(self::REPO_DIR), self::DIRECTORY);
+
+        // cleanup, because tearDown is not working here
+        if ($this->filesystem->exists(self::DIRECTORY)) {
+            $this->filesystem->remove(self::DIRECTORY);
+        }
+
+        $git = $this->gitWrapper->cloneRepository('file://' . self::REPO_DIR, self::DIRECTORY);
 
         $this->storeCurrentGitUserEmail($git);
 
@@ -105,18 +111,9 @@ CODE_SAMPLE;
         $this->restoreCurrentGitUserEmail();
 
         $this->filesystem->remove(self::REPO_DIR);
-
-        if (is_dir('build/tests/wc_init')) {
-            $this->filesystem->remove('build/tests/wc_init');
-        }
-
-        if (is_dir(self::WORKING_DIR)) {
-            $this->filesystem->remove(self::WORKING_DIR);
-        }
-
-        if (is_dir(self::REMOTE_REPO_DIR)) {
-            $this->filesystem->remove(self::REMOTE_REPO_DIR);
-        }
+        $this->filesystem->remove(self::DIRECTORY);
+        $this->filesystem->remove(self::WORKING_DIR);
+        $this->filesystem->remove(self::REMOTE_REPO_DIR);
     }
 
     /**
@@ -820,7 +817,7 @@ CODE_SAMPLE;
     private function createRemote(): void
     {
         // Create a clone of the working copy that will serve as a remote.
-        $git = $this->gitWrapper->cloneRepository('file://' . realpath(self::REPO_DIR), self::REMOTE_REPO_DIR);
+        $git = $this->gitWrapper->cloneRepository('file://' . self::REPO_DIR, self::REMOTE_REPO_DIR);
         $git->config('user.email', self::CONFIG_EMAIL);
         $git->config('user.name', self::CONFIG_NAME);
 
