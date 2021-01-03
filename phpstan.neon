@@ -1,6 +1,9 @@
 includes:
     - vendor/symplify/phpstan-extensions/config/config.neon
     - vendor/phpstan/phpstan-phpunit/extension.neon
+    # symplify
+    - vendor/symplify/phpstan-rules/config/static-rules.neon
+    - vendor/symplify/phpstan-rules/config/services/services.neon
 
 parameters:
     level: max
@@ -20,3 +23,16 @@ parameters:
         - '#Method GitWrapper\\GitWrapper\:\:setEnvVar\(\) has parameter \$value with no typehint specified#'
         - '#Method GitWrapper\\GitCommand\:\:getOption\(\) has parameter \$default with no typehint specified#'
         - '#Method GitWrapper\\GitCommand\:\:getOption\(\) has no return typehint specified#'
+        - '#Constant string value need to only have small letters, _, \-, \. and numbers#'
+
+        -
+            message: '#Do not use factory/method call in constructor\. Put factory in config and get service with dependency injection#'
+            paths:
+                 - "src/Process/GitProcess.php"
+                 - "src/GitWrapper.php"
+
+        -
+            message: '#Do not use scalar or array as constructor parameter\. Use "Symplify\\PackageBuilder\\Parameter\\ParameterProvider" service instead#'
+            paths:
+                 - "src/Process/GitProcess.php"
+                 - "src/GitWrapper.php"

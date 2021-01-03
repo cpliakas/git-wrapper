@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace GitWrapper\EventSubscriber;
 
+use GitWrapper\Contract\OutputEventSubscriberInterface;
 use GitWrapper\Event\GitOutputEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-abstract class AbstractOutputEventSubscriber implements EventSubscriberInterface
+abstract class AbstractOutputEventSubscriber implements EventSubscriberInterface, OutputEventSubscriberInterface
 {
     /**
      * @return string[]
@@ -18,6 +19,4 @@ abstract class AbstractOutputEventSubscriber implements EventSubscriberInterface
             GitOutputEvent::class => 'handleOutput',
         ];
     }
-
-    abstract public function handleOutput(GitOutputEvent $gitOutputEvent): void;
 }

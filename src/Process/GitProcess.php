@@ -112,7 +112,8 @@ final class GitProcess extends Process
             return $cwd;
         }
 
-        if (! $cwd = realpath($directory)) {
+        $cwd = realpath($directory);
+        if ($cwd === false) {
             throw new GitException('Path to working directory could not be resolved: ' . $directory);
         }
 

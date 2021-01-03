@@ -148,11 +148,13 @@ final class GitWrapper
             $wrapper = __DIR__ . '/../bin/git-ssh-wrapper.sh';
         }
 
-        if (! $wrapperPath = realpath($wrapper)) {
+        $wrapperPath = realpath($wrapper);
+        if ($wrapperPath === false) {
             throw new GitException('Path to GIT_SSH wrapper script could not be resolved: ' . $wrapper);
         }
 
-        if (! $privateKeyPath = realpath($privateKey)) {
+        $privateKeyPath = realpath($privateKey);
+        if ($privateKeyPath === false) {
             throw new GitException('Path private key could not be resolved: ' . $privateKey);
         }
 

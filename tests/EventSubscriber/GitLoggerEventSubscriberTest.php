@@ -17,8 +17,6 @@ final class GitLoggerEventSubscriberTest extends AbstractGitWrapperTestCase
 {
     protected function tearDown(): void
     {
-        parent::tearDown();
-
         if (is_dir(self::REPO_DIR)) {
             $this->filesystem->remove(self::REPO_DIR);
         }
