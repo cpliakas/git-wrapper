@@ -140,4 +140,9 @@ final class CommandName
      * @var string
      */
     public const ADD = 'add';
+
+    /**
+     * @var string
+     */
+    public const MERGE_BASE = 'merge-base';
 }

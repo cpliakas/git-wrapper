@@ -19,16 +19,6 @@ final class GitWorkingCopy
     /**
      * @var string
      */
-    private const REV_PARSE = 'rev-parse';
-
-    /**
-     * @var string
-     */
-    private const MERGE_BASE = 'merge-base';
-
-    /**
-     * @var string
-     */
     private const _T = '-t';
 
     /**
@@ -138,7 +128,7 @@ final class GitWorkingCopy
     public function isTracking(): bool
     {
         try {
-            $this->run(self::REV_PARSE, ['@{u}']);
+            $this->run(CommandName::REV_PARSE, ['@{u}']);
         } catch (GitException $gitException) {
             return false;
         }
@@ -157,8 +147,8 @@ final class GitWorkingCopy
             );
         }
 
-        $mergeBase = $this->run(self::MERGE_BASE, ['@', '@{u}']);
-        $remoteSha = $this->run(self::REV_PARSE, ['@{u}']);
+        $mergeBase = $this->run(CommandName::MERGE_BASE, ['@', '@{u}']);
+        $remoteSha = $this->run(CommandName::REV_PARSE, ['@{u}']);
         return $mergeBase === $remoteSha;
     }
 
@@ -174,9 +164,9 @@ final class GitWorkingCopy
             throw new GitException('Error: HEAD does not have a remote tracking branch. Cannot check if it is ahead.');
         }
 
-        $mergeBase = $this->run(self::MERGE_BASE, ['@', '@{u}']);
-        $localSha = $this->run(self::REV_PARSE, ['@']);
-        $remoteSha = $this->run(self::REV_PARSE, ['@{u}']);
+        $mergeBase = $this->run(CommandName::MERGE_BASE, ['@', '@{u}']);
+        $localSha = $this->run(CommandName::REV_PARSE, ['@']);
+        $remoteSha = $this->run(CommandName::REV_PARSE, ['@{u}']);
         return $mergeBase === $remoteSha && $localSha !== $remoteSha;
     }
 
@@ -192,9 +182,9 @@ final class GitWorkingCopy
             throw new GitException('Error: HEAD does not have a remote tracking branch. Cannot check if it is behind.');
         }
 
-        $mergeBase = $this->run(self::MERGE_BASE, ['@', '@{u}']);
-        $localSha = $this->run(self::REV_PARSE, ['@']);
-        $remoteSha = $this->run(self::REV_PARSE, ['@{u}']);
+        $mergeBase = $this->run(CommandName::MERGE_BASE, ['@', '@{u}']);
+        $localSha = $this->run(CommandName::REV_PARSE, ['@']);
+        $remoteSha = $this->run(CommandName::REV_PARSE, ['@{u}']);
         return $mergeBase === $localSha && $localSha !== $remoteSha;
     }
 
@@ -211,9 +201,9 @@ final class GitWorkingCopy
             throw new GitException('Error: HEAD does not have a remote tracking branch. Cannot check if it is behind.');
         }
 
-        $mergeBase = $this->run(self::MERGE_BASE, ['@', '@{u}']);
-        $localSha = $this->run(self::REV_PARSE, ['@']);
-        $remoteSha = $this->run(self::REV_PARSE, ['@{u}']);
+        $mergeBase = $this->run(CommandName::MERGE_BASE, ['@', '@{u}']);
+        $localSha = $this->run(CommandName::REV_PARSE, ['@']);
+        $remoteSha = $this->run(CommandName::REV_PARSE, ['@{u}']);
         return $mergeBase !== $localSha && $mergeBase !== $remoteSha;
     }
 
