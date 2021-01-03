@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
+use Rector\CodingStyle\Rector\ClassMethod\UnSpreadOperatorRector;
 use Rector\Core\Configuration\Option;
-use Rector\DeadCode\Rector\ClassConst\RemoveUnusedClassConstantRector;
-use Rector\Privatization\Rector\Class_\ChangeReadOnlyVariableWithDefaultValueToConstantRector;
 use Rector\Privatization\Rector\ClassMethod\PrivatizeFinalClassMethodRector;
 use Rector\Set\ValueObject\SetList;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -30,8 +29,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $parameters->set(Option::SKIP, [
         PrivatizeFinalClassMethodRector::class => [__DIR__ . '/tests/GitWorkingCopyTest.php'],
 
-        // buggy
-        // ChangeReadOnlyVariableWithDefaultValueToConstantRector::class,
-        RemoveUnusedClassConstantRector::class,
+        // run after CI is setup
+        UnSpreadOperatorRector::class,
     ]);
 };
