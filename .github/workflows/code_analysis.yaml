@@ -1,0 +1,42 @@
+name: Code Analysis
+
+on:
+    pull_request: null
+    push:
+        branches:
+            - master
+
+jobs:
+    code_analysis:
+        runs-on: ubuntu-latest
+
+        strategy:
+            fail-fast: false
+            matrix:
+                actions:
+                    -
+                        name: ECS
+                        run: composer check-cs --ansi
+
+                    -
+                        name: PHPStan
+                        run: composer phpstan --ansi
+
+                    -
+                        name: Rector
+                        run: composer rector --ansi
+
+        name: ${{ matrix.actions.name }}
+
+        steps:
+            -   uses: actions/checkout@v2
+
+            -   uses: shivammathur/setup-php@v1
+                with:
+                    php-version: 7.3
+                    coverage: none
+
+            # composer install cache - https://github.com/ramsey/composer-install
+            -   uses: "ramsey/composer-install@v1"
+
+            -   run: ${{ matrix.actions.run }}
