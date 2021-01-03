@@ -208,12 +208,7 @@ CODE_SAMPLE;
         FileSystem::write(self::WORKING_DIR . '/patch.txt', self::PATCH);
         $git->apply('patch.txt');
 
-        // PHPUnit 8.5 compatible
-        if (method_exists($this, 'assertRegExp')) {
-            $this->assertRegExp('#\?\?\\s+FileCreatedByPatch\\.txt#s', $git->getStatus());
-        } else {
-            $this->assertMatchesRegularExpression('#\?\?\\s+FileCreatedByPatch\\.txt#s', $git->getStatus());
-        }
+        $this->assertMatchesRegularExpression('#\?\?\\s+FileCreatedByPatch\\.txt#s', $git->getStatus());
         $this->assertStringEqualsFile(self::WORKING_DIR . '/FileCreatedByPatch.txt', "contents\n");
     }
 
