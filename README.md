@@ -132,7 +132,7 @@ if ($git->hasChanges()) {
 
 ### Permissions Of The GIT_SSH Wrapper Script
 
-On checkout, the bin/git-ssh-wrapper.sh script should be executable. If it is not, git commands with fail if a non-default private key is specified.
+On checkout, the bin/git-ssh-wrapper.sh script should be executable. If it is not, git commands will fail if a non-default private key is specified.
 
 ```bash
 $ chmod +x ./bin/git-ssh-wrapper.sh
