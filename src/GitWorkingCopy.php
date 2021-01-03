@@ -16,6 +16,36 @@ use Nette\Utils\Strings;
 final class GitWorkingCopy
 {
     /**
+     * @var string
+     */
+    private const REV_PARSE = 'rev-parse';
+
+    /**
+     * @var string
+     */
+    private const MERGE_BASE = 'merge-base';
+
+    /**
+     * @var string
+     */
+    private const _T = '-t';
+
+    /**
+     * @var string
+     */
+    private const _M = '-m';
+
+    /**
+     * @var string
+     */
+    private const FETCH = 'fetch';
+
+    /**
+     * @var string
+     */
+    private const PUSH = 'push';
+
+    /**
      * A boolean flagging whether the repository is cloned.
      *
      * If the variable is null, the a rudimentary check will be performed to see
@@ -117,7 +147,7 @@ final class GitWorkingCopy
     public function isTracking(): bool
     {
         try {
-            $this->run('rev-parse', ['@{u}']);
+            $this->run(self::REV_PARSE, ['@{u}']);
         } catch (GitException $gitException) {
             return false;
         }
@@ -136,8 +166,8 @@ final class GitWorkingCopy
             );
         }
 
-        $mergeBase = $this->run('merge-base', ['@', '@{u}']);
-        $remoteSha = $this->run('rev-parse', ['@{u}']);
+        $mergeBase = $this->run(self::MERGE_BASE, ['@', '@{u}']);
+        $remoteSha = $this->run(self::REV_PARSE, ['@{u}']);
         return $mergeBase === $remoteSha;
     }
 
@@ -153,9 +183,9 @@ final class GitWorkingCopy
             throw new GitException('Error: HEAD does not have a remote tracking branch. Cannot check if it is ahead.');
         }
 
-        $mergeBase = $this->run('merge-base', ['@', '@{u}']);
-        $localSha = $this->run('rev-parse', ['@']);
-        $remoteSha = $this->run('rev-parse', ['@{u}']);
+        $mergeBase = $this->run(self::MERGE_BASE, ['@', '@{u}']);
+        $localSha = $this->run(self::REV_PARSE, ['@']);
+        $remoteSha = $this->run(self::REV_PARSE, ['@{u}']);
         return $mergeBase === $remoteSha && $localSha !== $remoteSha;
     }
 
@@ -171,9 +201,9 @@ final class GitWorkingCopy
             throw new GitException('Error: HEAD does not have a remote tracking branch. Cannot check if it is behind.');
         }
 
-        $mergeBase = $this->run('merge-base', ['@', '@{u}']);
-        $localSha = $this->run('rev-parse', ['@']);
-        $remoteSha = $this->run('rev-parse', ['@{u}']);
+        $mergeBase = $this->run(self::MERGE_BASE, ['@', '@{u}']);
+        $localSha = $this->run(self::REV_PARSE, ['@']);
+        $remoteSha = $this->run(self::REV_PARSE, ['@{u}']);
         return $mergeBase === $localSha && $localSha !== $remoteSha;
     }
 
@@ -190,9 +220,9 @@ final class GitWorkingCopy
             throw new GitException('Error: HEAD does not have a remote tracking branch. Cannot check if it is behind.');
         }
 
-        $mergeBase = $this->run('merge-base', ['@', '@{u}']);
-        $localSha = $this->run('rev-parse', ['@']);
-        $remoteSha = $this->run('rev-parse', ['@{u}']);
+        $mergeBase = $this->run(self::MERGE_BASE, ['@', '@{u}']);
+        $localSha = $this->run(self::REV_PARSE, ['@']);
+        $remoteSha = $this->run(self::REV_PARSE, ['@{u}']);
         return $mergeBase !== $localSha && $mergeBase !== $remoteSha;
     }
 
@@ -287,17 +317,17 @@ final class GitWorkingCopy
         }
 
         // Add tracking branches.
-        if (! empty($options['-t'])) {
-            foreach ($options['-t'] as $branch) {
-                $args[] = '-t';
+        if (! empty($options[self::_T])) {
+            foreach ($options[self::_T] as $branch) {
+                $args[] = self::_T;
                 $args[] = $branch;
             }
         }
 
         // Add master branch.
-        if (! empty($options['-m'])) {
-            $args[] = '-m';
-            $args[] = $options['-m'];
+        if (! empty($options[self::_M])) {
+            $args[] = self::_M;
+            $args[] = $options[self::_M];
         }
 
         // Add remote name and URL.
@@ -345,8 +375,8 @@ final class GitWorkingCopy
 
         $remotes = [];
         foreach ($this->splitByNewline($result) as $remote) {
-            $remotes[$remote]['fetch'] = $this->getRemoteUrl($remote);
-            $remotes[$remote]['push'] = $this->getRemoteUrl($remote, 'push');
+            $remotes[$remote][self::FETCH] = $this->getRemoteUrl($remote);
+            $remotes[$remote][self::PUSH] = $this->getRemoteUrl($remote, self::PUSH);
         }
 
         return $remotes;
@@ -357,11 +387,11 @@ final class GitWorkingCopy
      *
      * @param string $operation The operation for which to return the remote. Can be either 'fetch' or 'push'.
      */
-    public function getRemoteUrl(string $remote, string $operation = 'fetch'): string
+    public function getRemoteUrl(string $remote, string $operation = self::FETCH): string
     {
         $argsAndOptions = ['get-url', $remote];
 
-        if ($operation === 'push') {
+        if ($operation === self::PUSH) {
             $argsAndOptions[] = '--push';
         }
 
@@ -487,7 +517,7 @@ final class GitWorkingCopy
      */
     public function fetch(...$argsAndOptions): string
     {
-        return $this->run('fetch', $argsAndOptions);
+        return $this->run(self::FETCH, $argsAndOptions);
     }
 
     /**
@@ -564,7 +594,7 @@ final class GitWorkingCopy
      */
     public function push(...$argsAndOptions): string
     {
-        return $this->run('push', $argsAndOptions);
+        return $this->run(self::PUSH, $argsAndOptions);
     }
 
     /**

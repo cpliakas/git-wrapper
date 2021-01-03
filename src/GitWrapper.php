@@ -198,12 +198,12 @@ final class GitWrapper
      */
     public function streamOutput(bool $streamOutput = true): void
     {
-        if ($streamOutput && ! isset($this->outputEventSubscriber)) {
+        if ($streamOutput && $this->outputEventSubscriber === null) {
             $this->outputEventSubscriber = new StreamOutputEventSubscriber();
             $this->addOutputEventSubscriber($this->outputEventSubscriber);
         }
 
-        if (! $streamOutput && isset($this->outputEventSubscriber)) {
+        if (! $streamOutput && $this->outputEventSubscriber !== null) {
             $this->removeOutputEventSubscriber($this->outputEventSubscriber);
             unset($this->outputEventSubscriber);
         }

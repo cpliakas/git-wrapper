@@ -41,7 +41,7 @@ final class GitBranches implements IteratorAggregate
             'a' => true,
         ];
         $output = $this->gitWorkingCopy->branch($options);
-        $branches = (array) Strings::split(rtrim($output), "/\r\n|\n|\r/");
+        $branches = Strings::split(rtrim($output), "/\r\n|\n|\r/");
         return array_map(function (string $branch): string {
             return $this->trimBranch($branch);
         }, $branches);
