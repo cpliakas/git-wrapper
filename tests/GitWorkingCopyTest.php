@@ -23,6 +23,25 @@ final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
     /**
      * @var string
      */
+    private const DIRECTORY = 'build/tests/wc_init';
+
+    /**
+     * @var string
+     */
+    private const PATCH = <<<CODE_SAMPLE
+diff --git a/FileCreatedByPatch.txt b/FileCreatedByPatch.txt
+new file mode 100644
+index 0000000..dfe437b
+--- /dev/null
++++ b/FileCreatedByPatch.txt
+@@ -0,0 +1 @@
++contents
+
+CODE_SAMPLE;
+
+    /**
+     * @var string
+     */
     private $currentUserName;
 
     /**
@@ -37,14 +56,11 @@ final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
     {
         parent::setUp();
 
-        // Create the local repository.
+        // Create the local repository
         $this->gitWrapper->init(self::REPO_DIR, [
             'bare' => true,
         ]);
-
-        // Clone the local repository.
-        $directory = 'build/tests/wc_init';
-        $git = $this->gitWrapper->cloneRepository('file://' . realpath(self::REPO_DIR), $directory);
+        $git = $this->gitWrapper->cloneRepository('file://' . realpath(self::REPO_DIR), self::DIRECTORY);
 
         // prevent local user.* override
         $this->currentUserEmail = $git->config('user.email');
@@ -54,10 +70,10 @@ final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
         $git->config('user.name', self::CONFIG_NAME);
 
         // Create the initial structure.
-        FileSystem::write($directory . '/change.me', "unchanged\n");
-        $this->filesystem->touch($directory . '/move.me');
-        $this->filesystem->mkdir($directory . '/a.directory', 0755);
-        $this->filesystem->touch($directory . '/a.directory/remove.me');
+        FileSystem::write(self::DIRECTORY . '/change.me', "unchanged\n");
+        $this->filesystem->touch(self::DIRECTORY . '/move.me');
+        $this->filesystem->mkdir(self::DIRECTORY . '/a.directory', 0755);
+        $this->filesystem->touch(self::DIRECTORY . '/a.directory/remove.me');
 
         // Initial commit.
         $git->add('*');
@@ -68,7 +84,7 @@ final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
 
         // Create a branch, add a file.
         $branch = 'test-branch';
-        FileSystem::write($directory . '/branch.txt', $branch . PHP_EOL);
+        FileSystem::write(self::DIRECTORY . '/branch.txt', $branch . PHP_EOL);
         $git->checkoutNewBranch($branch);
         $git->add('branch.txt');
         $git->commit('Committed testing branch.');
@@ -80,7 +96,7 @@ final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
         $git->tag('test-tag');
         $git->pushTags();
 
-        $this->filesystem->remove($directory);
+        $this->filesystem->remove(self::DIRECTORY);
     }
 
     /**
@@ -189,18 +205,7 @@ final class GitWorkingCopyTest extends AbstractGitWrapperTestCase
     public function testGitApply(): void
     {
         $git = $this->getWorkingCopy();
-
-        $patch = <<<CODE_SAMPLE
-diff --git a/FileCreatedByPatch.txt b/FileCreatedByPatch.txt
-new file mode 100644
-index 0000000..dfe437b
---- /dev/null
-+++ b/FileCreatedByPatch.txt
-@@ -0,0 +1 @@
-+contents
-
-CODE_SAMPLE;
-        FileSystem::write(self::WORKING_DIR . '/patch.txt', $patch);
+        FileSystem::write(self::WORKING_DIR . '/patch.txt', self::PATCH);
         $git->apply('patch.txt');
 
         // PHPUnit 8.5 compatible

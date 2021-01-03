@@ -31,7 +31,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         PrivatizeFinalClassMethodRector::class => [__DIR__ . '/tests/GitWorkingCopyTest.php'],
 
         // buggy
-        ChangeReadOnlyVariableWithDefaultValueToConstantRector::class,
+        // ChangeReadOnlyVariableWithDefaultValueToConstantRector::class,
         RemoveUnusedClassConstantRector::class,
     ]);
 };
