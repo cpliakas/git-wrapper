@@ -116,7 +116,7 @@ $gitWrapper->git('config --global user.name "User name"');
 $gitWrapper->git('config --global user.email user@example.com');
 
 // Set configuration options per repository.
-$git->config('user.name', 'User name')
+$git->config('user.name', 'User name');
 $git->config('user.email', 'user@example.com');
 ```
 
@@ -144,5 +144,5 @@ There is a default timeout of 60 seconds. This might cause "issues" when you use
 
 ```php
 $this->gitWrapper = new GitWrapper();
-$this->gitWrapper->setTimeout( 120 );
+$this->gitWrapper->setTimeout(120);
 ```
