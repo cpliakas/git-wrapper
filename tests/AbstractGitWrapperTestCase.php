@@ -50,7 +50,7 @@ abstract class AbstractGitWrapperTestCase extends TestCase
         $this->gitWrapper = new GitWrapper();
     }
 
-    public function registerAndReturnEventSubscriber(): TestEventSubscriber
+    protected function registerAndReturnEventSubscriber(): TestEventSubscriber
     {
         $eventDispatcher = $this->gitWrapper->getDispatcher();
         $testEventSubscriber = new TestEventSubscriber();
@@ -62,7 +62,7 @@ abstract class AbstractGitWrapperTestCase extends TestCase
     /**
      * Adds the bypass event subscriber so that Git commands are not run.
      */
-    public function createRegisterAndReturnBypassEventSubscriber(): TestBypassEventSubscriber
+    protected function createRegisterAndReturnBypassEventSubscriber(): TestBypassEventSubscriber
     {
         $testBypassEventSubscriber = new TestBypassEventSubscriber();
         $eventDispatcher = $this->gitWrapper->getDispatcher();
@@ -76,13 +76,13 @@ abstract class AbstractGitWrapperTestCase extends TestCase
      *
      * @param string $version The version returned by the `git --version` command.
      */
-    public function assertGitVersion(string $version): void
+    protected function assertGitVersion(string $version): void
     {
         $match = preg_match('#^git version [.0-9]+#', $version);
         $this->assertNotEmpty($match);
     }
 
-    public function runBadCommand(bool $catchException = false): void
+    protected function runBadCommand(bool $catchException = false): void
     {
         try {
             $this->gitWrapper->git('a-bad-command');

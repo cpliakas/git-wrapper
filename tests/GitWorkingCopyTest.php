@@ -62,9 +62,7 @@ CODE_SAMPLE;
         ]);
         $git = $this->gitWrapper->cloneRepository('file://' . realpath(self::REPO_DIR), self::DIRECTORY);
 
-        // prevent local user.* override
-        $this->currentUserEmail = $git->config('user.email');
-        $this->currentUserName = $git->config('user.name');
+        $this->storeCurrentGitUserEmail($git);
 
         $git->config('user.email', self::CONFIG_EMAIL);
         $git->config('user.name', self::CONFIG_NAME);
@@ -104,10 +102,7 @@ CODE_SAMPLE;
      */
     protected function tearDown(): void
     {
-        // restore current user/email
-        $gitWorkingCopy = $this->gitWrapper->workingCopy(self::REPO_DIR);
-        $gitWorkingCopy->config('user.email', $this->currentUserEmail);
-        $gitWorkingCopy->config('user.name', $this->currentUserName);
+        $this->restoreCurrentGitUserEmail();
 
         $this->filesystem->remove(self::REPO_DIR);
 
@@ -843,5 +838,19 @@ CODE_SAMPLE;
 
         // Create a tag.
         $git->tag('remote-tag');
+    }
+
+    private function restoreCurrentGitUserEmail(): void
+    {
+        $gitWorkingCopy = $this->gitWrapper->workingCopy(self::REPO_DIR);
+        $gitWorkingCopy->config('user.email', $this->currentUserEmail);
+        $gitWorkingCopy->config('user.name', $this->currentUserName);
+    }
+
+    private function storeCurrentGitUserEmail(GitWorkingCopy $git): void
+    {
+        // prevent local user.* override
+        $this->currentUserEmail = $git->config('user.email');
+        $this->currentUserName = $git->config('user.name');
     }
 }
