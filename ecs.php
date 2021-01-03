@@ -16,6 +16,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         __DIR__ . '/tests',
         __DIR__ . '/ecs.php',
         __DIR__ . '/rector.php',
+        __DIR__ . '/changelog-linker.php',
     ]);
 
     $parameters->set(Option::SETS, [

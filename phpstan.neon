@@ -12,12 +12,6 @@ parameters:
 
     ignoreErrors:
         - '#Access to an undefined property object::\$data#'
-        # false positive - ignored doc type
-        - '#Parameter \#1 \$path of function basename expects string, string\|false given#'
-        - '#should be compatible with return type \(null\) of method Psr\\Log\\Logger(.*?)Interface::(.*?)\(\)#'
-
-        - '#Unreachable statement \- code above always terminates#'
-        - '#Parameter \#2 \$haystack of method PHPUnit\\Framework\\Assert\:\:assertStringContainsString\(\) expects string, string\|false given#'
 
         - '#no value type specified in iterable type#'
         - '#TValue#'
@@ -26,4 +20,3 @@ parameters:
         - '#Method GitWrapper\\GitWrapper\:\:setEnvVar\(\) has parameter \$value with no typehint specified#'
         - '#Method GitWrapper\\GitCommand\:\:getOption\(\) has parameter \$default with no typehint specified#'
         - '#Method GitWrapper\\GitCommand\:\:getOption\(\) has no return typehint specified#'
-        - '#Method (.*?) returns bool type, so the name should start with is/has/was#'
