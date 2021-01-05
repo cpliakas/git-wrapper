@@ -89,7 +89,7 @@ final class GitProcess extends Process
                     $output = $this->getOutput();
                 }
 
-                throw new GitException($output);
+                throw new GitException($output, $exitCode);
             }
         } catch (RuntimeException $runtimeException) {
             $gitErrorEvent = new GitErrorEvent($this->gitWrapper, $this, $this->gitCommand);
